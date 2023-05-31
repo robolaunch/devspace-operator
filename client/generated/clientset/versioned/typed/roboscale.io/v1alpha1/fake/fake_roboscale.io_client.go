@@ -27,14 +27,6 @@ type FakeRoboscaleV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeRoboscaleV1alpha1) DiscoveryServers(namespace string) v1alpha1.DiscoveryServerInterface {
-	return &FakeDiscoveryServers{c, namespace}
-}
-
-func (c *FakeRoboscaleV1alpha1) ROSBridges(namespace string) v1alpha1.ROSBridgeInterface {
-	return &FakeROSBridges{c, namespace}
-}
-
 func (c *FakeRoboscaleV1alpha1) Robots(namespace string) v1alpha1.RobotInterface {
 	return &FakeRobots{c, namespace}
 }

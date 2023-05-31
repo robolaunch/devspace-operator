@@ -52,10 +52,6 @@ func (f *genericInformer) Lister() cache.GenericLister {
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
 	// Group=roboscale.io, Version=v1alpha1
-	case v1alpha1.SchemeGroupVersion.WithResource("discoveryservers"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().DiscoveryServers().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("rosbridges"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().ROSBridges().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("robots"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().Robots().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("robotdevsuites"):

@@ -23,10 +23,6 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// DiscoveryServers returns a DiscoveryServerInformer.
-	DiscoveryServers() DiscoveryServerInformer
-	// ROSBridges returns a ROSBridgeInformer.
-	ROSBridges() ROSBridgeInformer
 	// Robots returns a RobotInformer.
 	Robots() RobotInformer
 	// RobotDevSuites returns a RobotDevSuiteInformer.
@@ -46,16 +42,6 @@ type version struct {
 // New returns a new Interface.
 func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakListOptions internalinterfaces.TweakListOptionsFunc) Interface {
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
-}
-
-// DiscoveryServers returns a DiscoveryServerInformer.
-func (v *version) DiscoveryServers() DiscoveryServerInformer {
-	return &discoveryServerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
-// ROSBridges returns a ROSBridgeInformer.
-func (v *version) ROSBridges() ROSBridgeInformer {
-	return &rOSBridgeInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // Robots returns a RobotInformer.

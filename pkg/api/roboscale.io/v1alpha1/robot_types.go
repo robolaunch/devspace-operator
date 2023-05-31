@@ -7,9 +7,6 @@ import (
 
 func init() {
 	SchemeBuilder.Register(&Robot{}, &RobotList{})
-	SchemeBuilder.Register(&ROSBridge{}, &ROSBridgeList{})
-	SchemeBuilder.Register(&DiscoveryServer{}, &DiscoveryServerList{})
-	SchemeBuilder.Register(&RobotArtifact{}, &RobotArtifactList{})
 }
 
 //+genclient
@@ -36,78 +33,6 @@ type RobotList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []Robot `json:"items"`
-}
-
-//+genclient
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-
-// DiscoveryServer is a custom resource that connects Robots and Fleets
-// both locally and geoghraphically in DDS (UDP multicast) level.
-type DiscoveryServer struct {
-	metav1.TypeMeta `json:",inline"`
-	// Standard object's metadata.
-	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// Specification of the desired behavior of the DiscoveryServer.
-	Spec DiscoveryServerSpec `json:"spec,omitempty"`
-	// Most recently observed status of the DiscoveryServer.
-	Status DiscoveryServerStatus `json:"status,omitempty"`
-}
-
-//+kubebuilder:object:root=true
-
-// DiscoveryServerList contains a list of DiscoveryServer
-type DiscoveryServerList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []DiscoveryServer `json:"items"`
-}
-
-//+genclient
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-
-// ROSBridge is a custom resource that provisions ROS/2 bridge resources and workloads.
-// It could also convert ROS 2 topics to ROS topics using ROS 1 to 2 bridge.
-// (see https://github.com/ros2/ros1_bridge)
-type ROSBridge struct {
-	metav1.TypeMeta `json:",inline"`
-	// Standard object's metadata.
-	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// Specification of the desired behavior of the ROSBridge.
-	Spec ROSBridgeSpec `json:"spec,omitempty"`
-	// Most recently observed status of the ROSBridge.
-	Status ROSBridgeStatus `json:"status,omitempty"`
-}
-
-//+kubebuilder:object:root=true
-
-// ROSBridgeList contains a list of ROSBridge
-type ROSBridgeList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []ROSBridge `json:"items"`
-}
-
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-
-// RobotArtifact is a non-functional resource that holds Robot's specifications.
-// It is used to define Robot templates.
-type RobotArtifact struct {
-	metav1.TypeMeta   `json:",inline"`
-	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// Holds Robot's `.spec`.
-	Template RobotSpec `json:"template,omitempty"`
-}
-
-//+kubebuilder:object:root=true
-
-// RobotArtifactList contains a list of RobotArtifact
-type RobotArtifactList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []RobotArtifact `json:"items"`
 }
 
 // ********************************
@@ -193,10 +118,6 @@ type RobotSpec struct {
 	// Total storage amount to persist via Robot. Unit of measurement is MB. (eg. `10240` corresponds 10 GB)
 	// This amount is being shared between different components.
 	Storage Storage `json:"storage,omitempty"`
-	// Discovery server configurational parameters.
-	DiscoveryServerTemplate DiscoveryServerSpec `json:"discoveryServerTemplate,omitempty"`
-	// ROS bridge configurational parameters.
-	ROSBridgeTemplate ROSBridgeSpec `json:"rosBridgeTemplate,omitempty"`
 	// Robot development suite template
 	RobotDevSuiteTemplate RobotDevSuiteSpec `json:"robotDevSuiteTemplate,omitempty"`
 	// Workspace manager template to configure ROS 2 workspaces.
@@ -248,10 +169,6 @@ type RobotStatus struct {
 	// Robot persists some of the directories of underlying OS inside persistent volumes.
 	// This field exposes persistent volume claims that dynamically provision PVs.
 	VolumeStatuses VolumeStatuses `json:"volumeStatuses,omitempty"`
-	// Discovery server instance status.
-	DiscoveryServerStatus DiscoveryServerInstanceStatus `json:"discoveryServerStatus,omitempty"`
-	// ROS bridge instance status.
-	ROSBridgeStatus ROSBridgeInstanceStatus `json:"rosBridgeStatus,omitempty"`
 	// Status of loader job that configures environment.
 	LoaderJobStatus OwnedResourceStatus `json:"loaderJobStatus,omitempty"`
 	// Workspace manager instance status if exists.
@@ -261,109 +178,3 @@ type RobotStatus struct {
 	// [*alpha*] Attached dev object information.
 	AttachedDevObjects []AttachedDevObject `json:"attachedDevObjects,omitempty"`
 }
-
-// ********************************
-// DiscoveryServer types
-// ********************************
-
-// Instance type can be either `Server` or `Client`.
-type DiscoveryServerInstanceType string
-
-const (
-	DiscoveryServerInstanceTypeServer DiscoveryServerInstanceType = "Server"
-	DiscoveryServerInstanceTypeClient DiscoveryServerInstanceType = "Client"
-)
-
-// DiscoveryServerSpec defines the desired state of DiscoveryServer.
-type DiscoveryServerSpec struct {
-	// Instance type can be either `Server` or `Client`.
-	// If `Server`, instance creates discovery server resources and workloads.
-	// Other `Client` instances can connect to the `Server` instance.
-	// If `Client`, instance tries to connect a `Server` instance and hold `Server` configuration in a ConfigMap.
-	Type DiscoveryServerInstanceType `json:"type,omitempty"`
-	// Reference to the `Server` instance.
-	// It is used if `.spec.type` is `Client`.
-	// Referenced object can be previously provisioned in another cluster.
-	// In that case, cluster's name can be specified in `.spec.cluster` field.
-	Reference corev1.ObjectReference `json:"reference,omitempty"`
-	// Cloud instance name that holds DiscoveryServer instance with `Server` type.
-	// Should be empty if the type is `Server` since it takes cloud instance's name automatically.
-	// Should be set if the type is `Client`.
-	Cluster string `json:"cluster,omitempty"`
-	// If instance type is `Server`, it can be an arbitrary value.
-	// If instance type is `Client`, it should be the same with Server's hostname.
-	// Used for getting Server's IP over DNS.
-	Hostname string `json:"hostname,omitempty"`
-	// If instance type is `Server`, it can be an arbitrary value.
-	// If instance type is `Client`, it should be the same with Server's subdomain.
-	// Used for getting Server's IP over DNS.
-	Subdomain string `json:"subdomain,omitempty"`
-}
-
-type ConnectionInfo struct {
-	// URI of the discovery server.
-	// Discovery server instance tries to ping this address to see if it's reachable.
-	URI string `json:"uri,omitempty"`
-	// IP of the discovery server.
-	// IP is being obtained from the DNS name, which is being built according to the discovery server configuration.
-	IP string `json:"ip,omitempty"`
-	// Name of the config map that holds discovery server configuration.
-	ConfigMapName string `json:"configMapName,omitempty"`
-}
-
-// DiscoveryServerStatus defines the observed state of DiscoveryServer.
-type DiscoveryServerStatus struct {
-	// Phase of the DiscoveryServer.
-	Phase DiscoveryServerPhase `json:"phase,omitempty"`
-	// Status of the DiscoveryServer service.
-	ServiceStatus OwnedResourceStatus `json:"serviceStatus,omitempty"`
-	// Status of the DiscoveryServer ServiceExport.
-	ServiceExportStatus OwnedResourceStatus `json:"serviceExportStatus,omitempty"`
-	// Status of the DiscoveryServer pod.
-	PodStatus OwnedPodStatus `json:"podStatus,omitempty"`
-	// Status of the DiscoveryServer config map.
-	ConfigMapStatus OwnedResourceStatus `json:"configMapStatus,omitempty"`
-	// Connection information.
-	ConnectionInfo ConnectionInfo `json:"connectionInfo,omitempty"`
-}
-
-// ********************************
-// ROSBridge types
-// ********************************
-
-type BridgeDistro struct {
-	// If `true`, resources and workloads are created by ROSBridge.
-	Enabled bool `json:"enabled,omitempty"`
-	// ROS distribution for bridge.
-	Distro ROSDistro `json:"distro,omitempty"`
-}
-
-// ROSBridgeSpec defines the desired state of ROSBridge.
-type ROSBridgeSpec struct {
-	// Configurational parameters for ROS bridge.
-	ROS BridgeDistro `json:"ros,omitempty"`
-	// Configurational parameters for ROS 2 bridge.
-	ROS2 BridgeDistro `json:"ros2,omitempty"`
-	// Service type of ROSBridge. `ClusterIP` and `NodePort` is supported.
-	// +kubebuilder:validation:Enum=ClusterIP;NodePort
-	// +kubebuilder:default="NodePort"
-	ServiceType corev1.ServiceType `json:"serviceType,omitempty"`
-	// [*alpha*] ROSBridge will create an Ingress resource if `true`.
-	Ingress bool `json:"ingress,omitempty"`
-}
-
-// ROSBridgeStatus defines the observed state of ROSBridge.
-type ROSBridgeStatus struct {
-	// Phase of ROSBridge.
-	Phase BridgePhase `json:"phase,omitempty"`
-	// Status of ROSBridge pod.
-	PodStatus OwnedResourceStatus `json:"podStatus,omitempty"`
-	// Status of ROSBridge service.
-	ServiceStatus OwnedServiceStatus `json:"serviceStatus,omitempty"`
-	// Status of ROSBridge Ingress.
-	IngressStatus OwnedResourceStatus `json:"ingressStatus,omitempty"`
-}
-
-// ********************************
-// RobotArtifact types
-// ********************************

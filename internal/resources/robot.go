@@ -66,21 +66,6 @@ func getClaimStorage(pvc *types.NamespacedName, totalStorage int) string {
 
 }
 
-func GetDiscoveryServer(robot *robotv1alpha1.Robot, dsNamespacedName *types.NamespacedName) *robotv1alpha1.DiscoveryServer {
-
-	discoveryServer := robotv1alpha1.DiscoveryServer{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      dsNamespacedName.Name,
-			Namespace: dsNamespacedName.Namespace,
-			Labels:    robot.Labels,
-		},
-		Spec: robot.Spec.DiscoveryServerTemplate,
-	}
-
-	return &discoveryServer
-
-}
-
 func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.NamespacedName, hasGPU bool) *batchv1.Job {
 
 	var copierCmdBuilder strings.Builder
@@ -216,21 +201,6 @@ func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.Namespace
 	}
 
 	return &job
-}
-
-func GetROSBridge(robot *robotv1alpha1.Robot, bridgeNamespacedName *types.NamespacedName) *robotv1alpha1.ROSBridge {
-
-	rosBridge := robotv1alpha1.ROSBridge{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      bridgeNamespacedName.Name,
-			Namespace: bridgeNamespacedName.Namespace,
-			Labels:    robot.Labels,
-		},
-		Spec: robot.Spec.ROSBridgeTemplate,
-	}
-
-	return &rosBridge
-
 }
 
 func GetRobotDevSuite(robot *robotv1alpha1.Robot, rdsNamespacedName *types.NamespacedName) *robotv1alpha1.RobotDevSuite {

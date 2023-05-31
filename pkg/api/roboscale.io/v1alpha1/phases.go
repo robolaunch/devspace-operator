@@ -4,9 +4,7 @@ type RobotPhase string
 
 const (
 	RobotPhaseCreatingEnvironment      RobotPhase = "CreatingEnvironment"
-	RobotPhaseCreatingDiscoveryServer  RobotPhase = "CreatingDiscoveryServer"
 	RobotPhaseConfiguringEnvironment   RobotPhase = "ConfiguringEnvironment"
-	RobotPhaseCreatingBridge           RobotPhase = "CreatingBridge"
 	RobotPhaseCreatingDevelopmentSuite RobotPhase = "CreatingDevelopmentSuite"
 	RobotPhaseConfiguringWorkspaces    RobotPhase = "ConfiguringWorkspaces"
 	RobotPhaseEnvironmentReady         RobotPhase = "EnvironmentReady"
@@ -14,36 +12,10 @@ const (
 	RobotPhaseBuilt                    RobotPhase = "Built"
 	RobotPhaseLaunching                RobotPhase = "Launching"
 	RobotPhaseRunning                  RobotPhase = "Running"
-	RobotPhaseDeletingBridge           RobotPhase = "DeletingBridge"
-	RobotPhaseDeletingDiscoveryServer  RobotPhase = "DeletingDiscoveryServer"
 	RobotPhaseDeletingLoaderJob        RobotPhase = "DeletingLoaderJob"
 	RobotPhaseDeletingVolumes          RobotPhase = "DeletingVolumes"
 
 	RobotPhaseFailed RobotPhase = "Failed"
-)
-
-type DiscoveryServerPhase string
-
-const (
-	DiscoveryServerPhaseCreatingService       DiscoveryServerPhase = "CreatingService"
-	DiscoveryServerPhaseCreatingPod           DiscoveryServerPhase = "CreatingPod"
-	DiscoveryServerPhaseCreatingServiceExport DiscoveryServerPhase = "CreatingServiceExport"
-	DiscoveryServerPhaseCreatingConfigMap     DiscoveryServerPhase = "CreatingConfigMap"
-	DiscoveryServerPhaseReady                 DiscoveryServerPhase = "Ready"
-	DiscoveryServerPhaseDeletingConfigMap     DiscoveryServerPhase = "DeletingConfigMap"
-	DiscoveryServerPhaseDeletingPod           DiscoveryServerPhase = "DeletingPod"
-	DiscoveryServerPhaseDeletingService       DiscoveryServerPhase = "DeletingService"
-)
-
-type BridgePhase string
-
-const (
-	BridgePhaseCreatingService BridgePhase = "CreatingService"
-	BridgePhaseCreatingPod     BridgePhase = "CreatingPod"
-	BridgePhaseCreatingIngress BridgePhase = "CreatingIngress"
-	BridgePhaseReady           BridgePhase = "Ready"
-	BridgePhaseDeletingPod     BridgePhase = "DeletingPod"
-	BridgePhaseDeletingService BridgePhase = "DeletingService"
 )
 
 type WorkspaceManagerPhase string

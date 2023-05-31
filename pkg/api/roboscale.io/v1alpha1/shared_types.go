@@ -36,22 +36,6 @@ type OwnedPodStatus struct {
 	IP string `json:"ip,omitempty"`
 }
 
-type DiscoveryServerInstanceStatus struct {
-	// Generic status for any owned resource.
-	Resource OwnedResourceStatus `json:"resource,omitempty"`
-	// Status of the DiscoveryServer instance.
-	Status DiscoveryServerStatus `json:"status,omitempty"`
-}
-
-type ROSBridgeInstanceStatus struct {
-	// Generic status for any owned resource.
-	Resource OwnedResourceStatus `json:"resource,omitempty"`
-	// Status of the ROSBridge instance.
-	Status ROSBridgeStatus `json:"status,omitempty"`
-	// Address of the robot service that can be reached from outside.
-	Connection string `json:"connection,omitempty"`
-}
-
 type RobotDevSuiteInstanceStatus struct {
 	// Generic status for any owned resource.
 	Resource OwnedResourceStatus `json:"resource,omitempty"`

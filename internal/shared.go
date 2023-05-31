@@ -86,47 +86,6 @@ const (
 	X11_UNIX_PATH       = "/tmp/.X11-unix"
 )
 
-// Super client configuration
-const (
-	SUPER_CLIENT_CONFIG = "" +
-		"<?xml version='1.0' encoding='UTF-8' ?>" +
-		"<dds>" +
-		"	<profiles xmlns='http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles'>" +
-		"		<transport_descriptors>" +
-		"			<transport_descriptor>" +
-		"				<transport_id>udp_transport</transport_id>" +
-		"				<type>UDPv4</type>" +
-		"			</transport_descriptor>" +
-		"		</transport_descriptors>" +
-		"		<participant profile_name='super_client_profile' is_default_profile='true'>" +
-		"			<rtps>" +
-		"				<userTransports>" +
-		"					<transport_id>udp_transport</transport_id>" +
-		"				</userTransports>" +
-		"				<useBuiltinTransports>false</useBuiltinTransports>" +
-		"				<builtin>" +
-		"					<discovery_config>" +
-		"						<discoveryProtocol>SUPER_CLIENT</discoveryProtocol>" +
-		"						<discoveryServersList>" +
-		"							<RemoteServer prefix='44.53.00.5f.45.50.52.4f.53.49.4d.41'>" +
-		"								<metatrafficUnicastLocatorList>" +
-		"									<locator>" +
-		"										<udpv4>" +
-		"										<address>" + "%s" + "</address>" +
-		"											<port>11811</port>" +
-		"										</udpv4>" +
-		"									</locator>" +
-		"								</metatrafficUnicastLocatorList>" +
-		"							</RemoteServer>" +
-		"						</discoveryServersList>" +
-		"					</discovery_config>" +
-		"				</builtin>" +
-		"			</rtps>" +
-		"		</participant>" +
-		"	</profiles>" +
-		"</dds>"
-)
-
 // Ingress annotations
 const (
 	INGRESS_AUTH_URL_KEY                  = "nginx.ingress.kubernetes.io/auth-url"

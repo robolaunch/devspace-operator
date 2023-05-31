@@ -17,22 +17,6 @@ limitations under the License.
 
 package v1alpha1
 
-// DiscoveryServerListerExpansion allows custom methods to be added to
-// DiscoveryServerLister.
-type DiscoveryServerListerExpansion interface{}
-
-// DiscoveryServerNamespaceListerExpansion allows custom methods to be added to
-// DiscoveryServerNamespaceLister.
-type DiscoveryServerNamespaceListerExpansion interface{}
-
-// ROSBridgeListerExpansion allows custom methods to be added to
-// ROSBridgeLister.
-type ROSBridgeListerExpansion interface{}
-
-// ROSBridgeNamespaceListerExpansion allows custom methods to be added to
-// ROSBridgeNamespaceLister.
-type ROSBridgeNamespaceListerExpansion interface{}
-
 // RobotListerExpansion allows custom methods to be added to
 // RobotLister.
 type RobotListerExpansion interface{}

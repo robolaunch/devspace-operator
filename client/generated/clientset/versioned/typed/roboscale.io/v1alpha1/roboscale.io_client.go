@@ -27,8 +27,6 @@ import (
 
 type RoboscaleV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	DiscoveryServersGetter
-	ROSBridgesGetter
 	RobotsGetter
 	RobotDevSuitesGetter
 	RobotIDEsGetter
@@ -38,14 +36,6 @@ type RoboscaleV1alpha1Interface interface {
 // RoboscaleV1alpha1Client is used to interact with features provided by the roboscale.io group.
 type RoboscaleV1alpha1Client struct {
 	restClient rest.Interface
-}
-
-func (c *RoboscaleV1alpha1Client) DiscoveryServers(namespace string) DiscoveryServerInterface {
-	return newDiscoveryServers(c, namespace)
-}
-
-func (c *RoboscaleV1alpha1Client) ROSBridges(namespace string) ROSBridgeInterface {
-	return newROSBridges(c, namespace)
 }
 
 func (c *RoboscaleV1alpha1Client) Robots(namespace string) RobotInterface {

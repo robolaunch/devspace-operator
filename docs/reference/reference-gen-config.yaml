@@ -8,9 +8,6 @@ processor:
     - "MetricsExporter"
     - "RobotVDI"
     - "RobotIDE"
-    - "DiscoveryServer"
-    - "ROSBridge"
-    - "RobotArtifact"
   ignoreFields:
     - "TypeMeta$"
 

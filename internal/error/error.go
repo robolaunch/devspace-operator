@@ -39,17 +39,6 @@ func (r *MultipleNodeFoundError) Error() string {
 	return fmt.Sprintf("multiple nodes are found for resource %v %v in namespace %v", r.ResourceKind, r.ResourceName, r.ResourceNamespace)
 }
 
-type CannotResolveDiscoveryServerError struct {
-	Err               error
-	ResourceKind      string
-	ResourceName      string
-	ResourceNamespace string
-}
-
-func (r *CannotResolveDiscoveryServerError) Error() string {
-	return fmt.Sprintf("cannot resolve discovery server dns for resource %v %v in namespace %v", r.ResourceKind, r.ResourceName, r.ResourceNamespace)
-}
-
 type RobotResourcesHasNotBeenReleasedError struct {
 	Err               error
 	ResourceKind      string

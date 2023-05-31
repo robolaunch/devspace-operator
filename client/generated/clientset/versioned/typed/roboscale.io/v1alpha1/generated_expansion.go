@@ -17,10 +17,6 @@ limitations under the License.
 
 package v1alpha1
 
-type DiscoveryServerExpansion interface{}
-
-type ROSBridgeExpansion interface{}
-
 type RobotExpansion interface{}
 
 type RobotDevSuiteExpansion interface{}

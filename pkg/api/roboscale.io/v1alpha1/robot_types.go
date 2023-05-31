@@ -56,21 +56,6 @@ const (
 	ROSDistroHumble ROSDistro = "humble"
 )
 
-// RMW implementation chooses DDS vendor for ROS 2. Currently, only eProsima's FastDDS is supported.
-// +kubebuilder:validation:Enum=rmw_fastrtps_cpp
-type RMWImplementation string
-
-const (
-	// Cyclone DDS
-	RMWImplementationCycloneDDS RMWImplementation = "rmw_cyclonedds_cpp"
-	// FastDDS
-	RMWImplementationFastRTPS RMWImplementation = "rmw_fastrtps_cpp"
-	// Connext
-	RMWImplementationConnext RMWImplementation = "rmw_connext_cpp"
-	// Gurum DDS
-	RMWImplementationGurumDDS RMWImplementation = "rmw_gurumdds_cpp"
-)
-
 // Storage class configuration for a volume type.
 type StorageClassConfig struct {
 	// Storage class name.
@@ -111,10 +96,6 @@ type RobotSpec struct {
 	// +kubebuilder:validation:MinItems=1
 	// +kubebuilder:validation:MaxItems=2
 	Distributions []ROSDistro `json:"distributions"`
-	// RMW implementation selection. Robot operator currently supports only FastRTPS. See https://docs.ros.org/en/foxy/How-To-Guides/Working-with-multiple-RMW-implementations.html.
-	// +kubebuilder:validation:Required
-	// +kubebuilder:default=rmw_fastrtps_cpp
-	RMWImplementation RMWImplementation `json:"rmwImplementation"`
 	// Total storage amount to persist via Robot. Unit of measurement is MB. (eg. `10240` corresponds 10 GB)
 	// This amount is being shared between different components.
 	Storage Storage `json:"storage,omitempty"`

@@ -14,7 +14,6 @@ import (
 	"github.com/robolaunch/robot-operator/internal"
 	"github.com/robolaunch/robot-operator/internal/configure"
 	"github.com/robolaunch/robot-operator/internal/label"
-	"github.com/robolaunch/robot-operator/internal/node"
 	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
@@ -75,32 +74,10 @@ func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.Namespace
 	copierCmdBuilder.WriteString(" yes | cp -rf /etc /ros/;")
 	copierCmdBuilder.WriteString(" echo \"DONE\"")
 
-	readyRobotProp := node.GetReadyRobotProperties(*robot)
-
 	var preparerCmdBuilder strings.Builder
-	preparerCmdBuilder.WriteString("mv " + filepath.Join("/etc", "apt", "sources.list.d", "ros2.list") + " temp1")
-	preparerCmdBuilder.WriteString(" && mv " + filepath.Join("/etc", "apt", "sources.list") + " temp2")
-	preparerCmdBuilder.WriteString(" && apt-get update")
-	preparerCmdBuilder.WriteString(" && mv temp1 " + filepath.Join("/etc", "apt", "sources.list.d", "ros2.list"))
-	preparerCmdBuilder.WriteString(" && mv temp2 " + filepath.Join("/etc", "apt", "sources.list"))
+	preparerCmdBuilder.WriteString("apt-get update")
 	preparerCmdBuilder.WriteString(" && apt-get dist-upgrade -y")
 	preparerCmdBuilder.WriteString(" && apt-get update")
-	if !readyRobotProp.Enabled { // do no run rosdep init if ready robot
-		preparerCmdBuilder.WriteString(" && rosdep init")
-	}
-
-	var clonerCmdBuilder strings.Builder
-	for wsKey, ws := range robot.Spec.WorkspaceManagerTemplate.Workspaces {
-
-		var cmdBuilder strings.Builder
-		cmdBuilder.WriteString("mkdir -p " + filepath.Join(robot.Spec.WorkspaceManagerTemplate.WorkspacesPath, ws.Name, "src") + " && ")
-		cmdBuilder.WriteString("cd " + filepath.Join(robot.Spec.WorkspaceManagerTemplate.WorkspacesPath, ws.Name, "src") + " && ")
-		cmdBuilder.WriteString(GetCloneCommand(robot.Spec.WorkspaceManagerTemplate.Workspaces, wsKey))
-		clonerCmdBuilder.WriteString(cmdBuilder.String())
-
-	}
-
-	clonerCmdBuilder.WriteString("echo \"DONE\"")
 
 	copierContainer := corev1.Container{
 		Name:            "copier",
@@ -127,26 +104,12 @@ func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.Namespace
 		},
 	}
 
-	// clonerContainer := corev1.Container{
-	// 	Name:    "cloner",
-	// 	Image:   "ubuntu:focal",
-	// 	Command: internal.Bash(clonerCmdBuilder.String()),
-	// 	VolumeMounts: []corev1.VolumeMount{
-	// 		configure.GetVolumeMount("", configure.GetVolumeVar(robot)),
-	// 		configure.GetVolumeMount("", configure.GetVolumeUsr(robot)),
-	// 		configure.GetVolumeMount("", configure.GetVolumeOpt(robot)),
-	// 		configure.GetVolumeMount("", configure.GetVolumeEtc(robot)),
-	// 		configure.GetVolumeMount(robot.Spec.WorkspacesPath, configure.GetVolumeWorkspace(robot)),
-	// 	},
-	// }
-
 	podSpec := &corev1.PodSpec{
 		InitContainers: []corev1.Container{
 			copierContainer,
 		},
 		Containers: []corev1.Container{
 			preparerContainer,
-			// clonerContainer,
 		},
 		Volumes: []corev1.Volume{
 			configure.GetVolumeVar(robot),

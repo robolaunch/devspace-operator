@@ -18,29 +18,13 @@ limitations under the License.
 package fake
 
 import (
-	v1alpha1 "github.com/robolaunch/robot-operator/client/generated/clientset/versioned/typed/roboscale.io/v1alpha1"
+	v1alpha1 "github.com/robolaunch/devspace-operator/client/generated/clientset/versioned/typed/roboscale.io/v1alpha1"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )
 
 type FakeRoboscaleV1alpha1 struct {
 	*testing.Fake
-}
-
-func (c *FakeRoboscaleV1alpha1) BuildManagers(namespace string) v1alpha1.BuildManagerInterface {
-	return &FakeBuildManagers{c, namespace}
-}
-
-func (c *FakeRoboscaleV1alpha1) DiscoveryServers(namespace string) v1alpha1.DiscoveryServerInterface {
-	return &FakeDiscoveryServers{c, namespace}
-}
-
-func (c *FakeRoboscaleV1alpha1) LaunchManagers(namespace string) v1alpha1.LaunchManagerInterface {
-	return &FakeLaunchManagers{c, namespace}
-}
-
-func (c *FakeRoboscaleV1alpha1) ROSBridges(namespace string) v1alpha1.ROSBridgeInterface {
-	return &FakeROSBridges{c, namespace}
 }
 
 func (c *FakeRoboscaleV1alpha1) Robots(namespace string) v1alpha1.RobotInterface {
@@ -51,8 +35,8 @@ func (c *FakeRoboscaleV1alpha1) RobotDevSuites(namespace string) v1alpha1.RobotD
 	return &FakeRobotDevSuites{c, namespace}
 }
 
-func (c *FakeRoboscaleV1alpha1) RobotIDEs(namespace string) v1alpha1.RobotIDEInterface {
-	return &FakeRobotIDEs{c, namespace}
+func (c *FakeRoboscaleV1alpha1) DevSpaceIDEs(namespace string) v1alpha1.DevSpaceIDEInterface {
+	return &FakeDevSpaceIDEs{c, namespace}
 }
 
 func (c *FakeRoboscaleV1alpha1) RobotVDIs(namespace string) v1alpha1.RobotVDIInterface {

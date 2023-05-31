@@ -1,7 +1,7 @@
 package label
 
 import (
-	robotErr "github.com/robolaunch/robot-operator/internal/error"
+	robotErr "github.com/robolaunch/devspace-operator/internal/error"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

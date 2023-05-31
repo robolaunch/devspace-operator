@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package ros_bridge
+package robot_ide
 
 import (
 	"context"
@@ -29,26 +29,27 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	"github.com/go-logr/logr"
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
-// ROSBridgeReconciler reconciles a ROSBridge object
-type ROSBridgeReconciler struct {
+// DevSpaceIDEReconciler reconciles a DevSpaceIDE object
+type DevSpaceIDEReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	DynamicClient dynamic.Interface
 }
 
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=rosbridges,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=rosbridges/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=rosbridges/finalizers,verbs=update
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspaceides,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspaceides/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspaceides/finalizers,verbs=update
 
 //+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=networking.k8s.io,resources=ingresses,verbs=get;list;watch;create;update;patch;delete
 
 var logger logr.Logger
 
-func (r *ROSBridgeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *DevSpaceIDEReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger = log.FromContext(ctx)
 
 	instance, err := r.reconcileGetInstance(ctx, req.NamespacedName)
@@ -59,15 +60,9 @@ func (r *ROSBridgeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
-	// err = r.reconcileCheckDeletion(ctx, instance)
-	// if err != nil {
-
-	// 	if errors.IsNotFound(err) {
-	// 		return ctrl.Result{}, nil
-	// 	}
-
-	// 	return ctrl.Result{}, err
-	// }
+	if !instance.DeletionTimestamp.IsZero() {
+		return ctrl.Result{}, nil
+	}
 
 	err = r.reconcileCheckStatus(ctx, instance)
 	if err != nil {
@@ -88,64 +83,53 @@ func (r *ROSBridgeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	if err != nil {
 		return ctrl.Result{}, err
 	}
+
 	return ctrl.Result{}, nil
 }
 
-func (r *ROSBridgeReconciler) reconcileCheckStatus(ctx context.Context, instance *robotv1alpha1.ROSBridge) error {
+func (r *DevSpaceIDEReconciler) reconcileCheckStatus(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
 
 	switch instance.Status.ServiceStatus.Resource.Created {
 	case true:
 
-		switch instance.Status.PodStatus.Created {
+		switch instance.Status.PodStatus.Resource.Created {
 		case true:
 
-			switch instance.Status.PodStatus.Phase {
-			case string(corev1.PodRunning):
+			switch instance.Status.IngressStatus.Created || !instance.Spec.Ingress {
+			case true:
 
-				// TODO: handle other pod phases
+				switch instance.Status.PodStatus.Resource.Phase {
+				case string(corev1.PodRunning):
 
-				switch instance.Spec.Ingress {
-				case true:
-
-					switch instance.Status.IngressStatus.Created {
-					case true:
-
-						instance.Status.Phase = robotv1alpha1.BridgePhaseReady
-
-					case false:
-
-						instance.Status.Phase = robotv1alpha1.BridgePhaseCreatingIngress
-						err := r.createIngress(ctx, instance, instance.GetBridgeIngressMetadata())
-						if err != nil {
-							return err
-						}
-						instance.Status.IngressStatus.Created = true
-
-					}
-
-				case false:
-
-					instance.Status.Phase = robotv1alpha1.BridgePhaseReady
+					instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseRunning
 
 				}
+
+			case false:
+
+				instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseCreatingIngress
+				err := r.reconcileCreateIngress(ctx, instance)
+				if err != nil {
+					return err
+				}
+				instance.Status.IngressStatus.Created = true
 
 			}
 
 		case false:
 
-			instance.Status.Phase = robotv1alpha1.BridgePhaseCreatingPod
-			err := r.createPod(ctx, instance, instance.GetBridgePodMetadata())
+			instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseCreatingPod
+			err := r.reconcileCreatePod(ctx, instance)
 			if err != nil {
 				return err
 			}
-			instance.Status.PodStatus.Created = true
-
+			instance.Status.PodStatus.Resource.Created = true
 		}
 
 	case false:
 
-		instance.Status.Phase = robotv1alpha1.BridgePhaseCreatingService
-		err := r.createService(ctx, instance, instance.GetBridgeServiceMetadata())
+		instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseCreatingService
+		err := r.reconcileCreateService(ctx, instance)
 		if err != nil {
 			return err
 		}
@@ -156,7 +140,7 @@ func (r *ROSBridgeReconciler) reconcileCheckStatus(ctx context.Context, instance
 	return nil
 }
 
-func (r *ROSBridgeReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.ROSBridge) error {
+func (r *DevSpaceIDEReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
 
 	err := r.reconcileCheckService(ctx, instance)
 	if err != nil {
@@ -177,9 +161,9 @@ func (r *ROSBridgeReconciler) reconcileCheckResources(ctx context.Context, insta
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *ROSBridgeReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *DevSpaceIDEReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&robotv1alpha1.ROSBridge{}).
+		For(&robotv1alpha1.DevSpaceIDE{}).
 		Owns(&corev1.Pod{}).
 		Owns(&corev1.Service{}).
 		Owns(&networkingv1.Ingress{}).

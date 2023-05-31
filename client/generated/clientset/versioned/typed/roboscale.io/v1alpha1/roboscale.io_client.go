@@ -20,42 +20,22 @@ package v1alpha1
 import (
 	"net/http"
 
-	"github.com/robolaunch/robot-operator/client/generated/clientset/versioned/scheme"
-	v1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	"github.com/robolaunch/devspace-operator/client/generated/clientset/versioned/scheme"
+	v1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	rest "k8s.io/client-go/rest"
 )
 
 type RoboscaleV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	BuildManagersGetter
-	DiscoveryServersGetter
-	LaunchManagersGetter
-	ROSBridgesGetter
 	RobotsGetter
 	RobotDevSuitesGetter
-	RobotIDEsGetter
+	DevSpaceIDEsGetter
 	RobotVDIsGetter
 }
 
 // RoboscaleV1alpha1Client is used to interact with features provided by the roboscale.io group.
 type RoboscaleV1alpha1Client struct {
 	restClient rest.Interface
-}
-
-func (c *RoboscaleV1alpha1Client) BuildManagers(namespace string) BuildManagerInterface {
-	return newBuildManagers(c, namespace)
-}
-
-func (c *RoboscaleV1alpha1Client) DiscoveryServers(namespace string) DiscoveryServerInterface {
-	return newDiscoveryServers(c, namespace)
-}
-
-func (c *RoboscaleV1alpha1Client) LaunchManagers(namespace string) LaunchManagerInterface {
-	return newLaunchManagers(c, namespace)
-}
-
-func (c *RoboscaleV1alpha1Client) ROSBridges(namespace string) ROSBridgeInterface {
-	return newROSBridges(c, namespace)
 }
 
 func (c *RoboscaleV1alpha1Client) Robots(namespace string) RobotInterface {
@@ -66,8 +46,8 @@ func (c *RoboscaleV1alpha1Client) RobotDevSuites(namespace string) RobotDevSuite
 	return newRobotDevSuites(c, namespace)
 }
 
-func (c *RoboscaleV1alpha1Client) RobotIDEs(namespace string) RobotIDEInterface {
-	return newRobotIDEs(c, namespace)
+func (c *RoboscaleV1alpha1Client) DevSpaceIDEs(namespace string) DevSpaceIDEInterface {
+	return newDevSpaceIDEs(c, namespace)
 }
 
 func (c *RoboscaleV1alpha1Client) RobotVDIs(namespace string) RobotVDIInterface {

@@ -20,7 +20,7 @@ package externalversions
 import (
 	"fmt"
 
-	v1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	v1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )
@@ -52,20 +52,12 @@ func (f *genericInformer) Lister() cache.GenericLister {
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
 	// Group=roboscale.io, Version=v1alpha1
-	case v1alpha1.SchemeGroupVersion.WithResource("buildmanagers"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().BuildManagers().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("discoveryservers"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().DiscoveryServers().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("launchmanagers"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().LaunchManagers().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("rosbridges"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().ROSBridges().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("robots"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().Robots().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("robotdevsuites"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().RobotDevSuites().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("robotides"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().RobotIDEs().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("devspaceides"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().DevSpaceIDEs().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("robotvdis"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().RobotVDIs().Informer()}, nil
 

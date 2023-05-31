@@ -32,19 +32,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	mcsv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/external/apis/mcsv1alpha1/v1alpha1"
+	mcsv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/external/apis/mcsv1alpha1/v1alpha1"
 
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
-	buildManager "github.com/robolaunch/robot-operator/pkg/controllers/build_manager"
-	launchManager "github.com/robolaunch/robot-operator/pkg/controllers/launch_manager"
-	metrics "github.com/robolaunch/robot-operator/pkg/controllers/metrics"
-	robot "github.com/robolaunch/robot-operator/pkg/controllers/robot"
-	discoveryServer "github.com/robolaunch/robot-operator/pkg/controllers/robot/discovery_server"
-	rosBridge "github.com/robolaunch/robot-operator/pkg/controllers/robot/ros_bridge"
-	robotDevSuite "github.com/robolaunch/robot-operator/pkg/controllers/robot_dev_suite"
-	robotIDE "github.com/robolaunch/robot-operator/pkg/controllers/robot_dev_suite/robot_ide"
-	robotVDI "github.com/robolaunch/robot-operator/pkg/controllers/robot_dev_suite/robot_vdi"
-	workspaceManager "github.com/robolaunch/robot-operator/pkg/controllers/workspace_manager"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	robot "github.com/robolaunch/devspace-operator/pkg/controllers/robot"
+	robotDevSuite "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite"
+	devSpaceIDE "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite/robot_ide"
+	robotVDI "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite/robot_vdi"
+	workspaceManager "github.com/robolaunch/devspace-operator/pkg/controllers/workspace_manager"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -131,46 +126,6 @@ func main() {
 		setupLog.Error(err, "unable to create webhook", "webhook", "Robot")
 		os.Exit(1)
 	}
-	if err = (&discoveryServer.DiscoveryServerReconciler{
-		Client:        mgr.GetClient(),
-		Scheme:        mgr.GetScheme(),
-		DynamicClient: dynamicClient,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "DiscoveryServer")
-		os.Exit(1)
-	}
-	if err = (&rosBridge.ROSBridgeReconciler{
-		Client:        mgr.GetClient(),
-		Scheme:        mgr.GetScheme(),
-		DynamicClient: dynamicClient,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "ROSBridge")
-		os.Exit(1)
-	}
-	if err = (&buildManager.BuildManagerReconciler{
-		Client:        mgr.GetClient(),
-		Scheme:        mgr.GetScheme(),
-		DynamicClient: dynamicClient,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "BuildManager")
-		os.Exit(1)
-	}
-	if err = (&robotv1alpha1.BuildManager{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "BuildManager")
-		os.Exit(1)
-	}
-	if err = (&launchManager.LaunchManagerReconciler{
-		Client:        mgr.GetClient(),
-		Scheme:        mgr.GetScheme(),
-		DynamicClient: dynamicClient,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "LaunchManager")
-		os.Exit(1)
-	}
-	if err = (&robotv1alpha1.LaunchManager{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "LaunchManager")
-		os.Exit(1)
-	}
 	if err = (&robotDevSuite.RobotDevSuiteReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
@@ -191,16 +146,16 @@ func main() {
 		setupLog.Error(err, "unable to create webhook", "webhook", "RobotVDI")
 		os.Exit(1)
 	}
-	if err = (&robotIDE.RobotIDEReconciler{
+	if err = (&devSpaceIDE.DevSpaceIDEReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		DynamicClient: dynamicClient,
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "RobotIDE")
+		setupLog.Error(err, "unable to create controller", "controller", "DevSpaceIDE")
 		os.Exit(1)
 	}
-	if err = (&robotv1alpha1.RobotIDE{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "RobotIDE")
+	if err = (&robotv1alpha1.DevSpaceIDE{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "DevSpaceIDE")
 		os.Exit(1)
 	}
 	if err = (&workspaceManager.WorkspaceManagerReconciler{
@@ -212,17 +167,6 @@ func main() {
 	}
 	if err = (&robotv1alpha1.WorkspaceManager{}).SetupWebhookWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create webhook", "webhook", "WorkspaceManager")
-		os.Exit(1)
-	}
-	if err = (&robotv1alpha1.DiscoveryServer{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "DiscoveryServer")
-		os.Exit(1)
-	}
-	if err = (&metrics.MetricsExporterReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "MetricsExporter")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

@@ -56,16 +56,6 @@ const (
 	JOB_CLEANUP_POSTFIX = "-cleanup"
 )
 
-// BuildManager owned resources' postfixes
-const (
-	CONFIG_MAP_SCRIPTS = "-scripts"
-)
-
-// LaunchManager owned resources' postfixes
-const (
-	POD_LAUNCH_POSTFIX = "-launch"
-)
-
 // RobotVDI owned resources' postfixes
 const (
 	PVC_VDI_POSTFIX     = "-display"
@@ -75,7 +65,7 @@ const (
 	INGRESS_VDI_POSTFIX = ""
 )
 
-// RobotIDE owned resources' postfixes
+// DevSpaceIDE owned resources' postfixes
 const (
 	SVC_IDE_POSTFIX     = ""
 	POD_IDE_POSTFIX     = ""
@@ -94,47 +84,6 @@ const (
 	CUSTOM_SCRIPTS_PATH = "/etc/custom"
 	HELPERS_PATH        = "/var/lib/robolaunch-helpers/"
 	X11_UNIX_PATH       = "/tmp/.X11-unix"
-)
-
-// Super client configuration
-const (
-	SUPER_CLIENT_CONFIG = "" +
-		"<?xml version='1.0' encoding='UTF-8' ?>" +
-		"<dds>" +
-		"	<profiles xmlns='http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles'>" +
-		"		<transport_descriptors>" +
-		"			<transport_descriptor>" +
-		"				<transport_id>udp_transport</transport_id>" +
-		"				<type>UDPv4</type>" +
-		"			</transport_descriptor>" +
-		"		</transport_descriptors>" +
-		"		<participant profile_name='super_client_profile' is_default_profile='true'>" +
-		"			<rtps>" +
-		"				<userTransports>" +
-		"					<transport_id>udp_transport</transport_id>" +
-		"				</userTransports>" +
-		"				<useBuiltinTransports>false</useBuiltinTransports>" +
-		"				<builtin>" +
-		"					<discovery_config>" +
-		"						<discoveryProtocol>SUPER_CLIENT</discoveryProtocol>" +
-		"						<discoveryServersList>" +
-		"							<RemoteServer prefix='44.53.00.5f.45.50.52.4f.53.49.4d.41'>" +
-		"								<metatrafficUnicastLocatorList>" +
-		"									<locator>" +
-		"										<udpv4>" +
-		"										<address>" + "%s" + "</address>" +
-		"											<port>11811</port>" +
-		"										</udpv4>" +
-		"									</locator>" +
-		"								</metatrafficUnicastLocatorList>" +
-		"							</RemoteServer>" +
-		"						</discoveryServersList>" +
-		"					</discovery_config>" +
-		"				</builtin>" +
-		"			</rtps>" +
-		"		</participant>" +
-		"	</profiles>" +
-		"</dds>"
 )
 
 // Ingress annotations

@@ -3,8 +3,8 @@ package robot_dev_suite
 import (
 	"context"
 
-	"github.com/robolaunch/robot-operator/internal/resources"
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	"github.com/robolaunch/devspace-operator/internal/resources"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
@@ -30,16 +30,16 @@ func (r *RobotDevSuiteReconciler) reconcileCreateRobotVDI(ctx context.Context, i
 	return nil
 }
 
-func (r *RobotDevSuiteReconciler) reconcileCreateRobotIDE(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *RobotDevSuiteReconciler) reconcileCreateDevSpaceIDE(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
 
-	robotIDE := resources.GetRobotIDE(instance, instance.GetRobotIDEMetadata())
+	devSpaceIDE := resources.GetDevSpaceIDE(instance, instance.GetDevSpaceIDEMetadata())
 
-	err := ctrl.SetControllerReference(instance, robotIDE, r.Scheme)
+	err := ctrl.SetControllerReference(instance, devSpaceIDE, r.Scheme)
 	if err != nil {
 		return err
 	}
 
-	err = r.Create(ctx, robotIDE)
+	err = r.Create(ctx, devSpaceIDE)
 	if err != nil && errors.IsAlreadyExists(err) {
 		return nil
 	} else if err != nil {

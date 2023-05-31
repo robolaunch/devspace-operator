@@ -2,7 +2,7 @@ domain: roboscale.io
 layout:
 - go.kubebuilder.io/v3
 projectName: robot-operator
-repo: github.com/robolaunch/robot-operator
+repo: github.com/robolaunch/devspace-operator
 resources:
 - api:
     crdVersion: v1
@@ -11,55 +11,7 @@ resources:
   domain: roboscale.io
   group: robot
   kind: Robot
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
-  version: v1alpha1
-  webhooks:
-    defaulting: true
-    validation: true
-    webhookVersion: v1
-- api:
-    crdVersion: v1
-    namespaced: true
-  controller: true
-  domain: roboscale.io
-  group: robot
-  kind: DiscoveryServer
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
-  version: v1alpha1
-  webhooks:
-    defaulting: true
-    validation: true
-    webhookVersion: v1
-- api:
-    crdVersion: v1
-    namespaced: true
-  controller: true
-  domain: roboscale.io
-  group: robot
-  kind: ROSBridge
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
-  version: v1alpha1
-- api:
-    crdVersion: v1
-    namespaced: true
-  controller: true
-  domain: roboscale.io
-  group: robot
-  kind: BuildManager
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
-  version: v1alpha1
-  webhooks:
-    defaulting: true
-    validation: true
-    webhookVersion: v1
-- api:
-    crdVersion: v1
-    namespaced: true
-  controller: true
-  domain: roboscale.io
-  group: robot
-  kind: LaunchManager
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
+  path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1
   webhooks:
     defaulting: true
@@ -72,7 +24,7 @@ resources:
   domain: roboscale.io
   group: robot
   kind: RobotDevSuite
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
+  path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -81,7 +33,7 @@ resources:
   domain: roboscale.io
   group: robot
   kind: RobotVDI
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
+  path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1
   webhooks:
     defaulting: true
@@ -93,29 +45,8 @@ resources:
   controller: true
   domain: roboscale.io
   group: robot
-  kind: RobotIDE
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
-  version: v1alpha1
-  webhooks:
-    defaulting: true
-    validation: true
-    webhookVersion: v1
-- api:
-    crdVersion: v1
-    namespaced: true
-  domain: roboscale.io
-  group: robot
-  kind: RobotArtifact
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
-  version: v1alpha1
-- api:
-    crdVersion: v1
-    namespaced: true
-  controller: true
-  domain: roboscale.io
-  group: robot
-  kind: MetricsCollector
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
+  kind: DevSpaceIDE
+  path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1
   webhooks:
     defaulting: true
@@ -128,19 +59,10 @@ resources:
   domain: roboscale.io
   group: robot
   kind: WorkspaceManager
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
+  path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1
   webhooks:
     defaulting: true
     validation: true
     webhookVersion: v1
-- api:
-    crdVersion: v1
-    namespaced: true
-  controller: true
-  domain: roboscale.io
-  group: robot
-  kind: MetricsExporter
-  path: github.com/robolaunch/robot-operator/api/v1alpha1
-  version: v1alpha1
 version: "3"

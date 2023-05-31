@@ -18,25 +18,17 @@ limitations under the License.
 package v1alpha1
 
 import (
-	internalinterfaces "github.com/robolaunch/robot-operator/client/generated/informers/externalversions/internalinterfaces"
+	internalinterfaces "github.com/robolaunch/devspace-operator/client/generated/informers/externalversions/internalinterfaces"
 )
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// BuildManagers returns a BuildManagerInformer.
-	BuildManagers() BuildManagerInformer
-	// DiscoveryServers returns a DiscoveryServerInformer.
-	DiscoveryServers() DiscoveryServerInformer
-	// LaunchManagers returns a LaunchManagerInformer.
-	LaunchManagers() LaunchManagerInformer
-	// ROSBridges returns a ROSBridgeInformer.
-	ROSBridges() ROSBridgeInformer
 	// Robots returns a RobotInformer.
 	Robots() RobotInformer
 	// RobotDevSuites returns a RobotDevSuiteInformer.
 	RobotDevSuites() RobotDevSuiteInformer
-	// RobotIDEs returns a RobotIDEInformer.
-	RobotIDEs() RobotIDEInformer
+	// DevSpaceIDEs returns a DevSpaceIDEInformer.
+	DevSpaceIDEs() DevSpaceIDEInformer
 	// RobotVDIs returns a RobotVDIInformer.
 	RobotVDIs() RobotVDIInformer
 }
@@ -52,26 +44,6 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// BuildManagers returns a BuildManagerInformer.
-func (v *version) BuildManagers() BuildManagerInformer {
-	return &buildManagerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
-// DiscoveryServers returns a DiscoveryServerInformer.
-func (v *version) DiscoveryServers() DiscoveryServerInformer {
-	return &discoveryServerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
-// LaunchManagers returns a LaunchManagerInformer.
-func (v *version) LaunchManagers() LaunchManagerInformer {
-	return &launchManagerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
-// ROSBridges returns a ROSBridgeInformer.
-func (v *version) ROSBridges() ROSBridgeInformer {
-	return &rOSBridgeInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
 // Robots returns a RobotInformer.
 func (v *version) Robots() RobotInformer {
 	return &robotInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
@@ -82,9 +54,9 @@ func (v *version) RobotDevSuites() RobotDevSuiteInformer {
 	return &robotDevSuiteInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// RobotIDEs returns a RobotIDEInformer.
-func (v *version) RobotIDEs() RobotIDEInformer {
-	return &robotIDEInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// DevSpaceIDEs returns a DevSpaceIDEInformer.
+func (v *version) DevSpaceIDEs() DevSpaceIDEInformer {
+	return &devSpaceIDEInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // RobotVDIs returns a RobotVDIInformer.

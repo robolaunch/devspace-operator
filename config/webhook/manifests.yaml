@@ -11,9 +11,9 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /mutate-robot-roboscale-io-v1alpha1-robotide
+      path: /mutate-robot-roboscale-io-v1alpha1-devspaceide
   failurePolicy: Fail
-  name: mrobotide.kb.io
+  name: mdevspaceide.kb.io
   rules:
   - apiGroups:
     - robot.roboscale.io
@@ -23,7 +23,7 @@ webhooks:
     - CREATE
     - UPDATE
     resources:
-    - robotides
+    - devspaceides
   sideEffects: None
 - admissionReviewVersions:
   - v1
@@ -71,46 +71,6 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /mutate-robot-roboscale-io-v1alpha1-buildmanager
-  failurePolicy: Fail
-  name: mbuildmanager.kb.io
-  rules:
-  - apiGroups:
-    - robot.roboscale.io
-    apiVersions:
-    - v1alpha1
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - buildmanagers
-  sideEffects: None
-- admissionReviewVersions:
-  - v1
-  clientConfig:
-    service:
-      name: webhook-service
-      namespace: system
-      path: /mutate-robot-roboscale-io-v1alpha1-launchmanager
-  failurePolicy: Fail
-  name: mlaunchmanager.kb.io
-  rules:
-  - apiGroups:
-    - robot.roboscale.io
-    apiVersions:
-    - v1alpha1
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - launchmanagers
-  sideEffects: None
-- admissionReviewVersions:
-  - v1
-  clientConfig:
-    service:
-      name: webhook-service
-      namespace: system
       path: /mutate-robot-roboscale-io-v1alpha1-robot
   failurePolicy: Fail
   name: mrobot.kb.io
@@ -125,26 +85,6 @@ webhooks:
     resources:
     - robots
   sideEffects: None
-- admissionReviewVersions:
-  - v1
-  clientConfig:
-    service:
-      name: webhook-service
-      namespace: system
-      path: /mutate-robot-roboscale-io-v1alpha1-discoveryserver
-  failurePolicy: Fail
-  name: mdiscoveryserver.kb.io
-  rules:
-  - apiGroups:
-    - robot.roboscale.io
-    apiVersions:
-    - v1alpha1
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - discoveryservers
-  sideEffects: None
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
@@ -158,9 +98,9 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /validate-robot-roboscale-io-v1alpha1-robotide
+      path: /validate-robot-roboscale-io-v1alpha1-devspaceide
   failurePolicy: Fail
-  name: vrobotide.kb.io
+  name: vdevspaceide.kb.io
   rules:
   - apiGroups:
     - robot.roboscale.io
@@ -170,7 +110,7 @@ webhooks:
     - CREATE
     - UPDATE
     resources:
-    - robotides
+    - devspaceides
   sideEffects: None
 - admissionReviewVersions:
   - v1
@@ -218,46 +158,6 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /validate-robot-roboscale-io-v1alpha1-buildmanager
-  failurePolicy: Fail
-  name: vbuildmanager.kb.io
-  rules:
-  - apiGroups:
-    - robot.roboscale.io
-    apiVersions:
-    - v1alpha1
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - buildmanagers
-  sideEffects: None
-- admissionReviewVersions:
-  - v1
-  clientConfig:
-    service:
-      name: webhook-service
-      namespace: system
-      path: /validate-robot-roboscale-io-v1alpha1-launchmanager
-  failurePolicy: Fail
-  name: vlaunchmanager.kb.io
-  rules:
-  - apiGroups:
-    - robot.roboscale.io
-    apiVersions:
-    - v1alpha1
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - launchmanagers
-  sideEffects: None
-- admissionReviewVersions:
-  - v1
-  clientConfig:
-    service:
-      name: webhook-service
-      namespace: system
       path: /validate-robot-roboscale-io-v1alpha1-robot
   failurePolicy: Fail
   name: vrobot.kb.io
@@ -271,24 +171,4 @@ webhooks:
     - UPDATE
     resources:
     - robots
-  sideEffects: None
-- admissionReviewVersions:
-  - v1
-  clientConfig:
-    service:
-      name: webhook-service
-      namespace: system
-      path: /validate-robot-roboscale-io-v1alpha1-discoveryserver
-  failurePolicy: Fail
-  name: vdiscoveryserver.kb.io
-  rules:
-  - apiGroups:
-    - robot.roboscale.io
-    apiVersions:
-    - v1alpha1
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - discoveryservers
   sideEffects: None

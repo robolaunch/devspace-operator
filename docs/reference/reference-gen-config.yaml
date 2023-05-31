@@ -4,15 +4,9 @@ processor:
   sortKinds:
     - "Robot"
     - "WorkspaceManager"
-    - "BuildManager"
-    - "LaunchManager"
     - "RobotDevSuite"
-    - "MetricsExporter"
     - "RobotVDI"
-    - "RobotIDE"
-    - "DiscoveryServer"
-    - "ROSBridge"
-    - "RobotArtifact"
+    - "DevSpaceIDE"
   ignoreFields:
     - "TypeMeta$"
 

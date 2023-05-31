@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/robolaunch/robot-operator/internal"
-	"github.com/robolaunch/robot-operator/internal/configure"
-	"github.com/robolaunch/robot-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	"github.com/robolaunch/devspace-operator/internal"
+	"github.com/robolaunch/devspace-operator/internal/configure"
+	"github.com/robolaunch/devspace-operator/internal/label"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -147,8 +147,6 @@ func GetRobotVDIPod(robotVDI *robotv1alpha1.RobotVDI, podNamespacedName *types.N
 
 	configure.SchedulePod(vdiPod, label.GetTenancyMap(robotVDI))
 	configure.InjectGenericEnvironmentVariables(vdiPod, robot)
-	configure.InjectRMWImplementationConfiguration(vdiPod, robot)
-	configure.InjectPodDiscoveryServerConnection(vdiPod, robot.Status.DiscoveryServerStatus.Status.ConnectionInfo)
 	configure.InjectPodDisplayConfiguration(vdiPod, *robotVDI)
 	configure.InjectRuntimeClass(vdiPod, robot, node)
 

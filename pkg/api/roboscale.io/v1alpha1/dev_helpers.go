@@ -1,7 +1,7 @@
 package v1alpha1
 
 import (
-	"github.com/robolaunch/robot-operator/internal"
+	"github.com/robolaunch/devspace-operator/internal"
 	"k8s.io/apimachinery/pkg/types"
 )
 
@@ -16,7 +16,7 @@ func (robotDevSuite *RobotDevSuite) GetRobotVDIMetadata() *types.NamespacedName 
 	}
 }
 
-func (robotDevSuite *RobotDevSuite) GetRobotIDEMetadata() *types.NamespacedName {
+func (robotDevSuite *RobotDevSuite) GetDevSpaceIDEMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Namespace: robotDevSuite.Namespace,
 		Name:      robotDevSuite.Name + internal.ROBOT_IDE_POSTFIX,
@@ -24,27 +24,27 @@ func (robotDevSuite *RobotDevSuite) GetRobotIDEMetadata() *types.NamespacedName 
 }
 
 // ********************************
-// RobotIDE helpers
+// DevSpaceIDE helpers
 // ********************************
 
-func (robotide *RobotIDE) GetRobotIDEPodMetadata() *types.NamespacedName {
+func (devspaceide *DevSpaceIDE) GetDevSpaceIDEPodMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Namespace: robotide.Namespace,
-		Name:      robotide.Name + internal.POD_IDE_POSTFIX,
+		Namespace: devspaceide.Namespace,
+		Name:      devspaceide.Name + internal.POD_IDE_POSTFIX,
 	}
 }
 
-func (robotide *RobotIDE) GetRobotIDEServiceMetadata() *types.NamespacedName {
+func (devspaceide *DevSpaceIDE) GetDevSpaceIDEServiceMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Namespace: robotide.Namespace,
-		Name:      robotide.Name + internal.SVC_IDE_POSTFIX,
+		Namespace: devspaceide.Namespace,
+		Name:      devspaceide.Name + internal.SVC_IDE_POSTFIX,
 	}
 }
 
-func (robotide *RobotIDE) GetRobotIDEIngressMetadata() *types.NamespacedName {
+func (devspaceide *DevSpaceIDE) GetDevSpaceIDEIngressMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Namespace: robotide.Namespace,
-		Name:      robotide.Name + internal.INGRESS_IDE_POSTFIX,
+		Namespace: devspaceide.Namespace,
+		Name:      devspaceide.Name + internal.INGRESS_IDE_POSTFIX,
 	}
 }
 

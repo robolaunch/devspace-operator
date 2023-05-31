@@ -1,4 +1,4 @@
-module github.com/robolaunch/robot-operator
+module github.com/robolaunch/devspace-operator
 
 go 1.20
 

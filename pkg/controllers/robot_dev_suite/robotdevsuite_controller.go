@@ -18,8 +18,6 @@ package robot_dev_suite
 
 import (
 	"context"
-	goErr "errors"
-	"time"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
@@ -35,9 +33,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
 	"github.com/go-logr/logr"
-	"github.com/robolaunch/robot-operator/internal"
-	robotErr "github.com/robolaunch/robot-operator/internal/error"
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	"github.com/robolaunch/devspace-operator/internal"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
 // RobotDevSuiteReconciler reconciles a RobotDevSuite object
@@ -73,19 +70,6 @@ func (r *RobotDevSuiteReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		} else {
 			return ctrl.Result{}, err
 		}
-	}
-
-	// Check target robot's other attached objects to see if robot's resources are released
-	err = r.reconcileCheckOtherAttachedResources(ctx, instance)
-	if err != nil {
-		var e *robotErr.RobotResourcesHasNotBeenReleasedError
-		if goErr.As(err, &e) {
-			return ctrl.Result{
-				Requeue:      true,
-				RequeueAfter: 3 * time.Second,
-			}, nil
-		}
-		return ctrl.Result{}, nil
 	}
 
 	err = r.reconcileCheckStatus(ctx, instance)
@@ -128,11 +112,11 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 					switch instance.Spec.IDEEnabled {
 					case true:
 
-						switch instance.Status.RobotIDEStatus.Resource.Created {
+						switch instance.Status.DevSpaceIDEStatus.Resource.Created {
 						case true:
 
-							switch instance.Status.RobotIDEStatus.Resource.Phase {
-							case string(robotv1alpha1.RobotIDEPhaseRunning):
+							switch instance.Status.DevSpaceIDEStatus.Resource.Phase {
+							case string(robotv1alpha1.DevSpaceIDEPhaseRunning):
 
 								instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseRunning
 
@@ -140,12 +124,12 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 						case false:
 
-							instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingRobotIDE
-							err := r.reconcileCreateRobotIDE(ctx, instance)
+							instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingDevSpaceIDE
+							err := r.reconcileCreateDevSpaceIDE(ctx, instance)
 							if err != nil {
 								return err
 							}
-							instance.Status.RobotIDEStatus.Resource.Created = true
+							instance.Status.DevSpaceIDEStatus.Resource.Created = true
 
 						}
 
@@ -173,11 +157,11 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 			switch instance.Spec.IDEEnabled {
 			case true:
 
-				switch instance.Status.RobotIDEStatus.Resource.Created {
+				switch instance.Status.DevSpaceIDEStatus.Resource.Created {
 				case true:
 
-					switch instance.Status.RobotIDEStatus.Resource.Phase {
-					case string(robotv1alpha1.RobotIDEPhaseRunning):
+					switch instance.Status.DevSpaceIDEStatus.Resource.Phase {
+					case string(robotv1alpha1.DevSpaceIDEPhaseRunning):
 
 						instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseRunning
 
@@ -185,12 +169,12 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 				case false:
 
-					instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingRobotIDE
-					err := r.reconcileCreateRobotIDE(ctx, instance)
+					instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingDevSpaceIDE
+					err := r.reconcileCreateDevSpaceIDE(ctx, instance)
 					if err != nil {
 						return err
 					}
-					instance.Status.RobotIDEStatus.Resource.Created = true
+					instance.Status.DevSpaceIDEStatus.Resource.Created = true
 
 				}
 
@@ -206,7 +190,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 		instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseDeactivating
 
-		err := r.reconcileDeleteRobotIDE(ctx, instance)
+		err := r.reconcileDeleteDevSpaceIDE(ctx, instance)
 		if err != nil {
 			return err
 		}
@@ -230,7 +214,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckResources(ctx context.Context, i
 		return err
 	}
 
-	err = r.reconcileCheckRobotIDE(ctx, instance)
+	err = r.reconcileCheckDevSpaceIDE(ctx, instance)
 	if err != nil {
 		return err
 	}
@@ -243,7 +227,7 @@ func (r *RobotDevSuiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&robotv1alpha1.RobotDevSuite{}).
 		Owns(&robotv1alpha1.RobotVDI{}).
-		Owns(&robotv1alpha1.RobotIDE{}).
+		Owns(&robotv1alpha1.DevSpaceIDE{}).
 		Watches(
 			&source.Kind{Type: &robotv1alpha1.Robot{}},
 			handler.EnqueueRequestsFromMapFunc(r.watchRobots),

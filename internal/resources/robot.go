@@ -11,11 +11,10 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/robolaunch/robot-operator/internal"
-	"github.com/robolaunch/robot-operator/internal/configure"
-	"github.com/robolaunch/robot-operator/internal/label"
-	"github.com/robolaunch/robot-operator/internal/node"
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	"github.com/robolaunch/devspace-operator/internal"
+	"github.com/robolaunch/devspace-operator/internal/configure"
+	"github.com/robolaunch/devspace-operator/internal/label"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
 func GetPersistentVolumeClaim(robot *robotv1alpha1.Robot, pvcNamespacedName *types.NamespacedName) *corev1.PersistentVolumeClaim {
@@ -66,21 +65,6 @@ func getClaimStorage(pvc *types.NamespacedName, totalStorage int) string {
 
 }
 
-func GetDiscoveryServer(robot *robotv1alpha1.Robot, dsNamespacedName *types.NamespacedName) *robotv1alpha1.DiscoveryServer {
-
-	discoveryServer := robotv1alpha1.DiscoveryServer{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      dsNamespacedName.Name,
-			Namespace: dsNamespacedName.Namespace,
-			Labels:    robot.Labels,
-		},
-		Spec: robot.Spec.DiscoveryServerTemplate,
-	}
-
-	return &discoveryServer
-
-}
-
 func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.NamespacedName, hasGPU bool) *batchv1.Job {
 
 	var copierCmdBuilder strings.Builder
@@ -90,32 +74,10 @@ func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.Namespace
 	copierCmdBuilder.WriteString(" yes | cp -rf /etc /ros/;")
 	copierCmdBuilder.WriteString(" echo \"DONE\"")
 
-	readyRobotProp := node.GetReadyRobotProperties(*robot)
-
 	var preparerCmdBuilder strings.Builder
-	preparerCmdBuilder.WriteString("mv " + filepath.Join("/etc", "apt", "sources.list.d", "ros2.list") + " temp1")
-	preparerCmdBuilder.WriteString(" && mv " + filepath.Join("/etc", "apt", "sources.list") + " temp2")
-	preparerCmdBuilder.WriteString(" && apt-get update")
-	preparerCmdBuilder.WriteString(" && mv temp1 " + filepath.Join("/etc", "apt", "sources.list.d", "ros2.list"))
-	preparerCmdBuilder.WriteString(" && mv temp2 " + filepath.Join("/etc", "apt", "sources.list"))
+	preparerCmdBuilder.WriteString("apt-get update")
 	preparerCmdBuilder.WriteString(" && apt-get dist-upgrade -y")
 	preparerCmdBuilder.WriteString(" && apt-get update")
-	if !readyRobotProp.Enabled { // do no run rosdep init if ready robot
-		preparerCmdBuilder.WriteString(" && rosdep init")
-	}
-
-	var clonerCmdBuilder strings.Builder
-	for wsKey, ws := range robot.Spec.WorkspaceManagerTemplate.Workspaces {
-
-		var cmdBuilder strings.Builder
-		cmdBuilder.WriteString("mkdir -p " + filepath.Join(robot.Spec.WorkspaceManagerTemplate.WorkspacesPath, ws.Name, "src") + " && ")
-		cmdBuilder.WriteString("cd " + filepath.Join(robot.Spec.WorkspaceManagerTemplate.WorkspacesPath, ws.Name, "src") + " && ")
-		cmdBuilder.WriteString(GetCloneCommand(robot.Spec.WorkspaceManagerTemplate.Workspaces, wsKey))
-		clonerCmdBuilder.WriteString(cmdBuilder.String())
-
-	}
-
-	clonerCmdBuilder.WriteString("echo \"DONE\"")
 
 	copierContainer := corev1.Container{
 		Name:            "copier",
@@ -142,26 +104,12 @@ func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.Namespace
 		},
 	}
 
-	// clonerContainer := corev1.Container{
-	// 	Name:    "cloner",
-	// 	Image:   "ubuntu:focal",
-	// 	Command: internal.Bash(clonerCmdBuilder.String()),
-	// 	VolumeMounts: []corev1.VolumeMount{
-	// 		configure.GetVolumeMount("", configure.GetVolumeVar(robot)),
-	// 		configure.GetVolumeMount("", configure.GetVolumeUsr(robot)),
-	// 		configure.GetVolumeMount("", configure.GetVolumeOpt(robot)),
-	// 		configure.GetVolumeMount("", configure.GetVolumeEtc(robot)),
-	// 		configure.GetVolumeMount(robot.Spec.WorkspacesPath, configure.GetVolumeWorkspace(robot)),
-	// 	},
-	// }
-
 	podSpec := &corev1.PodSpec{
 		InitContainers: []corev1.Container{
 			copierContainer,
 		},
 		Containers: []corev1.Container{
 			preparerContainer,
-			// clonerContainer,
 		},
 		Volumes: []corev1.Volume{
 			configure.GetVolumeVar(robot),
@@ -218,21 +166,6 @@ func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.Namespace
 	return &job
 }
 
-func GetROSBridge(robot *robotv1alpha1.Robot, bridgeNamespacedName *types.NamespacedName) *robotv1alpha1.ROSBridge {
-
-	rosBridge := robotv1alpha1.ROSBridge{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      bridgeNamespacedName.Name,
-			Namespace: bridgeNamespacedName.Namespace,
-			Labels:    robot.Labels,
-		},
-		Spec: robot.Spec.ROSBridgeTemplate,
-	}
-
-	return &rosBridge
-
-}
-
 func GetRobotDevSuite(robot *robotv1alpha1.Robot, rdsNamespacedName *types.NamespacedName) *robotv1alpha1.RobotDevSuite {
 
 	labels := robot.Labels
@@ -268,41 +201,6 @@ func GetWorkspaceManager(robot *robotv1alpha1.Robot, wsmNamespacedName *types.Na
 
 	return &workspaceManager
 
-}
-
-func GetBuildManager(robot *robotv1alpha1.Robot, bmNamespacedName *types.NamespacedName) *robotv1alpha1.BuildManager {
-
-	labels := robot.Labels
-	labels[internal.TARGET_ROBOT_LABEL_KEY] = robot.Name
-
-	buildManager := robotv1alpha1.BuildManager{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      bmNamespacedName.Name,
-			Namespace: bmNamespacedName.Namespace,
-			Labels:    robot.Labels,
-		},
-		Spec: robot.Spec.BuildManagerTemplate,
-	}
-
-	return &buildManager
-}
-
-func GetLaunchManager(robot *robotv1alpha1.Robot, lmNamespacedName *types.NamespacedName, key int) *robotv1alpha1.LaunchManager {
-
-	labels := robot.Labels
-	labels[internal.TARGET_ROBOT_LABEL_KEY] = robot.Name
-	labels[internal.TARGET_VDI_LABEL_KEY] = robot.GetRobotDevSuiteMetadata().Name + internal.ROBOT_VDI_POSTFIX
-
-	launchManager := robotv1alpha1.LaunchManager{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      lmNamespacedName.Name,
-			Namespace: lmNamespacedName.Namespace,
-			Labels:    robot.Labels,
-		},
-		Spec: robot.Spec.LaunchManagerTemplates[key],
-	}
-
-	return &launchManager
 }
 
 func GetCloneCommand(workspaces []robotv1alpha1.Workspace, wsKey int) string {

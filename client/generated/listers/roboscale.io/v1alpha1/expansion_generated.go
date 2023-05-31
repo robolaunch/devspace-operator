@@ -17,38 +17,6 @@ limitations under the License.
 
 package v1alpha1
 
-// BuildManagerListerExpansion allows custom methods to be added to
-// BuildManagerLister.
-type BuildManagerListerExpansion interface{}
-
-// BuildManagerNamespaceListerExpansion allows custom methods to be added to
-// BuildManagerNamespaceLister.
-type BuildManagerNamespaceListerExpansion interface{}
-
-// DiscoveryServerListerExpansion allows custom methods to be added to
-// DiscoveryServerLister.
-type DiscoveryServerListerExpansion interface{}
-
-// DiscoveryServerNamespaceListerExpansion allows custom methods to be added to
-// DiscoveryServerNamespaceLister.
-type DiscoveryServerNamespaceListerExpansion interface{}
-
-// LaunchManagerListerExpansion allows custom methods to be added to
-// LaunchManagerLister.
-type LaunchManagerListerExpansion interface{}
-
-// LaunchManagerNamespaceListerExpansion allows custom methods to be added to
-// LaunchManagerNamespaceLister.
-type LaunchManagerNamespaceListerExpansion interface{}
-
-// ROSBridgeListerExpansion allows custom methods to be added to
-// ROSBridgeLister.
-type ROSBridgeListerExpansion interface{}
-
-// ROSBridgeNamespaceListerExpansion allows custom methods to be added to
-// ROSBridgeNamespaceLister.
-type ROSBridgeNamespaceListerExpansion interface{}
-
 // RobotListerExpansion allows custom methods to be added to
 // RobotLister.
 type RobotListerExpansion interface{}
@@ -65,13 +33,13 @@ type RobotDevSuiteListerExpansion interface{}
 // RobotDevSuiteNamespaceLister.
 type RobotDevSuiteNamespaceListerExpansion interface{}
 
-// RobotIDEListerExpansion allows custom methods to be added to
-// RobotIDELister.
-type RobotIDEListerExpansion interface{}
+// DevSpaceIDEListerExpansion allows custom methods to be added to
+// DevSpaceIDELister.
+type DevSpaceIDEListerExpansion interface{}
 
-// RobotIDENamespaceListerExpansion allows custom methods to be added to
-// RobotIDENamespaceLister.
-type RobotIDENamespaceListerExpansion interface{}
+// DevSpaceIDENamespaceListerExpansion allows custom methods to be added to
+// DevSpaceIDENamespaceLister.
+type DevSpaceIDENamespaceListerExpansion interface{}
 
 // RobotVDIListerExpansion allows custom methods to be added to
 // RobotVDILister.

@@ -2,10 +2,8 @@ package v1alpha1
 
 import (
 	"errors"
-	"reflect"
 
-	"github.com/robolaunch/robot-operator/internal"
-	corev1 "k8s.io/api/core/v1"
+	"github.com/robolaunch/devspace-operator/internal"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -167,7 +165,7 @@ func (r *Robot) checkRobotDevSuite() error {
 
 	dst := r.Spec.RobotDevSuiteTemplate
 
-	if dst.IDEEnabled && dst.RobotIDETemplate.Display && !dst.VDIEnabled {
+	if dst.IDEEnabled && dst.DevSpaceIDETemplate.Display && !dst.VDIEnabled {
 		return errors.New("cannot open an ide with a display when vdi disabled")
 	}
 
@@ -200,83 +198,4 @@ func (r *Robot) setRepositoryInfo() error {
 
 	return nil
 
-}
-
-// ********************************
-// DiscoveryServer webhooks
-// ********************************
-
-// log is for logging in this package.
-var discoveryserverlog = logf.Log.WithName("discoveryserver-resource")
-
-func (r *DiscoveryServer) SetupWebhookWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewWebhookManagedBy(mgr).
-		For(r).
-		Complete()
-}
-
-//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-discoveryserver,mutating=true,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=discoveryservers,verbs=create;update,versions=v1alpha1,name=mdiscoveryserver.kb.io,admissionReviewVersions=v1
-
-var _ webhook.Defaulter = &DiscoveryServer{}
-
-// Default implements webhook.Defaulter so a webhook will be registered for the type
-func (r *DiscoveryServer) Default() {
-	discoveryserverlog.Info("default", "name", r.Name)
-}
-
-//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-discoveryserver,mutating=false,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=discoveryservers,verbs=create;update,versions=v1alpha1,name=vdiscoveryserver.kb.io,admissionReviewVersions=v1
-
-var _ webhook.Validator = &DiscoveryServer{}
-
-// ValidateCreate implements webhook.Validator so a webhook will be registered for the type
-func (r *DiscoveryServer) ValidateCreate() error {
-	discoveryserverlog.Info("validate create", "name", r.Name)
-
-	err := r.checkContainerInfo()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
-func (r *DiscoveryServer) ValidateUpdate(old runtime.Object) error {
-	discoveryserverlog.Info("validate update", "name", r.Name)
-
-	err := r.checkContainerInfo()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// ValidateDelete implements webhook.Validator so a webhook will be registered for the type
-func (r *DiscoveryServer) ValidateDelete() error {
-	discoveryserverlog.Info("validate delete", "name", r.Name)
-	return nil
-}
-
-func (r *DiscoveryServer) checkContainerInfo() error {
-
-	if r.Spec.Type == DiscoveryServerInstanceTypeServer {
-		if !reflect.DeepEqual(r.Spec.Reference, corev1.ObjectReference{}) {
-			return errors.New("reference should be nil if the type is server")
-		}
-
-		if !reflect.DeepEqual(r.Spec.Cluster, "") {
-			return errors.New("cluster should be nil if the type is server")
-		}
-	} else if r.Spec.Type == DiscoveryServerInstanceTypeClient {
-		if reflect.DeepEqual(r.Spec.Reference, corev1.ObjectReference{}) {
-			return errors.New("reference cannot be nil if the type is client")
-		}
-
-		if reflect.DeepEqual(r.Spec.Cluster, "") {
-			return errors.New("cluster cannot be nil if the type is client")
-		}
-	}
-
-	return nil
 }

@@ -36,13 +36,9 @@ spec:
           spec:
             description: Specification of the desired behavior of the RobotDevSuite.
             properties:
-              ideEnabled:
-                description: If `true`, a Cloud IDE will be provisioned inside development
-                  suite.
-                type: boolean
-              robotIDETemplate:
-                description: Configurational parameters of RobotIDE. Applied if `.spec.ideEnabled`
-                  is set to `true`.
+              devSpaceIDETemplate:
+                description: Configurational parameters of DevSpaceIDE. Applied if
+                  `.spec.ideEnabled` is set to `true`.
                 properties:
                   display:
                     description: Cloud IDE connects an X11 socket if it's set to `true`
@@ -50,11 +46,11 @@ spec:
                       Applications that requires GUI can be executed such as rViz.
                     type: boolean
                   ingress:
-                    description: '[*alpha*] RobotIDE will create an Ingress resource
+                    description: '[*alpha*] DevSpaceIDE will create an Ingress resource
                       if `true`.'
                     type: boolean
                   privileged:
-                    description: If `true`, containers of RobotIDE will be privileged
+                    description: If `true`, containers of DevSpaceIDE will be privileged
                       containers. It can be used in physical instances where it's
                       necessary to access I/O devices on the host machine. Not recommended
                       to activate this field on cloud instances.
@@ -83,19 +79,23 @@ spec:
                     - NodePort
                     type: string
                 type: object
+              ideEnabled:
+                description: If `true`, a Cloud IDE will be provisioned inside development
+                  suite.
+                type: boolean
               robotVDITemplate:
                 description: Configurational parameters of RobotVDI. Applied if `.spec.vdiEnabled`
                   is set to `true`.
                 properties:
                   ingress:
-                    description: '[*alpha*] RobotIDE will create an Ingress resource
+                    description: '[*alpha*] DevSpaceIDE will create an Ingress resource
                       if `true`.'
                     type: boolean
                   nat1to1:
                     description: NAT1TO1 option for Cloud VDI.
                     type: string
                   privileged:
-                    description: If `true`, containers of RobotIDE will be privileged
+                    description: If `true`, containers of DevSpaceIDE will be privileged
                       containers. It can be used in physical instances where it's
                       necessary to access I/O devices on the host machine. Not recommended
                       to activate this field on cloud instances.
@@ -148,11 +148,8 @@ spec:
                 description: '[*alpha*] Indicates if RobotDevSuite is attached to
                   a Robot and actively provisioned it''s resources.'
                 type: boolean
-              phase:
-                description: Phase of RobotDevSuite.
-                type: string
-              robotIDEStatus:
-                description: Status of RobotIDE.
+              devSpaceIDEStatus:
+                description: Status of DevSpaceIDE.
                 properties:
                   connection:
                     description: Address of the robot service that can be reached
@@ -209,6 +206,9 @@ spec:
                     - created
                     type: object
                 type: object
+              phase:
+                description: Phase of RobotDevSuite.
+                type: string
               robotVDIStatus:
                 description: Status of RobotVDI.
                 properties:

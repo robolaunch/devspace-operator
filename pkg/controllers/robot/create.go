@@ -2,13 +2,10 @@ package robot
 
 import (
 	"context"
-	"reflect"
-	"strconv"
 
-	"github.com/robolaunch/robot-operator/internal/node"
-	"github.com/robolaunch/robot-operator/internal/resources"
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
-	v1 "k8s.io/api/core/v1"
+	"github.com/robolaunch/devspace-operator/internal/node"
+	"github.com/robolaunch/devspace-operator/internal/resources"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -34,26 +31,6 @@ func (r *RobotReconciler) createPVC(ctx context.Context, instance *robotv1alpha1
 	return nil
 }
 
-func (r *RobotReconciler) createDiscoveryServer(ctx context.Context, instance *robotv1alpha1.Robot, dsNamespacedName *types.NamespacedName) error {
-
-	discoveryServer := resources.GetDiscoveryServer(instance, dsNamespacedName)
-
-	err := ctrl.SetControllerReference(instance, discoveryServer, r.Scheme)
-	if err != nil {
-		return err
-	}
-
-	err = r.Create(ctx, discoveryServer)
-	if err != nil && errors.IsAlreadyExists(err) {
-		return nil
-	} else if err != nil {
-		return err
-	}
-
-	logger.Info("STATUS: Discovery server " + discoveryServer.Name + " is created.")
-	return nil
-}
-
 func (r *RobotReconciler) createJob(ctx context.Context, instance *robotv1alpha1.Robot, jobNamespacedName *types.NamespacedName) error {
 
 	activeNode, err := r.reconcileCheckNode(ctx, instance)
@@ -76,26 +53,6 @@ func (r *RobotReconciler) createJob(ctx context.Context, instance *robotv1alpha1
 	}
 
 	logger.Info("STATUS: Job " + job.Name + " is created.")
-	return nil
-}
-
-func (r *RobotReconciler) createROSBridge(ctx context.Context, instance *robotv1alpha1.Robot, bridgeNamespacedName *types.NamespacedName) error {
-
-	rosBridge := resources.GetROSBridge(instance, bridgeNamespacedName)
-
-	err := ctrl.SetControllerReference(instance, rosBridge, r.Scheme)
-	if err != nil {
-		return err
-	}
-
-	err = r.Create(ctx, rosBridge)
-	if err != nil && errors.IsAlreadyExists(err) {
-		return nil
-	} else if err != nil {
-		return err
-	}
-
-	logger.Info("STATUS: ROS bridge " + rosBridge.Name + " is created.")
 	return nil
 }
 
@@ -136,77 +93,5 @@ func (r *RobotReconciler) createWorkspaceManager(ctx context.Context, instance *
 	}
 
 	logger.Info("STATUS: Workspace manager " + workspaceManager.Name + " is created.")
-	return nil
-}
-
-func (r *RobotReconciler) createBuildManager(ctx context.Context, instance *robotv1alpha1.Robot) error {
-
-	if reflect.DeepEqual(instance.Status.InitialBuildManagerStatus, robotv1alpha1.OwnedResourceStatus{}) && !reflect.DeepEqual(instance.Spec.BuildManagerTemplate, robotv1alpha1.BuildManagerSpec{}) {
-		buildManager := resources.GetBuildManager(instance, &types.NamespacedName{Namespace: instance.Namespace, Name: instance.Name + "-build"})
-
-		err := ctrl.SetControllerReference(instance, buildManager, r.Scheme)
-		if err != nil {
-			return err
-		}
-
-		err = r.Create(ctx, buildManager)
-		if err != nil && errors.IsAlreadyExists(err) {
-			return nil
-		} else if err != nil {
-			return err
-		}
-
-		logger.Info("STATUS: Build manager " + buildManager.Name + " is created.")
-
-		instance.Status.InitialBuildManagerStatus.Created = true
-		instance.Status.InitialBuildManagerStatus.Reference.Name = instance.Name + "-build"
-	}
-
-	return nil
-}
-
-func (r *RobotReconciler) createLaunchManager(ctx context.Context, instance *robotv1alpha1.Robot, lmNamespacedName *types.NamespacedName, key int) error {
-
-	launchManager := resources.GetLaunchManager(instance, lmNamespacedName, key)
-
-	err := ctrl.SetControllerReference(instance, launchManager, r.Scheme)
-	if err != nil {
-		return err
-	}
-
-	err = r.Create(ctx, launchManager)
-	if err != nil && errors.IsAlreadyExists(err) {
-		return nil
-	} else if err != nil {
-		return err
-	}
-
-	logger.Info("STATUS: Launch manager " + launchManager.Name + " is created.")
-	return nil
-}
-
-func (r *RobotReconciler) createLaunchManagers(ctx context.Context, instance *robotv1alpha1.Robot) error {
-
-	if len(instance.Status.InitialLaunchManagerStatuses) == 0 {
-		for key := range instance.Spec.LaunchManagerTemplates {
-			instance.Status.InitialLaunchManagerStatuses = append(instance.Status.InitialLaunchManagerStatuses, robotv1alpha1.OwnedResourceStatus{
-				Reference: v1.ObjectReference{
-					Name: instance.Name + "-launch-" + strconv.Itoa(key),
-				},
-			})
-		}
-
-		for key, lm := range instance.Status.InitialLaunchManagerStatuses {
-			if !lm.Created {
-				err := r.createLaunchManager(ctx, instance, &types.NamespacedName{Namespace: instance.Namespace, Name: lm.Reference.Name}, key)
-				if err != nil {
-					return err
-				}
-				lm.Created = true
-				instance.Status.InitialLaunchManagerStatuses[key] = lm
-			}
-		}
-	}
-
 	return nil
 }

@@ -4,12 +4,11 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/robolaunch/robot-operator/internal/reference"
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	"github.com/robolaunch/devspace-operator/internal/reference"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/types"
 )
 
 func (r *RobotReconciler) reconcileCheckPVCs(ctx context.Context, instance *robotv1alpha1.Robot) error {
@@ -72,32 +71,6 @@ func (r *RobotReconciler) reconcileCheckPVCs(ctx context.Context, instance *robo
 	return nil
 }
 
-func (r *RobotReconciler) reconcileCheckDiscoveryServer(ctx context.Context, instance *robotv1alpha1.Robot) error {
-
-	discoverServerQuery := &robotv1alpha1.DiscoveryServer{}
-	err := r.Get(ctx, *instance.GetDiscoveryServerMetadata(), discoverServerQuery)
-	if err != nil && errors.IsNotFound(err) {
-		instance.Status.DiscoveryServerStatus = robotv1alpha1.DiscoveryServerInstanceStatus{}
-	} else if err != nil {
-		return err
-	} else {
-
-		if !reflect.DeepEqual(instance.Spec.DiscoveryServerTemplate, discoverServerQuery.Spec) {
-			discoverServerQuery.Spec = instance.Spec.DiscoveryServerTemplate
-			err = r.Update(ctx, discoverServerQuery)
-			if err != nil {
-				return err
-			}
-		}
-
-		instance.Status.DiscoveryServerStatus.Resource.Created = true
-		reference.SetReference(&instance.Status.DiscoveryServerStatus.Resource.Reference, discoverServerQuery.TypeMeta, discoverServerQuery.ObjectMeta)
-		instance.Status.DiscoveryServerStatus.Status = discoverServerQuery.Status
-	}
-
-	return nil
-}
-
 func (r *RobotReconciler) reconcileCheckLoaderJob(ctx context.Context, instance *robotv1alpha1.Robot) error {
 
 	if instance.Status.Phase != robotv1alpha1.RobotPhaseEnvironmentReady {
@@ -117,35 +90,6 @@ func (r *RobotReconciler) reconcileCheckLoaderJob(ctx context.Context, instance 
 			case int(loaderJobQuery.Status.Failed):
 				instance.Status.LoaderJobStatus.Phase = string(robotv1alpha1.JobFailed)
 			}
-		}
-	}
-
-	return nil
-}
-
-func (r *RobotReconciler) reconcileCheckROSBridge(ctx context.Context, instance *robotv1alpha1.Robot) error {
-
-	if instance.Spec.ROSBridgeTemplate.ROS.Enabled || instance.Spec.ROSBridgeTemplate.ROS2.Enabled {
-		rosBridgeQuery := &robotv1alpha1.ROSBridge{}
-		err := r.Get(ctx, *instance.GetROSBridgeMetadata(), rosBridgeQuery)
-		if err != nil && errors.IsNotFound(err) {
-			instance.Status.ROSBridgeStatus = robotv1alpha1.ROSBridgeInstanceStatus{}
-		} else if err != nil {
-			return err
-		} else {
-
-			if !reflect.DeepEqual(instance.Spec.ROSBridgeTemplate, rosBridgeQuery.Spec) {
-				rosBridgeQuery.Spec = instance.Spec.ROSBridgeTemplate
-				err = r.Update(ctx, rosBridgeQuery)
-				if err != nil {
-					return err
-				}
-			}
-
-			instance.Status.ROSBridgeStatus.Resource.Created = true
-			reference.SetReference(&instance.Status.ROSBridgeStatus.Resource.Reference, rosBridgeQuery.TypeMeta, rosBridgeQuery.ObjectMeta)
-			instance.Status.ROSBridgeStatus.Status = rosBridgeQuery.Status
-			instance.Status.ROSBridgeStatus.Connection = rosBridgeQuery.Status.ServiceStatus.URL
 		}
 	}
 
@@ -218,49 +162,6 @@ func (r *RobotReconciler) reconcileCheckWorkspaceManager(ctx context.Context, in
 			instance.Status.WorkspaceManagerStatus.Status.Phase = robotv1alpha1.WorkspaceManagerPhaseConfiguringWorkspaces
 		}
 
-	}
-
-	return nil
-}
-
-func (r *RobotReconciler) reconcileCheckAttachedBuildManager(ctx context.Context, instance *robotv1alpha1.Robot) error {
-
-	bmReference := instance.Status.AttachedBuildObject.Reference
-
-	// If any build object was attached, record it's status
-	if bmReference.Name != "" {
-
-		buildManager := &robotv1alpha1.BuildManager{}
-		err := r.Get(ctx, types.NamespacedName{Namespace: bmReference.Namespace, Name: bmReference.Name}, buildManager)
-		if err != nil && errors.IsNotFound(err) {
-			// TODO: Empty the reference fields
-			return err
-		} else if err != nil {
-			return err
-		} else {
-			instance.Status.AttachedBuildObject.Status = buildManager.Status
-		}
-
-	}
-
-	return nil
-}
-
-func (r *RobotReconciler) reconcileCheckAttachedLaunchManager(ctx context.Context, instance *robotv1alpha1.Robot) error {
-
-	for k, lm := range instance.Status.AttachedLaunchObjects {
-		launchManager := &robotv1alpha1.LaunchManager{}
-		err := r.Get(ctx, types.NamespacedName{Namespace: lm.Reference.Namespace, Name: lm.Reference.Name}, launchManager)
-		if err != nil && errors.IsNotFound(err) {
-			// TODO: Empty the reference fields
-			return err
-		} else if err != nil {
-			return err
-		} else {
-			lm.Status = launchManager.Status
-		}
-
-		instance.Status.AttachedLaunchObjects[k] = lm
 	}
 
 	return nil

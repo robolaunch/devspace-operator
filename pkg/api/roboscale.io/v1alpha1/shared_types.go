@@ -1,7 +1,7 @@
 package v1alpha1
 
 import (
-	"github.com/robolaunch/robot-operator/internal/label"
+	"github.com/robolaunch/devspace-operator/internal/label"
 	corev1 "k8s.io/api/core/v1"
 )
 
@@ -36,22 +36,6 @@ type OwnedPodStatus struct {
 	IP string `json:"ip,omitempty"`
 }
 
-type DiscoveryServerInstanceStatus struct {
-	// Generic status for any owned resource.
-	Resource OwnedResourceStatus `json:"resource,omitempty"`
-	// Status of the DiscoveryServer instance.
-	Status DiscoveryServerStatus `json:"status,omitempty"`
-}
-
-type ROSBridgeInstanceStatus struct {
-	// Generic status for any owned resource.
-	Resource OwnedResourceStatus `json:"resource,omitempty"`
-	// Status of the ROSBridge instance.
-	Status ROSBridgeStatus `json:"status,omitempty"`
-	// Address of the robot service that can be reached from outside.
-	Connection string `json:"connection,omitempty"`
-}
-
 type RobotDevSuiteInstanceStatus struct {
 	// Generic status for any owned resource.
 	Resource OwnedResourceStatus `json:"resource,omitempty"`
@@ -64,13 +48,6 @@ type WorkspaceManagerInstanceStatus struct {
 	Resource OwnedResourceStatus `json:"resource,omitempty"`
 	// Status of the WorkspaceManager instance.
 	Status WorkspaceManagerStatus `json:"status,omitempty"`
-}
-
-type StepStatus struct {
-	// Generic status for any owned resource.
-	Resource OwnedResourceStatus `json:"resource,omitempty"`
-	// Status of the step.
-	Step Step `json:"step,omitempty"`
 }
 
 func GetRobotServiceDNS(robot Robot, prefix, postfix string) string {

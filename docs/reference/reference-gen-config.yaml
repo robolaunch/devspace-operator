@@ -5,7 +5,6 @@ processor:
     - "Robot"
     - "WorkspaceManager"
     - "RobotDevSuite"
-    - "MetricsExporter"
     - "RobotVDI"
     - "RobotIDE"
   ignoreFields:

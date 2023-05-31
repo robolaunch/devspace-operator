@@ -35,7 +35,6 @@ import (
 	mcsv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/external/apis/mcsv1alpha1/v1alpha1"
 
 	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
-	metrics "github.com/robolaunch/robot-operator/pkg/controllers/metrics"
 	robot "github.com/robolaunch/robot-operator/pkg/controllers/robot"
 	robotDevSuite "github.com/robolaunch/robot-operator/pkg/controllers/robot_dev_suite"
 	robotIDE "github.com/robolaunch/robot-operator/pkg/controllers/robot_dev_suite/robot_ide"
@@ -168,13 +167,6 @@ func main() {
 	}
 	if err = (&robotv1alpha1.WorkspaceManager{}).SetupWebhookWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create webhook", "webhook", "WorkspaceManager")
-		os.Exit(1)
-	}
-	if err = (&metrics.MetricsExporterReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "MetricsExporter")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

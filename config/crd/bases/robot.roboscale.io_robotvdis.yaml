@@ -36,14 +36,14 @@ spec:
             description: Specification of the desired behavior of the RobotVDI.
             properties:
               ingress:
-                description: '[*alpha*] RobotIDE will create an Ingress resource if
-                  `true`.'
+                description: '[*alpha*] DevSpaceIDE will create an Ingress resource
+                  if `true`.'
                 type: boolean
               nat1to1:
                 description: NAT1TO1 option for Cloud VDI.
                 type: string
               privileged:
-                description: If `true`, containers of RobotIDE will be privileged
+                description: If `true`, containers of DevSpaceIDE will be privileged
                   containers. It can be used in physical instances where it's necessary
                   to access I/O devices on the host machine. Not recommended to activate
                   this field on cloud instances.

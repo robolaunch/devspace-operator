@@ -32,16 +32,16 @@ import (
 	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
-// RobotIDEReconciler reconciles a RobotIDE object
-type RobotIDEReconciler struct {
+// DevSpaceIDEReconciler reconciles a DevSpaceIDE object
+type DevSpaceIDEReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	DynamicClient dynamic.Interface
 }
 
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=robotides,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=robotides/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=robotides/finalizers,verbs=update
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspaceides,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspaceides/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspaceides/finalizers,verbs=update
 
 //+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
@@ -49,7 +49,7 @@ type RobotIDEReconciler struct {
 
 var logger logr.Logger
 
-func (r *RobotIDEReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *DevSpaceIDEReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger = log.FromContext(ctx)
 
 	instance, err := r.reconcileGetInstance(ctx, req.NamespacedName)
@@ -87,7 +87,7 @@ func (r *RobotIDEReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	return ctrl.Result{}, nil
 }
 
-func (r *RobotIDEReconciler) reconcileCheckStatus(ctx context.Context, instance *robotv1alpha1.RobotIDE) error {
+func (r *DevSpaceIDEReconciler) reconcileCheckStatus(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
 
 	switch instance.Status.ServiceStatus.Resource.Created {
 	case true:
@@ -101,13 +101,13 @@ func (r *RobotIDEReconciler) reconcileCheckStatus(ctx context.Context, instance 
 				switch instance.Status.PodStatus.Resource.Phase {
 				case string(corev1.PodRunning):
 
-					instance.Status.Phase = robotv1alpha1.RobotIDEPhaseRunning
+					instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseRunning
 
 				}
 
 			case false:
 
-				instance.Status.Phase = robotv1alpha1.RobotIDEPhaseCreatingIngress
+				instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseCreatingIngress
 				err := r.reconcileCreateIngress(ctx, instance)
 				if err != nil {
 					return err
@@ -118,7 +118,7 @@ func (r *RobotIDEReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 		case false:
 
-			instance.Status.Phase = robotv1alpha1.RobotIDEPhaseCreatingPod
+			instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseCreatingPod
 			err := r.reconcileCreatePod(ctx, instance)
 			if err != nil {
 				return err
@@ -128,7 +128,7 @@ func (r *RobotIDEReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 	case false:
 
-		instance.Status.Phase = robotv1alpha1.RobotIDEPhaseCreatingService
+		instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseCreatingService
 		err := r.reconcileCreateService(ctx, instance)
 		if err != nil {
 			return err
@@ -140,7 +140,7 @@ func (r *RobotIDEReconciler) reconcileCheckStatus(ctx context.Context, instance 
 	return nil
 }
 
-func (r *RobotIDEReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.RobotIDE) error {
+func (r *DevSpaceIDEReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
 
 	err := r.reconcileCheckService(ctx, instance)
 	if err != nil {
@@ -161,9 +161,9 @@ func (r *RobotIDEReconciler) reconcileCheckResources(ctx context.Context, instan
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *RobotIDEReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *DevSpaceIDEReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&robotv1alpha1.RobotIDE{}).
+		For(&robotv1alpha1.DevSpaceIDE{}).
 		Owns(&corev1.Pod{}).
 		Owns(&corev1.Service{}).
 		Owns(&networkingv1.Ingress{}).

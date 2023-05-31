@@ -37,7 +37,7 @@ import (
 	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
 	robot "github.com/robolaunch/robot-operator/pkg/controllers/robot"
 	robotDevSuite "github.com/robolaunch/robot-operator/pkg/controllers/robot_dev_suite"
-	robotIDE "github.com/robolaunch/robot-operator/pkg/controllers/robot_dev_suite/robot_ide"
+	devSpaceIDE "github.com/robolaunch/robot-operator/pkg/controllers/robot_dev_suite/robot_ide"
 	robotVDI "github.com/robolaunch/robot-operator/pkg/controllers/robot_dev_suite/robot_vdi"
 	workspaceManager "github.com/robolaunch/robot-operator/pkg/controllers/workspace_manager"
 	//+kubebuilder:scaffold:imports
@@ -146,16 +146,16 @@ func main() {
 		setupLog.Error(err, "unable to create webhook", "webhook", "RobotVDI")
 		os.Exit(1)
 	}
-	if err = (&robotIDE.RobotIDEReconciler{
+	if err = (&devSpaceIDE.DevSpaceIDEReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		DynamicClient: dynamicClient,
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "RobotIDE")
+		setupLog.Error(err, "unable to create controller", "controller", "DevSpaceIDE")
 		os.Exit(1)
 	}
-	if err = (&robotv1alpha1.RobotIDE{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "RobotIDE")
+	if err = (&robotv1alpha1.DevSpaceIDE{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "DevSpaceIDE")
 		os.Exit(1)
 	}
 	if err = (&workspaceManager.WorkspaceManagerReconciler{

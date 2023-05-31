@@ -21,6 +21,6 @@ type RobotExpansion interface{}
 
 type RobotDevSuiteExpansion interface{}
 
-type RobotIDEExpansion interface{}
+type DevSpaceIDEExpansion interface{}
 
 type RobotVDIExpansion interface{}

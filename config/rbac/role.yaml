@@ -80,6 +80,32 @@ rules:
 - apiGroups:
   - robot.roboscale.io
   resources:
+  - devspaceides
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - robot.roboscale.io
+  resources:
+  - devspaceides/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - robot.roboscale.io
+  resources:
+  - devspaceides/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - robot.roboscale.io
+  resources:
   - robotdevsuites
   verbs:
   - create
@@ -99,32 +125,6 @@ rules:
   - robot.roboscale.io
   resources:
   - robotdevsuites/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - robot.roboscale.io
-  resources:
-  - robotides
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - robot.roboscale.io
-  resources:
-  - robotides/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - robot.roboscale.io
-  resources:
-  - robotides/status
   verbs:
   - get
   - patch

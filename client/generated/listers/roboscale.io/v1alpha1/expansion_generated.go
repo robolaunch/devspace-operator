@@ -33,13 +33,13 @@ type RobotDevSuiteListerExpansion interface{}
 // RobotDevSuiteNamespaceLister.
 type RobotDevSuiteNamespaceListerExpansion interface{}
 
-// RobotIDEListerExpansion allows custom methods to be added to
-// RobotIDELister.
-type RobotIDEListerExpansion interface{}
+// DevSpaceIDEListerExpansion allows custom methods to be added to
+// DevSpaceIDELister.
+type DevSpaceIDEListerExpansion interface{}
 
-// RobotIDENamespaceListerExpansion allows custom methods to be added to
-// RobotIDENamespaceLister.
-type RobotIDENamespaceListerExpansion interface{}
+// DevSpaceIDENamespaceListerExpansion allows custom methods to be added to
+// DevSpaceIDENamespaceLister.
+type DevSpaceIDENamespaceListerExpansion interface{}
 
 // RobotVDIListerExpansion allows custom methods to be added to
 // RobotVDILister.

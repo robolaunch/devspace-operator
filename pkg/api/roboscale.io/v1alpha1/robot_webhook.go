@@ -165,7 +165,7 @@ func (r *Robot) checkRobotDevSuite() error {
 
 	dst := r.Spec.RobotDevSuiteTemplate
 
-	if dst.IDEEnabled && dst.RobotIDETemplate.Display && !dst.VDIEnabled {
+	if dst.IDEEnabled && dst.DevSpaceIDETemplate.Display && !dst.VDIEnabled {
 		return errors.New("cannot open an ide with a display when vdi disabled")
 	}
 

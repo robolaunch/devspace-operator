@@ -23,7 +23,7 @@ import (
 
 func init() {
 	SchemeBuilder.Register(&RobotDevSuite{}, &RobotDevSuiteList{})
-	SchemeBuilder.Register(&RobotIDE{}, &RobotIDEList{})
+	SchemeBuilder.Register(&DevSpaceIDE{}, &DevSpaceIDEList{})
 	SchemeBuilder.Register(&RobotVDI{}, &RobotVDIList{})
 }
 
@@ -56,24 +56,24 @@ type RobotDevSuiteList struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// RobotIDE creates and manages Cloud IDE resources and workloads.
-type RobotIDE struct {
+// DevSpaceIDE creates and manages Cloud IDE resources and workloads.
+type DevSpaceIDE struct {
 	metav1.TypeMeta `json:",inline"`
 	// Standard object's metadata.
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// Specification of the desired behavior of the RobotIDE.
-	Spec RobotIDESpec `json:"spec,omitempty"`
-	// Most recently observed status of the RobotIDE.
-	Status RobotIDEStatus `json:"status,omitempty"`
+	// Specification of the desired behavior of the DevSpaceIDE.
+	Spec DevSpaceIDESpec `json:"spec,omitempty"`
+	// Most recently observed status of the DevSpaceIDE.
+	Status DevSpaceIDEStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// RobotIDEList contains a list of RobotIDE.
-type RobotIDEList struct {
+// DevSpaceIDEList contains a list of DevSpaceIDE.
+type DevSpaceIDEList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []RobotIDE `json:"items"`
+	Items           []DevSpaceIDE `json:"items"`
 }
 
 //+genclient
@@ -112,8 +112,8 @@ type RobotDevSuiteSpec struct {
 	RobotVDITemplate RobotVDISpec `json:"robotVDITemplate,omitempty"`
 	// If `true`, a Cloud IDE will be provisioned inside development suite.
 	IDEEnabled bool `json:"ideEnabled,omitempty"`
-	// Configurational parameters of RobotIDE. Applied if `.spec.ideEnabled` is set to `true`.
-	RobotIDETemplate RobotIDESpec `json:"robotIDETemplate,omitempty"`
+	// Configurational parameters of DevSpaceIDE. Applied if `.spec.ideEnabled` is set to `true`.
+	DevSpaceIDETemplate DevSpaceIDESpec `json:"devSpaceIDETemplate,omitempty"`
 }
 
 // RobotDevSuiteStatus defines the observed state of RobotDevSuite.
@@ -122,25 +122,25 @@ type RobotDevSuiteStatus struct {
 	Phase RobotDevSuitePhase `json:"phase,omitempty"`
 	// Status of RobotVDI.
 	RobotVDIStatus OwnedRobotServiceStatus `json:"robotVDIStatus,omitempty"`
-	// Status of RobotIDE.
-	RobotIDEStatus OwnedRobotServiceStatus `json:"robotIDEStatus,omitempty"`
+	// Status of DevSpaceIDE.
+	DevSpaceIDEStatus OwnedRobotServiceStatus `json:"devSpaceIDEStatus,omitempty"`
 	// [*alpha*] Indicates if RobotDevSuite is attached to a Robot and actively provisioned it's resources.
 	Active bool `json:"active,omitempty"`
 }
 
 // ********************************
-// RobotIDE types
+// DevSpaceIDE types
 // ********************************
 
-// RobotIDESpec defines the desired state of RobotIDE.
-type RobotIDESpec struct {
+// DevSpaceIDESpec defines the desired state of DevSpaceIDE.
+type DevSpaceIDESpec struct {
 	// Resource limitations of Cloud IDE.
 	Resources Resources `json:"resources,omitempty"`
 	// Service type of Cloud IDE. `ClusterIP` and `NodePort` is supported.
 	// +kubebuilder:validation:Enum=ClusterIP;NodePort
 	// +kubebuilder:default="NodePort"
 	ServiceType corev1.ServiceType `json:"serviceType,omitempty"`
-	// If `true`, containers of RobotIDE will be privileged containers.
+	// If `true`, containers of DevSpaceIDE will be privileged containers.
 	// It can be used in physical instances where it's necessary to access
 	// I/O devices on the host machine.
 	// Not recommended to activate this field on cloud instances.
@@ -148,14 +148,14 @@ type RobotIDESpec struct {
 	// Cloud IDE connects an X11 socket if it's set to `true` and a target RobotVDI resource is set in labels with key `robolaunch.io/target-vdi`.
 	// Applications that requires GUI can be executed such as rViz.
 	Display bool `json:"display,omitempty"`
-	// [*alpha*] RobotIDE will create an Ingress resource if `true`.
+	// [*alpha*] DevSpaceIDE will create an Ingress resource if `true`.
 	Ingress bool `json:"ingress,omitempty"`
 }
 
-// RobotIDEStatus defines the observed state of RobotIDE.
-type RobotIDEStatus struct {
-	// Phase of RobotIDE.
-	Phase RobotIDEPhase `json:"phase,omitempty"`
+// DevSpaceIDEStatus defines the observed state of DevSpaceIDE.
+type DevSpaceIDEStatus struct {
+	// Phase of DevSpaceIDE.
+	Phase DevSpaceIDEPhase `json:"phase,omitempty"`
 	// Status of Cloud IDE pod.
 	PodStatus OwnedPodStatus `json:"podStatus,omitempty"`
 	// Status of Cloud IDE service.
@@ -188,7 +188,7 @@ type RobotVDISpec struct {
 	// +kubebuilder:validation:Enum=ClusterIP;NodePort
 	// +kubebuilder:default="NodePort"
 	ServiceType corev1.ServiceType `json:"serviceType,omitempty"`
-	// If `true`, containers of RobotIDE will be privileged containers.
+	// If `true`, containers of DevSpaceIDE will be privileged containers.
 	// It can be used in physical instances where it's necessary to access
 	// I/O devices on the host machine.
 	// Not recommended to activate this field on cloud instances.
@@ -203,7 +203,7 @@ type RobotVDISpec struct {
 	// +kubebuilder:validation:Enum="2048x1152";"1920x1080";"1600x1200"
 	// +kubebuilder:default="2048x1152"
 	Resolution string `json:"resolution,omitempty"`
-	// [*alpha*] RobotIDE will create an Ingress resource if `true`.
+	// [*alpha*] DevSpaceIDE will create an Ingress resource if `true`.
 	Ingress bool `json:"ingress,omitempty"`
 }
 

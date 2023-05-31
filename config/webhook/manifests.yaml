@@ -11,9 +11,9 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /mutate-robot-roboscale-io-v1alpha1-robotide
+      path: /mutate-robot-roboscale-io-v1alpha1-devspaceide
   failurePolicy: Fail
-  name: mrobotide.kb.io
+  name: mdevspaceide.kb.io
   rules:
   - apiGroups:
     - robot.roboscale.io
@@ -23,7 +23,7 @@ webhooks:
     - CREATE
     - UPDATE
     resources:
-    - robotides
+    - devspaceides
   sideEffects: None
 - admissionReviewVersions:
   - v1
@@ -98,9 +98,9 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /validate-robot-roboscale-io-v1alpha1-robotide
+      path: /validate-robot-roboscale-io-v1alpha1-devspaceide
   failurePolicy: Fail
-  name: vrobotide.kb.io
+  name: vdevspaceide.kb.io
   rules:
   - apiGroups:
     - robot.roboscale.io
@@ -110,7 +110,7 @@ webhooks:
     - CREATE
     - UPDATE
     resources:
-    - robotides
+    - devspaceides
   sideEffects: None
 - admissionReviewVersions:
   - v1

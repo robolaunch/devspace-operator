@@ -31,59 +31,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// RobotIDEInformer provides access to a shared informer and lister for
-// RobotIDEs.
-type RobotIDEInformer interface {
+// DevSpaceIDEInformer provides access to a shared informer and lister for
+// DevSpaceIDEs.
+type DevSpaceIDEInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.RobotIDELister
+	Lister() v1alpha1.DevSpaceIDELister
 }
 
-type robotIDEInformer struct {
+type devSpaceIDEInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewRobotIDEInformer constructs a new informer for RobotIDE type.
+// NewDevSpaceIDEInformer constructs a new informer for DevSpaceIDE type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewRobotIDEInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredRobotIDEInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewDevSpaceIDEInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredDevSpaceIDEInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredRobotIDEInformer constructs a new informer for RobotIDE type.
+// NewFilteredDevSpaceIDEInformer constructs a new informer for DevSpaceIDE type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredRobotIDEInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredDevSpaceIDEInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RoboscaleV1alpha1().RobotIDEs(namespace).List(context.TODO(), options)
+				return client.RoboscaleV1alpha1().DevSpaceIDEs(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RoboscaleV1alpha1().RobotIDEs(namespace).Watch(context.TODO(), options)
+				return client.RoboscaleV1alpha1().DevSpaceIDEs(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&roboscaleiov1alpha1.RobotIDE{},
+		&roboscaleiov1alpha1.DevSpaceIDE{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *robotIDEInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredRobotIDEInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *devSpaceIDEInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredDevSpaceIDEInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *robotIDEInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&roboscaleiov1alpha1.RobotIDE{}, f.defaultInformer)
+func (f *devSpaceIDEInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&roboscaleiov1alpha1.DevSpaceIDE{}, f.defaultInformer)
 }
 
-func (f *robotIDEInformer) Lister() v1alpha1.RobotIDELister {
-	return v1alpha1.NewRobotIDELister(f.Informer().GetIndexer())
+func (f *devSpaceIDEInformer) Lister() v1alpha1.DevSpaceIDELister {
+	return v1alpha1.NewDevSpaceIDELister(f.Informer().GetIndexer())
 }

@@ -21,20 +21,20 @@ func GetRobotVDI(robotDevSuite *robotv1alpha1.RobotDevSuite, robotVDINamespacedN
 	return &robotVDI
 }
 
-func GetRobotIDE(robotDevSuite *robotv1alpha1.RobotDevSuite, robotIDENamespacedName *types.NamespacedName) *robotv1alpha1.RobotIDE {
+func GetDevSpaceIDE(robotDevSuite *robotv1alpha1.RobotDevSuite, devSpaceIDENamespacedName *types.NamespacedName) *robotv1alpha1.DevSpaceIDE {
 
-	robotIDE := robotv1alpha1.RobotIDE{
+	devSpaceIDE := robotv1alpha1.DevSpaceIDE{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      robotIDENamespacedName.Name,
-			Namespace: robotIDENamespacedName.Namespace,
+			Name:      devSpaceIDENamespacedName.Name,
+			Namespace: devSpaceIDENamespacedName.Namespace,
 			Labels:    robotDevSuite.Labels,
 		},
-		Spec: robotDevSuite.Spec.RobotIDETemplate,
+		Spec: robotDevSuite.Spec.DevSpaceIDETemplate,
 	}
 
 	if robotDevSuite.Spec.VDIEnabled {
-		robotIDE.Labels[internal.TARGET_VDI_LABEL_KEY] = robotDevSuite.GetRobotVDIMetadata().Name
+		devSpaceIDE.Labels[internal.TARGET_VDI_LABEL_KEY] = robotDevSuite.GetRobotVDIMetadata().Name
 	}
 
-	return &robotIDE
+	return &devSpaceIDE
 }

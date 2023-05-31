@@ -29,7 +29,7 @@ type RoboscaleV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	RobotsGetter
 	RobotDevSuitesGetter
-	RobotIDEsGetter
+	DevSpaceIDEsGetter
 	RobotVDIsGetter
 }
 
@@ -46,8 +46,8 @@ func (c *RoboscaleV1alpha1Client) RobotDevSuites(namespace string) RobotDevSuite
 	return newRobotDevSuites(c, namespace)
 }
 
-func (c *RoboscaleV1alpha1Client) RobotIDEs(namespace string) RobotIDEInterface {
-	return newRobotIDEs(c, namespace)
+func (c *RoboscaleV1alpha1Client) DevSpaceIDEs(namespace string) DevSpaceIDEInterface {
+	return newDevSpaceIDEs(c, namespace)
 }
 
 func (c *RoboscaleV1alpha1Client) RobotVDIs(namespace string) RobotVDIInterface {

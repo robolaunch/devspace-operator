@@ -15,21 +15,21 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func getRobotIDESelector(robotIDE robotv1alpha1.RobotIDE) map[string]string {
+func getDevSpaceIDESelector(devSpaceIDE robotv1alpha1.DevSpaceIDE) map[string]string {
 	return map[string]string{
-		"robotIDE": robotIDE.Name,
+		"devSpaceIDE": devSpaceIDE.Name,
 	}
 }
 
-func GetRobotIDEPod(robotIDE *robotv1alpha1.RobotIDE, podNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot, robotVDI robotv1alpha1.RobotVDI, node corev1.Node) *corev1.Pod {
+func GetDevSpaceIDEPod(devSpaceIDE *robotv1alpha1.DevSpaceIDE, podNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot, robotVDI robotv1alpha1.RobotVDI, node corev1.Node) *corev1.Pod {
 
 	// discovery server
 
 	var cmdBuilder strings.Builder
 	cmdBuilder.WriteString("code-server " + robot.Spec.WorkspaceManagerTemplate.WorkspacesPath + " --bind-addr 0.0.0.0:$CODE_SERVER_PORT --auth none")
 
-	labels := getRobotIDESelector(*robotIDE)
-	for k, v := range robotIDE.Labels {
+	labels := getDevSpaceIDESelector(*devSpaceIDE)
+	for k, v := range devSpaceIDE.Labels {
 		labels[k] = v
 	}
 
@@ -65,10 +65,10 @@ func GetRobotIDEPod(robotIDE *robotv1alpha1.RobotIDE, podNamespacedName *types.N
 						},
 					},
 					Resources: corev1.ResourceRequirements{
-						Limits: getResourceLimits(robotIDE.Spec.Resources),
+						Limits: getResourceLimits(devSpaceIDE.Spec.Resources),
 					},
 					SecurityContext: &corev1.SecurityContext{
-						Privileged: &robotIDE.Spec.Privileged,
+						Privileged: &devSpaceIDE.Spec.Privileged,
 					},
 				},
 			},
@@ -83,10 +83,10 @@ func GetRobotIDEPod(robotIDE *robotv1alpha1.RobotIDE, podNamespacedName *types.N
 		},
 	}
 
-	configure.SchedulePod(&pod, label.GetTenancyMap(robotIDE))
+	configure.SchedulePod(&pod, label.GetTenancyMap(devSpaceIDE))
 	configure.InjectGenericEnvironmentVariables(&pod, robot)
 	configure.InjectRuntimeClass(&pod, robot, node)
-	if robotIDE.Spec.Display && label.GetTargetRobotVDI(robotIDE) != "" {
+	if devSpaceIDE.Spec.Display && label.GetTargetRobotVDI(devSpaceIDE) != "" {
 		// TODO: Add control for validating robot VDI
 		configure.InjectPodDisplayConfiguration(&pod, robotVDI)
 	}
@@ -94,11 +94,11 @@ func GetRobotIDEPod(robotIDE *robotv1alpha1.RobotIDE, podNamespacedName *types.N
 	return &pod
 }
 
-func GetRobotIDEService(robotIDE *robotv1alpha1.RobotIDE, svcNamespacedName *types.NamespacedName) *corev1.Service {
+func GetDevSpaceIDEService(devSpaceIDE *robotv1alpha1.DevSpaceIDE, svcNamespacedName *types.NamespacedName) *corev1.Service {
 
 	serviceSpec := corev1.ServiceSpec{
-		Type:     robotIDE.Spec.ServiceType,
-		Selector: getRobotIDESelector(*robotIDE),
+		Type:     devSpaceIDE.Spec.ServiceType,
+		Selector: getDevSpaceIDESelector(*devSpaceIDE),
 		Ports: []corev1.ServicePort{
 			{
 				Port: 9000,
@@ -113,8 +113,8 @@ func GetRobotIDEService(robotIDE *robotv1alpha1.RobotIDE, svcNamespacedName *typ
 
 	service := corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      robotIDE.GetRobotIDEServiceMetadata().Name,
-			Namespace: robotIDE.GetRobotIDEServiceMetadata().Namespace,
+			Name:      devSpaceIDE.GetDevSpaceIDEServiceMetadata().Name,
+			Namespace: devSpaceIDE.GetDevSpaceIDEServiceMetadata().Namespace,
 		},
 		Spec: serviceSpec,
 	}
@@ -122,7 +122,7 @@ func GetRobotIDEService(robotIDE *robotv1alpha1.RobotIDE, svcNamespacedName *typ
 	return &service
 }
 
-func GetRobotIDEIngress(robotIDE *robotv1alpha1.RobotIDE, ingressNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot) *networkingv1.Ingress {
+func GetDevSpaceIDEIngress(devSpaceIDE *robotv1alpha1.DevSpaceIDE, ingressNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot) *networkingv1.Ingress {
 
 	tenancy := label.GetTenancy(&robot)
 
@@ -162,7 +162,7 @@ func GetRobotIDEIngress(robotIDE *robotv1alpha1.RobotIDE, ingressNamespacedName 
 								PathType: &pathTypePrefix,
 								Backend: networkingv1.IngressBackend{
 									Service: &networkingv1.IngressServiceBackend{
-										Name: robotIDE.GetRobotIDEServiceMetadata().Name,
+										Name: devSpaceIDE.GetDevSpaceIDEServiceMetadata().Name,
 										Port: networkingv1.ServiceBackendPort{
 											Number: 9000,
 										},

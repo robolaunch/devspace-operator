@@ -45,7 +45,7 @@ resources:
   controller: true
   domain: roboscale.io
   group: robot
-  kind: RobotIDE
+  kind: DevSpaceIDE
   path: github.com/robolaunch/robot-operator/api/v1alpha1
   version: v1alpha1
   webhooks:

@@ -112,11 +112,11 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 					switch instance.Spec.IDEEnabled {
 					case true:
 
-						switch instance.Status.RobotIDEStatus.Resource.Created {
+						switch instance.Status.DevSpaceIDEStatus.Resource.Created {
 						case true:
 
-							switch instance.Status.RobotIDEStatus.Resource.Phase {
-							case string(robotv1alpha1.RobotIDEPhaseRunning):
+							switch instance.Status.DevSpaceIDEStatus.Resource.Phase {
+							case string(robotv1alpha1.DevSpaceIDEPhaseRunning):
 
 								instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseRunning
 
@@ -124,12 +124,12 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 						case false:
 
-							instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingRobotIDE
-							err := r.reconcileCreateRobotIDE(ctx, instance)
+							instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingDevSpaceIDE
+							err := r.reconcileCreateDevSpaceIDE(ctx, instance)
 							if err != nil {
 								return err
 							}
-							instance.Status.RobotIDEStatus.Resource.Created = true
+							instance.Status.DevSpaceIDEStatus.Resource.Created = true
 
 						}
 
@@ -157,11 +157,11 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 			switch instance.Spec.IDEEnabled {
 			case true:
 
-				switch instance.Status.RobotIDEStatus.Resource.Created {
+				switch instance.Status.DevSpaceIDEStatus.Resource.Created {
 				case true:
 
-					switch instance.Status.RobotIDEStatus.Resource.Phase {
-					case string(robotv1alpha1.RobotIDEPhaseRunning):
+					switch instance.Status.DevSpaceIDEStatus.Resource.Phase {
+					case string(robotv1alpha1.DevSpaceIDEPhaseRunning):
 
 						instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseRunning
 
@@ -169,12 +169,12 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 				case false:
 
-					instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingRobotIDE
-					err := r.reconcileCreateRobotIDE(ctx, instance)
+					instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingDevSpaceIDE
+					err := r.reconcileCreateDevSpaceIDE(ctx, instance)
 					if err != nil {
 						return err
 					}
-					instance.Status.RobotIDEStatus.Resource.Created = true
+					instance.Status.DevSpaceIDEStatus.Resource.Created = true
 
 				}
 
@@ -190,7 +190,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 		instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseDeactivating
 
-		err := r.reconcileDeleteRobotIDE(ctx, instance)
+		err := r.reconcileDeleteDevSpaceIDE(ctx, instance)
 		if err != nil {
 			return err
 		}
@@ -214,7 +214,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckResources(ctx context.Context, i
 		return err
 	}
 
-	err = r.reconcileCheckRobotIDE(ctx, instance)
+	err = r.reconcileCheckDevSpaceIDE(ctx, instance)
 	if err != nil {
 		return err
 	}
@@ -227,7 +227,7 @@ func (r *RobotDevSuiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&robotv1alpha1.RobotDevSuite{}).
 		Owns(&robotv1alpha1.RobotVDI{}).
-		Owns(&robotv1alpha1.RobotIDE{}).
+		Owns(&robotv1alpha1.DevSpaceIDE{}).
 		Watches(
 			&source.Kind{Type: &robotv1alpha1.Robot{}},
 			handler.EnqueueRequestsFromMapFunc(r.watchRobots),

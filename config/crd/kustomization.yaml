@@ -5,7 +5,7 @@ resources:
 - bases/robot.roboscale.io_robots.yaml
 - bases/robot.roboscale.io_robotdevsuites.yaml
 - bases/robot.roboscale.io_robotvdis.yaml
-- bases/robot.roboscale.io_robotides.yaml
+- bases/robot.roboscale.io_devspaceides.yaml
 - bases/robot.roboscale.io_workspacemanagers.yaml
 - bases/multicluster.x-k8s.io_serviceexports.yaml
 - bases/multicluster.x-k8s.io_serviceimports.yaml
@@ -17,7 +17,7 @@ patchesStrategicMerge:
 - patches/webhook_in_robots.yaml
 #- patches/webhook_in_robotdevsuites.yaml
 - patches/webhook_in_robotvdis.yaml
-#- patches/webhook_in_robotides.yaml
+#- patches/webhook_in_devspaceides.yaml
 - patches/webhook_in_workspacemanagers.yaml
 #+kubebuilder:scaffold:crdkustomizewebhookpatch
 
@@ -26,7 +26,7 @@ patchesStrategicMerge:
 - patches/cainjection_in_robots.yaml
 #- patches/cainjection_in_robotdevsuites.yaml
 - patches/cainjection_in_robotvdis.yaml
-#- patches/cainjection_in_robotides.yaml
+#- patches/cainjection_in_devspaceides.yaml
 - patches/cainjection_in_workspacemanagers.yaml
 #+kubebuilder:scaffold:crdkustomizecainjectionpatch
 

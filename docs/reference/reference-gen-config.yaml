@@ -6,7 +6,7 @@ processor:
     - "WorkspaceManager"
     - "RobotDevSuite"
     - "RobotVDI"
-    - "RobotIDE"
+    - "DevSpaceIDE"
   ignoreFields:
     - "TypeMeta$"
 

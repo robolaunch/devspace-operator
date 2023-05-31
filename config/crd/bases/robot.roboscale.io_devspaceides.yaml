@@ -5,20 +5,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
-  name: robotides.robot.roboscale.io
+  name: devspaceides.robot.roboscale.io
 spec:
   group: robot.roboscale.io
   names:
-    kind: RobotIDE
-    listKind: RobotIDEList
-    plural: robotides
-    singular: robotide
+    kind: DevSpaceIDE
+    listKind: DevSpaceIDEList
+    plural: devspaceides
+    singular: devspaceide
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: RobotIDE creates and manages Cloud IDE resources and workloads.
+        description: DevSpaceIDE creates and manages Cloud IDE resources and workloads.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -33,7 +33,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: Specification of the desired behavior of the RobotIDE.
+            description: Specification of the desired behavior of the DevSpaceIDE.
             properties:
               display:
                 description: Cloud IDE connects an X11 socket if it's set to `true`
@@ -41,11 +41,11 @@ spec:
                   Applications that requires GUI can be executed such as rViz.
                 type: boolean
               ingress:
-                description: '[*alpha*] RobotIDE will create an Ingress resource if
-                  `true`.'
+                description: '[*alpha*] DevSpaceIDE will create an Ingress resource
+                  if `true`.'
                 type: boolean
               privileged:
-                description: If `true`, containers of RobotIDE will be privileged
+                description: If `true`, containers of DevSpaceIDE will be privileged
                   containers. It can be used in physical instances where it's necessary
                   to access I/O devices on the host machine. Not recommended to activate
                   this field on cloud instances.
@@ -75,7 +75,7 @@ spec:
                 type: string
             type: object
           status:
-            description: Most recently observed status of the RobotIDE.
+            description: Most recently observed status of the DevSpaceIDE.
             properties:
               ingressStatus:
                 description: Status of Cloud IDE Ingress.
@@ -127,7 +127,7 @@ spec:
                 - created
                 type: object
               phase:
-                description: Phase of RobotIDE.
+                description: Phase of DevSpaceIDE.
                 type: string
               podStatus:
                 description: Status of Cloud IDE pod.

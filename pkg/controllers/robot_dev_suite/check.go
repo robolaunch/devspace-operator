@@ -50,13 +50,13 @@ func (r *RobotDevSuiteReconciler) reconcileCheckRobotVDI(ctx context.Context, in
 	return nil
 }
 
-func (r *RobotDevSuiteReconciler) reconcileCheckRobotIDE(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *RobotDevSuiteReconciler) reconcileCheckDevSpaceIDE(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
 
-	robotIDEQuery := &robotv1alpha1.RobotIDE{}
-	err := r.Get(ctx, *instance.GetRobotIDEMetadata(), robotIDEQuery)
+	devSpaceIDEQuery := &robotv1alpha1.DevSpaceIDE{}
+	err := r.Get(ctx, *instance.GetDevSpaceIDEMetadata(), devSpaceIDEQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.RobotIDEStatus = robotv1alpha1.OwnedRobotServiceStatus{}
+			instance.Status.DevSpaceIDEStatus = robotv1alpha1.OwnedRobotServiceStatus{}
 		} else {
 			return err
 		}
@@ -64,22 +64,22 @@ func (r *RobotDevSuiteReconciler) reconcileCheckRobotIDE(ctx context.Context, in
 
 		if instance.Spec.IDEEnabled {
 
-			if !reflect.DeepEqual(instance.Spec.RobotIDETemplate, robotIDEQuery.Spec) {
-				robotIDEQuery.Spec = instance.Spec.RobotIDETemplate
-				err = r.Update(ctx, robotIDEQuery)
+			if !reflect.DeepEqual(instance.Spec.DevSpaceIDETemplate, devSpaceIDEQuery.Spec) {
+				devSpaceIDEQuery.Spec = instance.Spec.DevSpaceIDETemplate
+				err = r.Update(ctx, devSpaceIDEQuery)
 				if err != nil {
 					return err
 				}
 			}
 
-			instance.Status.RobotIDEStatus.Resource.Created = true
-			reference.SetReference(&instance.Status.RobotIDEStatus.Resource.Reference, robotIDEQuery.TypeMeta, robotIDEQuery.ObjectMeta)
-			instance.Status.RobotIDEStatus.Resource.Phase = string(robotIDEQuery.Status.Phase)
-			instance.Status.RobotIDEStatus.Connection = robotIDEQuery.Status.ServiceStatus.URL
+			instance.Status.DevSpaceIDEStatus.Resource.Created = true
+			reference.SetReference(&instance.Status.DevSpaceIDEStatus.Resource.Reference, devSpaceIDEQuery.TypeMeta, devSpaceIDEQuery.ObjectMeta)
+			instance.Status.DevSpaceIDEStatus.Resource.Phase = string(devSpaceIDEQuery.Status.Phase)
+			instance.Status.DevSpaceIDEStatus.Connection = devSpaceIDEQuery.Status.ServiceStatus.URL
 
 		} else {
 
-			err := r.Delete(ctx, robotIDEQuery)
+			err := r.Delete(ctx, devSpaceIDEQuery)
 			if err != nil {
 				return err
 			}

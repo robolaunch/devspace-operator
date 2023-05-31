@@ -10,9 +10,9 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-func (r *RobotIDEReconciler) reconcileCreateService(ctx context.Context, instance *robotv1alpha1.RobotIDE) error {
+func (r *DevSpaceIDEReconciler) reconcileCreateService(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
 
-	ideService := resources.GetRobotIDEService(instance, instance.GetRobotIDEServiceMetadata())
+	ideService := resources.GetDevSpaceIDEService(instance, instance.GetDevSpaceIDEServiceMetadata())
 
 	err := ctrl.SetControllerReference(instance, ideService, r.Scheme)
 	if err != nil {
@@ -31,7 +31,7 @@ func (r *RobotIDEReconciler) reconcileCreateService(ctx context.Context, instanc
 	return nil
 }
 
-func (r *RobotIDEReconciler) reconcileCreatePod(ctx context.Context, instance *robotv1alpha1.RobotIDE) error {
+func (r *DevSpaceIDEReconciler) reconcileCreatePod(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
 
 	robot, err := r.reconcileGetTargetRobot(ctx, instance)
 	if err != nil {
@@ -51,7 +51,7 @@ func (r *RobotIDEReconciler) reconcileCreatePod(ctx context.Context, instance *r
 		return err
 	}
 
-	idePod := resources.GetRobotIDEPod(instance, instance.GetRobotIDEPodMetadata(), *robot, *robotVDI, *activeNode)
+	idePod := resources.GetDevSpaceIDEPod(instance, instance.GetDevSpaceIDEPodMetadata(), *robot, *robotVDI, *activeNode)
 
 	err = ctrl.SetControllerReference(instance, idePod, r.Scheme)
 	if err != nil {
@@ -70,14 +70,14 @@ func (r *RobotIDEReconciler) reconcileCreatePod(ctx context.Context, instance *r
 	return nil
 }
 
-func (r *RobotIDEReconciler) reconcileCreateIngress(ctx context.Context, instance *robotv1alpha1.RobotIDE) error {
+func (r *DevSpaceIDEReconciler) reconcileCreateIngress(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
 
 	robot, err := r.reconcileGetTargetRobot(ctx, instance)
 	if err != nil {
 		return err
 	}
 
-	ideIngress := resources.GetRobotIDEIngress(instance, instance.GetRobotIDEIngressMetadata(), *robot)
+	ideIngress := resources.GetDevSpaceIDEIngress(instance, instance.GetDevSpaceIDEIngressMetadata(), *robot)
 
 	err = ctrl.SetControllerReference(instance, ideIngress, r.Scheme)
 	if err != nil {

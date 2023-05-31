@@ -96,33 +96,33 @@ func (r *RobotReconciler) reconcileCheckLoaderJob(ctx context.Context, instance 
 	return nil
 }
 
-func (r *RobotReconciler) reconcileCheckRobotDevSuite(ctx context.Context, instance *robotv1alpha1.Robot) error {
+func (r *RobotReconciler) reconcileCheckDevSuite(ctx context.Context, instance *robotv1alpha1.Robot) error {
 
-	robotDevSuiteQuery := &robotv1alpha1.RobotDevSuite{}
-	err := r.Get(ctx, *instance.GetRobotDevSuiteMetadata(), robotDevSuiteQuery)
+	devSuiteQuery := &robotv1alpha1.DevSuite{}
+	err := r.Get(ctx, *instance.GetDevSuiteMetadata(), devSuiteQuery)
 	if err != nil && errors.IsNotFound(err) {
-		instance.Status.RobotDevSuiteStatus = robotv1alpha1.RobotDevSuiteInstanceStatus{}
+		instance.Status.DevSuiteStatus = robotv1alpha1.DevSuiteInstanceStatus{}
 	} else if err != nil {
 		return err
 	} else {
 
-		if instance.Spec.RobotDevSuiteTemplate.IDEEnabled || instance.Spec.RobotDevSuiteTemplate.VDIEnabled {
+		if instance.Spec.DevSuiteTemplate.IDEEnabled || instance.Spec.DevSuiteTemplate.VDIEnabled {
 
-			if !reflect.DeepEqual(instance.Spec.RobotDevSuiteTemplate, robotDevSuiteQuery.Spec) {
-				robotDevSuiteQuery.Spec = instance.Spec.RobotDevSuiteTemplate
-				err = r.Update(ctx, robotDevSuiteQuery)
+			if !reflect.DeepEqual(instance.Spec.DevSuiteTemplate, devSuiteQuery.Spec) {
+				devSuiteQuery.Spec = instance.Spec.DevSuiteTemplate
+				err = r.Update(ctx, devSuiteQuery)
 				if err != nil {
 					return err
 				}
 			}
 
-			instance.Status.RobotDevSuiteStatus.Resource.Created = true
-			reference.SetReference(&instance.Status.RobotDevSuiteStatus.Resource.Reference, robotDevSuiteQuery.TypeMeta, robotDevSuiteQuery.ObjectMeta)
-			instance.Status.RobotDevSuiteStatus.Status = robotDevSuiteQuery.Status
+			instance.Status.DevSuiteStatus.Resource.Created = true
+			reference.SetReference(&instance.Status.DevSuiteStatus.Resource.Reference, devSuiteQuery.TypeMeta, devSuiteQuery.ObjectMeta)
+			instance.Status.DevSuiteStatus.Status = devSuiteQuery.Status
 
 		} else {
 
-			err := r.Delete(ctx, robotDevSuiteQuery)
+			err := r.Delete(ctx, devSuiteQuery)
 			if err != nil {
 				return err
 			}

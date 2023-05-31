@@ -24,25 +24,25 @@ func (r *RobotReconciler) reconcileAttachDevObject(ctx context.Context, instance
 
 	robotSelector := labels.NewSelector().Add(requirements...)
 
-	robotDevSuiteList := robotv1alpha1.RobotDevSuiteList{}
-	err = r.List(ctx, &robotDevSuiteList, &client.ListOptions{Namespace: instance.Namespace, LabelSelector: robotSelector})
+	devSuiteList := robotv1alpha1.DevSuiteList{}
+	err = r.List(ctx, &devSuiteList, &client.ListOptions{Namespace: instance.Namespace, LabelSelector: robotSelector})
 	if err != nil {
 		return err
 	}
 
-	if len(robotDevSuiteList.Items) == 0 {
+	if len(devSuiteList.Items) == 0 {
 		instance.Status.AttachedDevObjects = []robotv1alpha1.AttachedDevObject{}
 		return nil
 	}
 
 	// Sort attached dev objects for this robot according to their creation timestamps
-	sort.SliceStable(robotDevSuiteList.Items[:], func(i, j int) bool {
-		return robotDevSuiteList.Items[i].CreationTimestamp.String() < robotDevSuiteList.Items[j].CreationTimestamp.String()
+	sort.SliceStable(devSuiteList.Items[:], func(i, j int) bool {
+		return devSuiteList.Items[i].CreationTimestamp.String() < devSuiteList.Items[j].CreationTimestamp.String()
 	})
 
 	instance.Status.AttachedDevObjects = []robotv1alpha1.AttachedDevObject{}
 
-	for _, rds := range robotDevSuiteList.Items {
+	for _, rds := range devSuiteList.Items {
 		instance.Status.AttachedDevObjects = append(instance.Status.AttachedDevObjects, robotv1alpha1.AttachedDevObject{
 			Reference: corev1.ObjectReference{
 				Kind:            rds.Kind,

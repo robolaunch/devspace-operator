@@ -1,27 +1,31 @@
-# permissions for end users to view robotdevsuites.
+# permissions for end users to edit devsuites.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/instance: robotdevsuite-viewer-role
+    app.kubernetes.io/instance: devsuite-editor-role
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: robot-operator
     app.kubernetes.io/part-of: robot-operator
     app.kubernetes.io/managed-by: kustomize
-  name: robotdevsuite-viewer-role
+  name: devsuite-editor-role
 rules:
 - apiGroups:
   - robot.roboscale.io
   resources:
-  - robotdevsuites
+  - devsuites
   verbs:
+  - create
+  - delete
   - get
   - list
+  - patch
+  - update
   - watch
 - apiGroups:
   - robot.roboscale.io
   resources:
-  - robotdevsuites/status
+  - devsuites/status
   verbs:
   - get

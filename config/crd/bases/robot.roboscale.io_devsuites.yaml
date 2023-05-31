@@ -5,20 +5,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
-  name: robotdevsuites.robot.roboscale.io
+  name: devsuites.robot.roboscale.io
 spec:
   group: robot.roboscale.io
   names:
-    kind: RobotDevSuite
-    listKind: RobotDevSuiteList
-    plural: robotdevsuites
-    singular: robotdevsuite
+    kind: DevSuite
+    listKind: DevSuiteList
+    plural: devsuites
+    singular: devsuite
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: RobotDevSuite is a custom resource that creates dynamically configured
+        description: DevSuite is a custom resource that creates dynamically configured
           development environments for robots.
         properties:
           apiVersion:
@@ -34,7 +34,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: Specification of the desired behavior of the RobotDevSuite.
+            description: Specification of the desired behavior of the DevSuite.
             properties:
               devSpaceIDETemplate:
                 description: Configurational parameters of DevSpaceIDE. Applied if
@@ -143,11 +143,11 @@ spec:
                 type: boolean
             type: object
           status:
-            description: Most recently observed status of the RobotDevSuite.
+            description: Most recently observed status of the DevSuite.
             properties:
               active:
-                description: '[*alpha*] Indicates if RobotDevSuite is attached to
-                  a Robot and actively provisioned it''s resources.'
+                description: '[*alpha*] Indicates if DevSuite is attached to a Robot
+                  and actively provisioned it''s resources.'
                 type: boolean
               devSpaceIDEStatus:
                 description: Status of DevSpaceIDE.
@@ -266,7 +266,7 @@ spec:
                     type: object
                 type: object
               phase:
-                description: Phase of RobotDevSuite.
+                description: Phase of DevSuite.
                 type: string
             type: object
         type: object

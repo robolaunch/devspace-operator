@@ -31,8 +31,8 @@ func (c *FakeRoboscaleV1alpha1) Robots(namespace string) v1alpha1.RobotInterface
 	return &FakeRobots{c, namespace}
 }
 
-func (c *FakeRoboscaleV1alpha1) RobotDevSuites(namespace string) v1alpha1.RobotDevSuiteInterface {
-	return &FakeRobotDevSuites{c, namespace}
+func (c *FakeRoboscaleV1alpha1) DevSuites(namespace string) v1alpha1.DevSuiteInterface {
+	return &FakeDevSuites{c, namespace}
 }
 
 func (c *FakeRoboscaleV1alpha1) DevSpaceIDEs(namespace string) v1alpha1.DevSpaceIDEInterface {

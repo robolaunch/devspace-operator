@@ -31,59 +31,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// RobotDevSuiteInformer provides access to a shared informer and lister for
-// RobotDevSuites.
-type RobotDevSuiteInformer interface {
+// DevSuiteInformer provides access to a shared informer and lister for
+// DevSuites.
+type DevSuiteInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.RobotDevSuiteLister
+	Lister() v1alpha1.DevSuiteLister
 }
 
-type robotDevSuiteInformer struct {
+type devSuiteInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewRobotDevSuiteInformer constructs a new informer for RobotDevSuite type.
+// NewDevSuiteInformer constructs a new informer for DevSuite type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewRobotDevSuiteInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredRobotDevSuiteInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewDevSuiteInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredDevSuiteInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredRobotDevSuiteInformer constructs a new informer for RobotDevSuite type.
+// NewFilteredDevSuiteInformer constructs a new informer for DevSuite type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredRobotDevSuiteInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredDevSuiteInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RoboscaleV1alpha1().RobotDevSuites(namespace).List(context.TODO(), options)
+				return client.RoboscaleV1alpha1().DevSuites(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RoboscaleV1alpha1().RobotDevSuites(namespace).Watch(context.TODO(), options)
+				return client.RoboscaleV1alpha1().DevSuites(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&roboscaleiov1alpha1.RobotDevSuite{},
+		&roboscaleiov1alpha1.DevSuite{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *robotDevSuiteInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredRobotDevSuiteInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *devSuiteInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredDevSuiteInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *robotDevSuiteInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&roboscaleiov1alpha1.RobotDevSuite{}, f.defaultInformer)
+func (f *devSuiteInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&roboscaleiov1alpha1.DevSuite{}, f.defaultInformer)
 }
 
-func (f *robotDevSuiteInformer) Lister() v1alpha1.RobotDevSuiteLister {
-	return v1alpha1.NewRobotDevSuiteLister(f.Informer().GetIndexer())
+func (f *devSuiteInformer) Lister() v1alpha1.DevSuiteLister {
+	return v1alpha1.NewDevSuiteLister(f.Informer().GetIndexer())
 }

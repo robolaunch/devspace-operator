@@ -107,14 +107,14 @@ func (r *RobotReconciler) reconcileCheckStatus(ctx context.Context, instance *ro
 			switch instance.Status.LoaderJobStatus.Phase {
 			case string(robotv1alpha1.JobSucceeded):
 
-				switch instance.Spec.RobotDevSuiteTemplate.IDEEnabled || instance.Spec.RobotDevSuiteTemplate.VDIEnabled {
+				switch instance.Spec.DevSuiteTemplate.IDEEnabled || instance.Spec.DevSuiteTemplate.VDIEnabled {
 				case true:
 
-					switch instance.Status.RobotDevSuiteStatus.Resource.Created {
+					switch instance.Status.DevSuiteStatus.Resource.Created {
 					case true:
 
-						switch instance.Status.RobotDevSuiteStatus.Status.Phase {
-						case robotv1alpha1.RobotDevSuitePhaseRunning:
+						switch instance.Status.DevSuiteStatus.Status.Phase {
+						case robotv1alpha1.DevSuitePhaseRunning:
 
 							instance.Status.Phase = robotv1alpha1.RobotPhaseEnvironmentReady
 
@@ -123,11 +123,11 @@ func (r *RobotReconciler) reconcileCheckStatus(ctx context.Context, instance *ro
 					case false:
 
 						instance.Status.Phase = robotv1alpha1.RobotPhaseCreatingDevelopmentSuite
-						err := r.createRobotDevSuite(ctx, instance, instance.GetRobotDevSuiteMetadata())
+						err := r.createDevSuite(ctx, instance, instance.GetDevSuiteMetadata())
 						if err != nil {
 							return err
 						}
-						instance.Status.RobotDevSuiteStatus.Resource.Created = true
+						instance.Status.DevSuiteStatus.Resource.Created = true
 
 					}
 
@@ -218,7 +218,7 @@ func (r *RobotReconciler) reconcileCheckResources(ctx context.Context, instance 
 		return err
 	}
 
-	err = r.reconcileCheckRobotDevSuite(ctx, instance)
+	err = r.reconcileCheckDevSuite(ctx, instance)
 	if err != nil {
 		return err
 	}
@@ -239,15 +239,15 @@ func (r *RobotReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&batchv1.Job{}).
 		Owns(&robotv1alpha1.WorkspaceManager{}).
 		Watches(
-			&source.Kind{Type: &robotv1alpha1.RobotDevSuite{}},
-			handler.EnqueueRequestsFromMapFunc(r.watchAttachedRobotDevSuites),
+			&source.Kind{Type: &robotv1alpha1.DevSuite{}},
+			handler.EnqueueRequestsFromMapFunc(r.watchAttachedDevSuites),
 		).
 		Complete(r)
 }
 
-func (r *RobotReconciler) watchAttachedRobotDevSuites(o client.Object) []reconcile.Request {
+func (r *RobotReconciler) watchAttachedDevSuites(o client.Object) []reconcile.Request {
 
-	obj := o.(*robotv1alpha1.RobotDevSuite)
+	obj := o.(*robotv1alpha1.DevSuite)
 
 	robot := &robotv1alpha1.Robot{}
 	err := r.Get(context.TODO(), types.NamespacedName{

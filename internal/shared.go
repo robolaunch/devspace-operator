@@ -72,7 +72,7 @@ const (
 	INGRESS_IDE_POSTFIX = ""
 )
 
-// RobotDevSuite owned resources' postfixes
+// DevSuite owned resources' postfixes
 const (
 	DEVSPACE_VDI_POSTFIX = "-vdi"
 	DEVSPACE_IDE_POSTFIX = "-ide"

@@ -9,7 +9,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-func (r *RobotDevSuiteReconciler) reconcileCreateDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *DevSuiteReconciler) reconcileCreateDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
 
 	devSpaceVDI := resources.GetDevSpaceVDI(instance, instance.GetDevSpaceVDIMetadata())
 
@@ -30,7 +30,7 @@ func (r *RobotDevSuiteReconciler) reconcileCreateDevSpaceVDI(ctx context.Context
 	return nil
 }
 
-func (r *RobotDevSuiteReconciler) reconcileCreateDevSpaceIDE(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *DevSuiteReconciler) reconcileCreateDevSpaceIDE(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
 
 	devSpaceIDE := resources.GetDevSpaceIDE(instance, instance.GetDevSpaceIDEMetadata())
 

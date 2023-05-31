@@ -85,13 +85,13 @@ func (r *WorkspaceManagerReconciler) reconcileCheckOtherAttachedResources(ctx co
 
 	robotSelector := labels.NewSelector().Add(requirements...)
 
-	robotDevSuiteList := robotv1alpha1.RobotDevSuiteList{}
-	err = r.List(ctx, &robotDevSuiteList, &client.ListOptions{Namespace: instance.Namespace, LabelSelector: robotSelector.Add()})
+	devSuiteList := robotv1alpha1.DevSuiteList{}
+	err = r.List(ctx, &devSuiteList, &client.ListOptions{Namespace: instance.Namespace, LabelSelector: robotSelector.Add()})
 	if err != nil {
 		return err
 	}
 
-	for _, rds := range robotDevSuiteList.Items {
+	for _, rds := range devSuiteList.Items {
 
 		if rds.Status.Active {
 			return &robotErr.RobotResourcesHasNotBeenReleasedError{
@@ -101,7 +101,7 @@ func (r *WorkspaceManagerReconciler) reconcileCheckOtherAttachedResources(ctx co
 			}
 		}
 
-		if rds.Status.Phase != robotv1alpha1.RobotDevSuitePhaseInactive {
+		if rds.Status.Phase != robotv1alpha1.DevSuitePhaseInactive {
 			return &robotErr.RobotResourcesHasNotBeenReleasedError{
 				ResourceKind:      instance.Kind,
 				ResourceName:      instance.Name,

@@ -25,8 +25,8 @@ import (
 type Interface interface {
 	// Robots returns a RobotInformer.
 	Robots() RobotInformer
-	// RobotDevSuites returns a RobotDevSuiteInformer.
-	RobotDevSuites() RobotDevSuiteInformer
+	// DevSuites returns a DevSuiteInformer.
+	DevSuites() DevSuiteInformer
 	// DevSpaceIDEs returns a DevSpaceIDEInformer.
 	DevSpaceIDEs() DevSpaceIDEInformer
 	// DevSpaceVDIs returns a DevSpaceVDIInformer.
@@ -49,9 +49,9 @@ func (v *version) Robots() RobotInformer {
 	return &robotInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// RobotDevSuites returns a RobotDevSuiteInformer.
-func (v *version) RobotDevSuites() RobotDevSuiteInformer {
-	return &robotDevSuiteInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// DevSuites returns a DevSuiteInformer.
+func (v *version) DevSuites() DevSuiteInformer {
+	return &devSuiteInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // DevSpaceIDEs returns a DevSpaceIDEInformer.

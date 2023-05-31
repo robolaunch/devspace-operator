@@ -19,7 +19,7 @@ package v1alpha1
 
 type RobotExpansion interface{}
 
-type RobotDevSuiteExpansion interface{}
+type DevSuiteExpansion interface{}
 
 type DevSpaceIDEExpansion interface{}
 

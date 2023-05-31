@@ -7,33 +7,33 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 )
 
-func GetDevSpaceVDI(robotDevSuite *robotv1alpha1.RobotDevSuite, devSpaceVDINamespacedName *types.NamespacedName) *robotv1alpha1.DevSpaceVDI {
+func GetDevSpaceVDI(devSuite *robotv1alpha1.DevSuite, devSpaceVDINamespacedName *types.NamespacedName) *robotv1alpha1.DevSpaceVDI {
 
 	devSpaceVDI := robotv1alpha1.DevSpaceVDI{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      devSpaceVDINamespacedName.Name,
 			Namespace: devSpaceVDINamespacedName.Namespace,
-			Labels:    robotDevSuite.Labels,
+			Labels:    devSuite.Labels,
 		},
-		Spec: robotDevSuite.Spec.DevSpaceVDITemplate,
+		Spec: devSuite.Spec.DevSpaceVDITemplate,
 	}
 
 	return &devSpaceVDI
 }
 
-func GetDevSpaceIDE(robotDevSuite *robotv1alpha1.RobotDevSuite, devSpaceIDENamespacedName *types.NamespacedName) *robotv1alpha1.DevSpaceIDE {
+func GetDevSpaceIDE(devSuite *robotv1alpha1.DevSuite, devSpaceIDENamespacedName *types.NamespacedName) *robotv1alpha1.DevSpaceIDE {
 
 	devSpaceIDE := robotv1alpha1.DevSpaceIDE{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      devSpaceIDENamespacedName.Name,
 			Namespace: devSpaceIDENamespacedName.Namespace,
-			Labels:    robotDevSuite.Labels,
+			Labels:    devSuite.Labels,
 		},
-		Spec: robotDevSuite.Spec.DevSpaceIDETemplate,
+		Spec: devSuite.Spec.DevSpaceIDETemplate,
 	}
 
-	if robotDevSuite.Spec.VDIEnabled {
-		devSpaceIDE.Labels[internal.TARGET_VDI_LABEL_KEY] = robotDevSuite.GetDevSpaceVDIMetadata().Name
+	if devSuite.Spec.VDIEnabled {
+		devSpaceIDE.Labels[internal.TARGET_VDI_LABEL_KEY] = devSuite.GetDevSpaceVDIMetadata().Name
 	}
 
 	return &devSpaceIDE

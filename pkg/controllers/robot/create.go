@@ -56,23 +56,23 @@ func (r *RobotReconciler) createJob(ctx context.Context, instance *robotv1alpha1
 	return nil
 }
 
-func (r *RobotReconciler) createRobotDevSuite(ctx context.Context, instance *robotv1alpha1.Robot, rdsNamespacedName *types.NamespacedName) error {
+func (r *RobotReconciler) createDevSuite(ctx context.Context, instance *robotv1alpha1.Robot, rdsNamespacedName *types.NamespacedName) error {
 
-	robotDevSuite := resources.GetRobotDevSuite(instance, rdsNamespacedName)
+	devSuite := resources.GetDevSuite(instance, rdsNamespacedName)
 
-	err := ctrl.SetControllerReference(instance, robotDevSuite, r.Scheme)
+	err := ctrl.SetControllerReference(instance, devSuite, r.Scheme)
 	if err != nil {
 		return err
 	}
 
-	err = r.Create(ctx, robotDevSuite)
+	err = r.Create(ctx, devSuite)
 	if err != nil && errors.IsAlreadyExists(err) {
 		return nil
 	} else if err != nil {
 		return err
 	}
 
-	logger.Info("STATUS: Robot dev suite " + robotDevSuite.Name + " is created.")
+	logger.Info("STATUS: Robot dev suite " + devSuite.Name + " is created.")
 	return nil
 }
 

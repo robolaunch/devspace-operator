@@ -9,19 +9,19 @@ import (
 	"k8s.io/client-go/util/retry"
 )
 
-func (r *RobotDevSuiteReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*robotv1alpha1.RobotDevSuite, error) {
-	instance := &robotv1alpha1.RobotDevSuite{}
+func (r *DevSuiteReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*robotv1alpha1.DevSuite, error) {
+	instance := &robotv1alpha1.DevSuite{}
 	err := r.Get(ctx, meta, instance)
 	if err != nil {
-		return &robotv1alpha1.RobotDevSuite{}, err
+		return &robotv1alpha1.DevSuite{}, err
 	}
 
 	return instance, nil
 }
 
-func (r *RobotDevSuiteReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *DevSuiteReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
 	return retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		instanceLV := &robotv1alpha1.RobotDevSuite{}
+		instanceLV := &robotv1alpha1.DevSuite{}
 		err := r.Get(ctx, types.NamespacedName{
 			Name:      instance.Name,
 			Namespace: instance.Namespace,
@@ -36,7 +36,7 @@ func (r *RobotDevSuiteReconciler) reconcileUpdateInstanceStatus(ctx context.Cont
 	})
 }
 
-func (r *RobotDevSuiteReconciler) reconcileGetTargetRobot(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) (*robotv1alpha1.Robot, error) {
+func (r *DevSuiteReconciler) reconcileGetTargetRobot(ctx context.Context, instance *robotv1alpha1.DevSuite) (*robotv1alpha1.Robot, error) {
 	robot := &robotv1alpha1.Robot{}
 	err := r.Get(ctx, types.NamespacedName{
 		Namespace: instance.Namespace,
@@ -49,7 +49,7 @@ func (r *RobotDevSuiteReconciler) reconcileGetTargetRobot(ctx context.Context, i
 	return robot, nil
 }
 
-func (r *RobotDevSuiteReconciler) reconcileCheckTargetRobot(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *DevSuiteReconciler) reconcileCheckTargetRobot(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
 
 	if label.GetDevSuiteOwned(instance) == "true" {
 		instance.Status.Active = true

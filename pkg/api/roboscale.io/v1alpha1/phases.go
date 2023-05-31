@@ -26,15 +26,15 @@ const (
 	WorkspaceManagerPhaseFailed                WorkspaceManagerPhase = "Failed"
 )
 
-type RobotDevSuitePhase string
+type DevSuitePhase string
 
 const (
-	RobotDevSuitePhaseRobotNotFound       RobotDevSuitePhase = "RobotNotFound"
-	RobotDevSuitePhaseCreatingDevSpaceVDI RobotDevSuitePhase = "CreatingDevSpaceVDI"
-	RobotDevSuitePhaseCreatingDevSpaceIDE RobotDevSuitePhase = "CreatingDevspaceIDE"
-	RobotDevSuitePhaseRunning             RobotDevSuitePhase = "Running"
-	RobotDevSuitePhaseDeactivating        RobotDevSuitePhase = "Deactivating"
-	RobotDevSuitePhaseInactive            RobotDevSuitePhase = "Inactive"
+	DevSuitePhaseRobotNotFound       DevSuitePhase = "RobotNotFound"
+	DevSuitePhaseCreatingDevSpaceVDI DevSuitePhase = "CreatingDevSpaceVDI"
+	DevSuitePhaseCreatingDevSpaceIDE DevSuitePhase = "CreatingDevspaceIDE"
+	DevSuitePhaseRunning             DevSuitePhase = "Running"
+	DevSuitePhaseDeactivating        DevSuitePhase = "Deactivating"
+	DevSuitePhaseInactive            DevSuitePhase = "Inactive"
 )
 
 type DevSpaceIDEPhase string

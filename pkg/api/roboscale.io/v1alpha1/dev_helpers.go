@@ -6,20 +6,20 @@ import (
 )
 
 // ********************************
-// RobotDevSuite helpers
+// DevSuite helpers
 // ********************************
 
-func (robotDevSuite *RobotDevSuite) GetDevSpaceVDIMetadata() *types.NamespacedName {
+func (devSuite *DevSuite) GetDevSpaceVDIMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Namespace: robotDevSuite.Namespace,
-		Name:      robotDevSuite.Name + internal.DEVSPACE_VDI_POSTFIX,
+		Namespace: devSuite.Namespace,
+		Name:      devSuite.Name + internal.DEVSPACE_VDI_POSTFIX,
 	}
 }
 
-func (robotDevSuite *RobotDevSuite) GetDevSpaceIDEMetadata() *types.NamespacedName {
+func (devSuite *DevSuite) GetDevSpaceIDEMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Namespace: robotDevSuite.Namespace,
-		Name:      robotDevSuite.Name + internal.DEVSPACE_IDE_POSTFIX,
+		Namespace: devSuite.Namespace,
+		Name:      devSuite.Name + internal.DEVSPACE_IDE_POSTFIX,
 	}
 }
 

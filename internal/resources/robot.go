@@ -134,7 +134,7 @@ func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.Namespace
 			ImagePullPolicy: corev1.PullAlways,
 			Env: []corev1.EnvVar{
 				internal.Env("NVIDIA_DRIVER_VERSION", "agnostic"),
-				internal.Env("RESOLUTION", robot.Spec.RobotDevSuiteTemplate.DevSpaceVDITemplate.Resolution),
+				internal.Env("RESOLUTION", robot.Spec.DevSuiteTemplate.DevSpaceVDITemplate.Resolution),
 			},
 			VolumeMounts: []corev1.VolumeMount{
 				configure.GetVolumeMount("", configure.GetVolumeVar(robot)),
@@ -166,22 +166,22 @@ func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.Namespace
 	return &job
 }
 
-func GetRobotDevSuite(robot *robotv1alpha1.Robot, rdsNamespacedName *types.NamespacedName) *robotv1alpha1.RobotDevSuite {
+func GetDevSuite(robot *robotv1alpha1.Robot, rdsNamespacedName *types.NamespacedName) *robotv1alpha1.DevSuite {
 
 	labels := robot.Labels
 	labels[internal.TARGET_ROBOT_LABEL_KEY] = robot.Name
 	labels[internal.ROBOT_DEV_SUITE_OWNED] = "true"
 
-	robotDevSuite := robotv1alpha1.RobotDevSuite{
+	devSuite := robotv1alpha1.DevSuite{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      rdsNamespacedName.Name,
 			Namespace: rdsNamespacedName.Namespace,
 			Labels:    robot.Labels,
 		},
-		Spec: robot.Spec.RobotDevSuiteTemplate,
+		Spec: robot.Spec.DevSuiteTemplate,
 	}
 
-	return &robotDevSuite
+	return &devSuite
 
 }
 

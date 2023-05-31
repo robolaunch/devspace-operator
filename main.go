@@ -36,7 +36,7 @@ import (
 
 	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	robot "github.com/robolaunch/devspace-operator/pkg/controllers/robot"
-	robotDevSuite "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite"
+	devSuite "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite"
 	devSpaceIDE "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite/devspace_ide"
 	devSpaceVDI "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite/devspace_vdi"
 	workspaceManager "github.com/robolaunch/devspace-operator/pkg/controllers/workspace_manager"
@@ -126,12 +126,12 @@ func main() {
 		setupLog.Error(err, "unable to create webhook", "webhook", "Robot")
 		os.Exit(1)
 	}
-	if err = (&robotDevSuite.RobotDevSuiteReconciler{
+	if err = (&devSuite.DevSuiteReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		DynamicClient: dynamicClient,
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "RobotDevSuite")
+		setupLog.Error(err, "unable to create controller", "controller", "DevSuite")
 		os.Exit(1)
 	}
 	if err = (&devSpaceVDI.DevSpaceVDIReconciler{

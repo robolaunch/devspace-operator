@@ -23,7 +23,7 @@ resources:
   controller: true
   domain: roboscale.io
   group: robot
-  kind: RobotDevSuite
+  kind: DevSuite
   path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1
 - api:

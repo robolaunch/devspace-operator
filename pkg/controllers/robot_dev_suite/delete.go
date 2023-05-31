@@ -10,7 +10,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func (r *RobotDevSuiteReconciler) reconcileDeleteDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *DevSuiteReconciler) reconcileDeleteDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
 
 	devSpaceVDIQuery := &robotv1alpha1.DevSpaceVDI{}
 	err := r.Get(ctx, *instance.GetDevSpaceVDIMetadata(), devSpaceVDIQuery)
@@ -47,7 +47,7 @@ func (r *RobotDevSuiteReconciler) reconcileDeleteDevSpaceVDI(ctx context.Context
 	return nil
 }
 
-func (r *RobotDevSuiteReconciler) reconcileDeleteDevSpaceIDE(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *DevSuiteReconciler) reconcileDeleteDevSpaceIDE(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
 
 	devSpaceIDEQuery := &robotv1alpha1.DevSpaceIDE{}
 	err := r.Get(ctx, *instance.GetDevSpaceIDEMetadata(), devSpaceIDEQuery)

@@ -45,26 +45,7 @@ spec:
           spec:
             description: Specification of the desired behavior of the Robot.
             properties:
-              development:
-                description: '[*alpha*] Switch to development mode if `true`.'
-                type: boolean
-              distributions:
-                description: ROS 2 distributions to be used. You can select multiple
-                  distributions if they are supported in the same underlying OS. (eg.
-                  `foxy` and `galactic` are supported in Ubuntu Focal, so they can
-                  be used together but both cannot be used with `humble`)
-                items:
-                  description: ROS 2 distribution selection. Currently supported distributions
-                    are Humble, Foxy, Galactic.
-                  enum:
-                  - foxy
-                  - galactic
-                  - humble
-                  type: string
-                maxItems: 2
-                minItems: 1
-                type: array
-              robotDevSuiteTemplate:
+              devSuiteTemplate:
                 description: Robot development suite template
                 properties:
                   devSpaceIDETemplate:
@@ -173,6 +154,25 @@ spec:
                       development suite.
                     type: boolean
                 type: object
+              development:
+                description: '[*alpha*] Switch to development mode if `true`.'
+                type: boolean
+              distributions:
+                description: ROS 2 distributions to be used. You can select multiple
+                  distributions if they are supported in the same underlying OS. (eg.
+                  `foxy` and `galactic` are supported in Ubuntu Focal, so they can
+                  be used together but both cannot be used with `humble`)
+                items:
+                  description: ROS 2 distribution selection. Currently supported distributions
+                    are Humble, Foxy, Galactic.
+                  enum:
+                  - foxy
+                  - galactic
+                  - humble
+                  type: string
+                maxItems: 2
+                minItems: 1
+                type: array
               rootDNSConfig:
                 description: '[*alpha*] Root DNS configuration.'
                 properties:
@@ -300,7 +300,7 @@ spec:
                 items:
                   properties:
                     reference:
-                      description: Reference to the RobotDevSuite instance.
+                      description: Reference to the DevSuite instance.
                       properties:
                         apiVersion:
                           description: API version of the referent.
@@ -338,10 +338,10 @@ spec:
                       type: object
                       x-kubernetes-map-type: atomic
                     status:
-                      description: Status of attached RobotDevSuite.
+                      description: Status of attached DevSuite.
                       properties:
                         active:
-                          description: '[*alpha*] Indicates if RobotDevSuite is attached
+                          description: '[*alpha*] Indicates if DevSuite is attached
                             to a Robot and actively provisioned it''s resources.'
                           type: boolean
                         devSpaceIDEStatus:
@@ -477,71 +477,12 @@ spec:
                               type: object
                           type: object
                         phase:
-                          description: Phase of RobotDevSuite.
+                          description: Phase of DevSuite.
                           type: string
                       type: object
                   type: object
                 type: array
-              image:
-                description: Main image of Robot. It is derived either from the specifications
-                  or determined directly over labels.
-                type: string
-              loaderJobStatus:
-                description: Status of loader job that configures environment.
-                properties:
-                  created:
-                    description: Shows if the owned resource is created.
-                    type: boolean
-                  phase:
-                    description: Phase of the owned resource.
-                    type: string
-                  reference:
-                    description: Reference to the owned resource.
-                    properties:
-                      apiVersion:
-                        description: API version of the referent.
-                        type: string
-                      fieldPath:
-                        description: 'If referring to a piece of an object instead
-                          of an entire object, this string should contain a valid
-                          JSON/Go field access statement, such as desiredState.manifest.containers[2].
-                          For example, if the object reference is to a container within
-                          a pod, this would take on a value like: "spec.containers{name}"
-                          (where "name" refers to the name of the container that triggered
-                          the event) or if no container name is specified "spec.containers[2]"
-                          (container with index 2 in this pod). This syntax is chosen
-                          only to have some well-defined way of referencing a part
-                          of an object. TODO: this design is not final and this field
-                          is subject to change in the future.'
-                        type: string
-                      kind:
-                        description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-                        type: string
-                      name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                        type: string
-                      namespace:
-                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                        type: string
-                      resourceVersion:
-                        description: 'Specific resourceVersion to which this reference
-                          is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
-                        type: string
-                      uid:
-                        description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
-                        type: string
-                    type: object
-                    x-kubernetes-map-type: atomic
-                required:
-                - created
-                type: object
-              nodeName:
-                description: Node that Robot uses. It is selected via tenancy labels.
-                type: string
-              phase:
-                description: Phase of Robot. It sums the general status of Robot.
-                type: string
-              robotDevSuiteStatus:
+              devSuiteStatus:
                 description: Robot development suite instance status.
                 properties:
                   resource:
@@ -595,10 +536,10 @@ spec:
                     - created
                     type: object
                   status:
-                    description: Status of the RobotDevSuite instance.
+                    description: Status of the DevSuite instance.
                     properties:
                       active:
-                        description: '[*alpha*] Indicates if RobotDevSuite is attached
+                        description: '[*alpha*] Indicates if DevSuite is attached
                           to a Robot and actively provisioned it''s resources.'
                         type: boolean
                       devSpaceIDEStatus:
@@ -732,10 +673,69 @@ spec:
                             type: object
                         type: object
                       phase:
-                        description: Phase of RobotDevSuite.
+                        description: Phase of DevSuite.
                         type: string
                     type: object
                 type: object
+              image:
+                description: Main image of Robot. It is derived either from the specifications
+                  or determined directly over labels.
+                type: string
+              loaderJobStatus:
+                description: Status of loader job that configures environment.
+                properties:
+                  created:
+                    description: Shows if the owned resource is created.
+                    type: boolean
+                  phase:
+                    description: Phase of the owned resource.
+                    type: string
+                  reference:
+                    description: Reference to the owned resource.
+                    properties:
+                      apiVersion:
+                        description: API version of the referent.
+                        type: string
+                      fieldPath:
+                        description: 'If referring to a piece of an object instead
+                          of an entire object, this string should contain a valid
+                          JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                          For example, if the object reference is to a container within
+                          a pod, this would take on a value like: "spec.containers{name}"
+                          (where "name" refers to the name of the container that triggered
+                          the event) or if no container name is specified "spec.containers[2]"
+                          (container with index 2 in this pod). This syntax is chosen
+                          only to have some well-defined way of referencing a part
+                          of an object. TODO: this design is not final and this field
+                          is subject to change in the future.'
+                        type: string
+                      kind:
+                        description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                        type: string
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                        type: string
+                      namespace:
+                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                        type: string
+                      resourceVersion:
+                        description: 'Specific resourceVersion to which this reference
+                          is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                        type: string
+                      uid:
+                        description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                        type: string
+                    type: object
+                    x-kubernetes-map-type: atomic
+                required:
+                - created
+                type: object
+              nodeName:
+                description: Node that Robot uses. It is selected via tenancy labels.
+                type: string
+              phase:
+                description: Phase of Robot. It sums the general status of Robot.
+                type: string
               volumeStatuses:
                 description: Robot persists some of the directories of underlying
                   OS inside persistent volumes. This field exposes persistent volume

@@ -66,7 +66,7 @@ func (r *Robot) ValidateCreate() error {
 		return err
 	}
 
-	err = r.checkRobotDevSuite()
+	err = r.checkDevSuite()
 	if err != nil {
 		return err
 	}
@@ -93,7 +93,7 @@ func (r *Robot) ValidateUpdate(old runtime.Object) error {
 		return err
 	}
 
-	err = r.checkRobotDevSuite()
+	err = r.checkDevSuite()
 	if err != nil {
 		return err
 	}
@@ -161,9 +161,9 @@ func (r *Robot) checkWorkspaces() error {
 	return nil
 }
 
-func (r *Robot) checkRobotDevSuite() error {
+func (r *Robot) checkDevSuite() error {
 
-	dst := r.Spec.RobotDevSuiteTemplate
+	dst := r.Spec.DevSuiteTemplate
 
 	if dst.IDEEnabled && dst.DevSpaceIDETemplate.Display && !dst.VDIEnabled {
 		return errors.New("cannot open an ide with a display when vdi disabled")

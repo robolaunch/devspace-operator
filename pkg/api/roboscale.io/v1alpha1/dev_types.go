@@ -22,7 +22,7 @@ import (
 )
 
 func init() {
-	SchemeBuilder.Register(&RobotDevSuite{}, &RobotDevSuiteList{})
+	SchemeBuilder.Register(&DevSuite{}, &DevSuiteList{})
 	SchemeBuilder.Register(&DevSpaceIDE{}, &DevSpaceIDEList{})
 	SchemeBuilder.Register(&DevSpaceVDI{}, &DevSpaceVDIList{})
 }
@@ -31,25 +31,25 @@ func init() {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// RobotDevSuite is a custom resource that creates dynamically configured
+// DevSuite is a custom resource that creates dynamically configured
 // development environments for robots.
-type RobotDevSuite struct {
+type DevSuite struct {
 	metav1.TypeMeta `json:",inline"`
 	// Standard object's metadata.
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// Specification of the desired behavior of the RobotDevSuite.
-	Spec RobotDevSuiteSpec `json:"spec,omitempty"`
-	// Most recently observed status of the RobotDevSuite.
-	Status RobotDevSuiteStatus `json:"status,omitempty"`
+	// Specification of the desired behavior of the DevSuite.
+	Spec DevSuiteSpec `json:"spec,omitempty"`
+	// Most recently observed status of the DevSuite.
+	Status DevSuiteStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// RobotDevSuiteList contains a list of RobotDevSuite.
-type RobotDevSuiteList struct {
+// DevSuiteList contains a list of DevSuite.
+type DevSuiteList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []RobotDevSuite `json:"items"`
+	Items           []DevSuite `json:"items"`
 }
 
 //+genclient
@@ -101,11 +101,11 @@ type DevSpaceVDIList struct {
 }
 
 // ********************************
-// RobotDevSuite types
+// DevSuite types
 // ********************************
 
-// RobotDevSuiteSpec defines the desired state of RobotDevSuite.
-type RobotDevSuiteSpec struct {
+// DevSuiteSpec defines the desired state of DevSuite.
+type DevSuiteSpec struct {
 	// If `true`, a Cloud VDI will be provisioned inside development suite.
 	VDIEnabled bool `json:"vdiEnabled,omitempty"`
 	// Configurational parameters of DevSpaceVDI. Applied if `.spec.vdiEnabled` is set to `true`.
@@ -116,15 +116,15 @@ type RobotDevSuiteSpec struct {
 	DevSpaceIDETemplate DevSpaceIDESpec `json:"devSpaceIDETemplate,omitempty"`
 }
 
-// RobotDevSuiteStatus defines the observed state of RobotDevSuite.
-type RobotDevSuiteStatus struct {
-	// Phase of RobotDevSuite.
-	Phase RobotDevSuitePhase `json:"phase,omitempty"`
+// DevSuiteStatus defines the observed state of DevSuite.
+type DevSuiteStatus struct {
+	// Phase of DevSuite.
+	Phase DevSuitePhase `json:"phase,omitempty"`
 	// Status of DevSpaceVDI.
 	DevSpaceVDIStatus OwnedRobotServiceStatus `json:"devSpaceVDIStatus,omitempty"`
 	// Status of DevSpaceIDE.
 	DevSpaceIDEStatus OwnedRobotServiceStatus `json:"devSpaceIDEStatus,omitempty"`
-	// [*alpha*] Indicates if RobotDevSuite is attached to a Robot and actively provisioned it's resources.
+	// [*alpha*] Indicates if DevSuite is attached to a Robot and actively provisioned it's resources.
 	Active bool `json:"active,omitempty"`
 }
 

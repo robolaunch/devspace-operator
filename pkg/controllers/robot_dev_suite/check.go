@@ -9,7 +9,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 )
 
-func (r *RobotDevSuiteReconciler) reconcileCheckDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *DevSuiteReconciler) reconcileCheckDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
 
 	devSpaceVDIQuery := &robotv1alpha1.DevSpaceVDI{}
 	err := r.Get(ctx, *instance.GetDevSpaceVDIMetadata(), devSpaceVDIQuery)
@@ -50,7 +50,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckDevSpaceVDI(ctx context.Context,
 	return nil
 }
 
-func (r *RobotDevSuiteReconciler) reconcileCheckDevSpaceIDE(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *DevSuiteReconciler) reconcileCheckDevSpaceIDE(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
 
 	devSpaceIDEQuery := &robotv1alpha1.DevSpaceIDE{}
 	err := r.Get(ctx, *instance.GetDevSpaceIDEMetadata(), devSpaceIDEQuery)

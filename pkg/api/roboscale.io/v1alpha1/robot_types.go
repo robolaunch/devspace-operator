@@ -100,7 +100,7 @@ type RobotSpec struct {
 	// This amount is being shared between different components.
 	Storage Storage `json:"storage,omitempty"`
 	// Robot development suite template
-	RobotDevSuiteTemplate RobotDevSuiteSpec `json:"robotDevSuiteTemplate,omitempty"`
+	DevSuiteTemplate DevSuiteSpec `json:"devSuiteTemplate,omitempty"`
 	// Workspace manager template to configure ROS 2 workspaces.
 	WorkspaceManagerTemplate WorkspaceManagerSpec `json:"workspaceManagerTemplate,omitempty"`
 	// [*alpha*] Switch to development mode if `true`.
@@ -133,10 +133,10 @@ const (
 )
 
 type AttachedDevObject struct {
-	// Reference to the RobotDevSuite instance.
+	// Reference to the DevSuite instance.
 	Reference corev1.ObjectReference `json:"reference,omitempty"`
-	// Status of attached RobotDevSuite.
-	Status RobotDevSuiteStatus `json:"status,omitempty"`
+	// Status of attached DevSuite.
+	Status DevSuiteStatus `json:"status,omitempty"`
 }
 
 // RobotStatus defines the observed state of Robot.
@@ -155,7 +155,7 @@ type RobotStatus struct {
 	// Workspace manager instance status if exists.
 	WorkspaceManagerStatus WorkspaceManagerInstanceStatus `json:"workspaceManagerStatus,omitempty"`
 	// Robot development suite instance status.
-	RobotDevSuiteStatus RobotDevSuiteInstanceStatus `json:"robotDevSuiteStatus,omitempty"`
+	DevSuiteStatus DevSuiteInstanceStatus `json:"devSuiteStatus,omitempty"`
 	// [*alpha*] Attached dev object information.
 	AttachedDevObjects []AttachedDevObject `json:"attachedDevObjects,omitempty"`
 }

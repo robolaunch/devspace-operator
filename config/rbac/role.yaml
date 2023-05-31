@@ -132,7 +132,7 @@ rules:
 - apiGroups:
   - robot.roboscale.io
   resources:
-  - robotdevsuites
+  - devsuites
   verbs:
   - create
   - delete
@@ -144,13 +144,13 @@ rules:
 - apiGroups:
   - robot.roboscale.io
   resources:
-  - robotdevsuites/finalizers
+  - devsuites/finalizers
   verbs:
   - update
 - apiGroups:
   - robot.roboscale.io
   resources:
-  - robotdevsuites/status
+  - devsuites/status
   verbs:
   - get
   - patch

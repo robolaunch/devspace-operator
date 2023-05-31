@@ -37,20 +37,20 @@ import (
 	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
-// RobotDevSuiteReconciler reconciles a RobotDevSuite object
-type RobotDevSuiteReconciler struct {
+// DevSuiteReconciler reconciles a DevSuite object
+type DevSuiteReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	DynamicClient dynamic.Interface
 }
 
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=robotdevsuites,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=robotdevsuites/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=robotdevsuites/finalizers,verbs=update
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devsuites,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devsuites/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devsuites/finalizers,verbs=update
 
 var logger logr.Logger
 
-func (r *RobotDevSuiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *DevSuiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger = log.FromContext(ctx)
 
 	instance, err := r.reconcileGetInstance(ctx, req.NamespacedName)
@@ -65,7 +65,7 @@ func (r *RobotDevSuiteReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	err = r.reconcileCheckTargetRobot(ctx, instance)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseRobotNotFound
+			instance.Status.Phase = robotv1alpha1.DevSuitePhaseRobotNotFound
 			instance.Status.Active = false
 		} else {
 			return ctrl.Result{}, err
@@ -95,7 +95,7 @@ func (r *RobotDevSuiteReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	return ctrl.Result{}, nil
 }
 
-func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *DevSuiteReconciler) reconcileCheckStatus(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
 
 	switch instance.Status.Active {
 	case true:
@@ -118,13 +118,13 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 							switch instance.Status.DevSpaceIDEStatus.Resource.Phase {
 							case string(robotv1alpha1.DevSpaceIDEPhaseRunning):
 
-								instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseRunning
+								instance.Status.Phase = robotv1alpha1.DevSuitePhaseRunning
 
 							}
 
 						case false:
 
-							instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingDevSpaceIDE
+							instance.Status.Phase = robotv1alpha1.DevSuitePhaseCreatingDevSpaceIDE
 							err := r.reconcileCreateDevSpaceIDE(ctx, instance)
 							if err != nil {
 								return err
@@ -135,7 +135,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 					case false:
 
-						instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseRunning
+						instance.Status.Phase = robotv1alpha1.DevSuitePhaseRunning
 
 					}
 
@@ -143,7 +143,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 			case false:
 
-				instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingDevSpaceVDI
+				instance.Status.Phase = robotv1alpha1.DevSuitePhaseCreatingDevSpaceVDI
 				err := r.reconcileCreateDevSpaceVDI(ctx, instance)
 				if err != nil {
 					return err
@@ -163,13 +163,13 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 					switch instance.Status.DevSpaceIDEStatus.Resource.Phase {
 					case string(robotv1alpha1.DevSpaceIDEPhaseRunning):
 
-						instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseRunning
+						instance.Status.Phase = robotv1alpha1.DevSuitePhaseRunning
 
 					}
 
 				case false:
 
-					instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingDevSpaceIDE
+					instance.Status.Phase = robotv1alpha1.DevSuitePhaseCreatingDevSpaceIDE
 					err := r.reconcileCreateDevSpaceIDE(ctx, instance)
 					if err != nil {
 						return err
@@ -180,7 +180,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 			case false:
 
-				instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseRunning
+				instance.Status.Phase = robotv1alpha1.DevSuitePhaseRunning
 
 			}
 
@@ -188,7 +188,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 	case false:
 
-		instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseDeactivating
+		instance.Status.Phase = robotv1alpha1.DevSuitePhaseDeactivating
 
 		err := r.reconcileDeleteDevSpaceIDE(ctx, instance)
 		if err != nil {
@@ -200,14 +200,14 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 			return err
 		}
 
-		instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseInactive
+		instance.Status.Phase = robotv1alpha1.DevSuitePhaseInactive
 
 	}
 
 	return nil
 }
 
-func (r *RobotDevSuiteReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *DevSuiteReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
 
 	err := r.reconcileCheckDevSpaceVDI(ctx, instance)
 	if err != nil {
@@ -223,9 +223,9 @@ func (r *RobotDevSuiteReconciler) reconcileCheckResources(ctx context.Context, i
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *RobotDevSuiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *DevSuiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&robotv1alpha1.RobotDevSuite{}).
+		For(&robotv1alpha1.DevSuite{}).
 		Owns(&robotv1alpha1.DevSpaceVDI{}).
 		Owns(&robotv1alpha1.DevSpaceIDE{}).
 		Watches(
@@ -235,7 +235,7 @@ func (r *RobotDevSuiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *RobotDevSuiteReconciler) watchRobots(o client.Object) []reconcile.Request {
+func (r *DevSuiteReconciler) watchRobots(o client.Object) []reconcile.Request {
 
 	robot := o.(*robotv1alpha1.Robot)
 
@@ -249,14 +249,14 @@ func (r *RobotDevSuiteReconciler) watchRobots(o client.Object) []reconcile.Reque
 
 	robotSelector := labels.NewSelector().Add(requirements...)
 
-	robotDevSuiteList := robotv1alpha1.RobotDevSuiteList{}
-	err = r.List(context.TODO(), &robotDevSuiteList, &client.ListOptions{Namespace: robot.Namespace, LabelSelector: robotSelector})
+	devSuiteList := robotv1alpha1.DevSuiteList{}
+	err = r.List(context.TODO(), &devSuiteList, &client.ListOptions{Namespace: robot.Namespace, LabelSelector: robotSelector})
 	if err != nil {
 		return []reconcile.Request{}
 	}
 
-	requests := make([]reconcile.Request, len(robotDevSuiteList.Items))
-	for i, item := range robotDevSuiteList.Items {
+	requests := make([]reconcile.Request, len(devSuiteList.Items))
+	for i, item := range devSuiteList.Items {
 
 		requests[i] = reconcile.Request{
 			NamespacedName: types.NamespacedName{

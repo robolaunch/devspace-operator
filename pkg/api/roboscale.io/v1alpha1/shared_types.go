@@ -36,11 +36,11 @@ type OwnedPodStatus struct {
 	IP string `json:"ip,omitempty"`
 }
 
-type RobotDevSuiteInstanceStatus struct {
+type DevSuiteInstanceStatus struct {
 	// Generic status for any owned resource.
 	Resource OwnedResourceStatus `json:"resource,omitempty"`
-	// Status of the RobotDevSuite instance.
-	Status RobotDevSuiteStatus `json:"status,omitempty"`
+	// Status of the DevSuite instance.
+	Status DevSuiteStatus `json:"status,omitempty"`
 }
 
 type WorkspaceManagerInstanceStatus struct {

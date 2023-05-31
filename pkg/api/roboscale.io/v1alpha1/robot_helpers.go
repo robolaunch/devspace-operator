@@ -53,7 +53,7 @@ func (robot *Robot) GetLoaderJobMetadata() *types.NamespacedName {
 	}
 }
 
-func (robot *Robot) GetRobotDevSuiteMetadata() *types.NamespacedName {
+func (robot *Robot) GetDevSuiteMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Name:      robot.Name + internal.ROBOT_DEV_SUITE_POSTFIX,
 		Namespace: robot.Namespace,

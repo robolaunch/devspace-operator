@@ -37,7 +37,7 @@ import (
 	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	robot "github.com/robolaunch/devspace-operator/pkg/controllers/robot"
 	robotDevSuite "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite"
-	devSpaceIDE "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite/robot_ide"
+	devSpaceIDE "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite/devspace_ide"
 	robotVDI "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite/robot_vdi"
 	workspaceManager "github.com/robolaunch/devspace-operator/pkg/controllers/workspace_manager"
 	//+kubebuilder:scaffold:imports

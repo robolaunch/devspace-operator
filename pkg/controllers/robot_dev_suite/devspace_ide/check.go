@@ -1,4 +1,4 @@
-package robot_ide
+package devspace_ide
 
 import (
 	"context"

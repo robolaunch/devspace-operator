@@ -19,7 +19,7 @@ func (robotDevSuite *RobotDevSuite) GetRobotVDIMetadata() *types.NamespacedName 
 func (robotDevSuite *RobotDevSuite) GetDevSpaceIDEMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Namespace: robotDevSuite.Namespace,
-		Name:      robotDevSuite.Name + internal.ROBOT_IDE_POSTFIX,
+		Name:      robotDevSuite.Name + internal.DEVSPACE_IDE_POSTFIX,
 	}
 }
 

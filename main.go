@@ -38,7 +38,7 @@ import (
 	devSuite "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite"
 	devSpaceIDE "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite/devspace_ide"
 	devSpaceVDI "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite/devspace_vdi"
-	robot "github.com/robolaunch/devspace-operator/pkg/controllers/robot"
+	robot "github.com/robolaunch/devspace-operator/pkg/controllers/devspace"
 	workspaceManager "github.com/robolaunch/devspace-operator/pkg/controllers/workspace_manager"
 	//+kubebuilder:scaffold:imports
 )

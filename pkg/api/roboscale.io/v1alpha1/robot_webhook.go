@@ -19,7 +19,7 @@ func (r *Devspace) SetupWebhookWithManager(mgr ctrl.Manager) error {
 		Complete()
 }
 
-//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-robot,mutating=true,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=robots,verbs=create;update,versions=v1alpha1,name=mrobot.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-robot,mutating=true,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=devspaces,verbs=create;update,versions=v1alpha1,name=mrobot.kb.io,admissionReviewVersions=v1
 
 var _ webhook.Defaulter = &Devspace{}
 
@@ -43,7 +43,7 @@ func DefaultRepositoryPaths(r *Devspace) {
 	}
 }
 
-//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-robot,mutating=false,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=robots,verbs=create;update,versions=v1alpha1,name=vrobot.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-robot,mutating=false,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=devspaces,verbs=create;update,versions=v1alpha1,name=vrobot.kb.io,admissionReviewVersions=v1
 
 var _ webhook.Validator = &Devspace{}
 

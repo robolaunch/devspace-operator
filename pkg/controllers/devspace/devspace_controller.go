@@ -1,4 +1,4 @@
-package robot
+package devspace
 
 import (
 	"context"
@@ -28,9 +28,9 @@ type DevspaceReconciler struct {
 	DynamicClient dynamic.Interface
 }
 
-//+kubebuilder:rbac:groups=dev.roboscale.io,resources=robots,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=dev.roboscale.io,resources=robots/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=dev.roboscale.io,resources=robots/finalizers,verbs=update
+//+kubebuilder:rbac:groups=dev.roboscale.io,resources=devspaces,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=dev.roboscale.io,resources=devspaces/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=dev.roboscale.io,resources=devspaces/finalizers,verbs=update
 
 //+kubebuilder:rbac:groups=core,resources=nodes,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=persistentvolumeclaims,verbs=get;list;watch;create;update;patch;delete

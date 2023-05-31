@@ -42,12 +42,12 @@ spec:
                   up the old configurations. This field is often used by operator.
                 type: boolean
               workspaces:
-                description: Workspace definitions of robot. Multiple ROS 2 workspaces
+                description: Workspace definitions of devspace. Multiple ROS 2 workspaces
                   can be configured over this field.
                 items:
-                  description: Workspace description. Each robot should contain at
-                    least one workspace. A workspace should contain at least one repository
-                    in it.
+                  description: Workspace description. Each devspace should contain
+                    at least one workspace. A workspace should contain at least one
+                    repository in it.
                   properties:
                     distro:
                       description: ROS 2 distribution selection. Currently supported

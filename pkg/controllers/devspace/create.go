@@ -11,7 +11,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-func (r *DevspaceReconciler) createPVC(ctx context.Context, instance *devv1alpha1.Devspace, pvcNamespacedName *types.NamespacedName) error {
+func (r *DevSpaceReconciler) createPVC(ctx context.Context, instance *devv1alpha1.DevSpace, pvcNamespacedName *types.NamespacedName) error {
 
 	pvc := resources.GetPersistentVolumeClaim(instance, pvcNamespacedName)
 
@@ -31,7 +31,7 @@ func (r *DevspaceReconciler) createPVC(ctx context.Context, instance *devv1alpha
 	return nil
 }
 
-func (r *DevspaceReconciler) createJob(ctx context.Context, instance *devv1alpha1.Devspace, jobNamespacedName *types.NamespacedName) error {
+func (r *DevSpaceReconciler) createJob(ctx context.Context, instance *devv1alpha1.DevSpace, jobNamespacedName *types.NamespacedName) error {
 
 	activeNode, err := r.reconcileCheckNode(ctx, instance)
 	if err != nil {
@@ -56,7 +56,7 @@ func (r *DevspaceReconciler) createJob(ctx context.Context, instance *devv1alpha
 	return nil
 }
 
-func (r *DevspaceReconciler) createDevSuite(ctx context.Context, instance *devv1alpha1.Devspace, rdsNamespacedName *types.NamespacedName) error {
+func (r *DevSpaceReconciler) createDevSuite(ctx context.Context, instance *devv1alpha1.DevSpace, rdsNamespacedName *types.NamespacedName) error {
 
 	devSuite := resources.GetDevSuite(instance, rdsNamespacedName)
 
@@ -72,11 +72,11 @@ func (r *DevspaceReconciler) createDevSuite(ctx context.Context, instance *devv1
 		return err
 	}
 
-	logger.Info("STATUS: Devspace dev suite " + devSuite.Name + " is created.")
+	logger.Info("STATUS: DevSpace dev suite " + devSuite.Name + " is created.")
 	return nil
 }
 
-func (r *DevspaceReconciler) createWorkspaceManager(ctx context.Context, instance *devv1alpha1.Devspace, wsmNamespacedName *types.NamespacedName) error {
+func (r *DevSpaceReconciler) createWorkspaceManager(ctx context.Context, instance *devv1alpha1.DevSpace, wsmNamespacedName *types.NamespacedName) error {
 
 	workspaceManager := resources.GetWorkspaceManager(instance, wsmNamespacedName)
 

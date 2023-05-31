@@ -46,7 +46,7 @@ func (r *DevSuiteReconciler) reconcileCreateDevSpaceIDE(ctx context.Context, ins
 		return err
 	}
 
-	logger.Info("STATUS: Devspace IDE is created.")
+	logger.Info("STATUS: DevSpace IDE is created.")
 
 	return nil
 }

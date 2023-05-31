@@ -38,7 +38,7 @@ import (
 	devSuite "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite"
 	devSpaceIDE "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite/devspace_ide"
 	devSpaceVDI "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite/devspace_vdi"
-	robot "github.com/robolaunch/devspace-operator/pkg/controllers/devspace"
+	devspace "github.com/robolaunch/devspace-operator/pkg/controllers/devspace"
 	workspaceManager "github.com/robolaunch/devspace-operator/pkg/controllers/workspace_manager"
 	//+kubebuilder:scaffold:imports
 )
@@ -114,16 +114,16 @@ func main() {
 	// 	setupLog.Error(err, "unable to create REST client")
 	// }
 
-	if err = (&robot.DevspaceReconciler{
+	if err = (&devspace.DevSpaceReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		DynamicClient: dynamicClient,
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Devspace")
+		setupLog.Error(err, "unable to create controller", "controller", "DevSpace")
 		os.Exit(1)
 	}
-	if err = (&devv1alpha1.Devspace{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "Devspace")
+	if err = (&devv1alpha1.DevSpace{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "DevSpace")
 		os.Exit(1)
 	}
 	if err = (&devSuite.DevSuiteReconciler{

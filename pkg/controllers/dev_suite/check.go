@@ -15,7 +15,7 @@ func (r *DevSuiteReconciler) reconcileCheckDevSpaceVDI(ctx context.Context, inst
 	err := r.Get(ctx, *instance.GetDevSpaceVDIMetadata(), devSpaceVDIQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.DevSpaceVDIStatus = devv1alpha1.OwnedDevspaceServiceStatus{}
+			instance.Status.DevSpaceVDIStatus = devv1alpha1.OwnedDevSpaceServiceStatus{}
 		} else {
 			return err
 		}
@@ -56,7 +56,7 @@ func (r *DevSuiteReconciler) reconcileCheckDevSpaceIDE(ctx context.Context, inst
 	err := r.Get(ctx, *instance.GetDevSpaceIDEMetadata(), devSpaceIDEQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.DevSpaceIDEStatus = devv1alpha1.OwnedDevspaceServiceStatus{}
+			instance.Status.DevSpaceIDEStatus = devv1alpha1.OwnedDevSpaceServiceStatus{}
 		} else {
 			return err
 		}

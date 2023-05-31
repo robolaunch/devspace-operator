@@ -1,7 +1,7 @@
 domain: roboscale.io
 layout:
 - go.kubebuilder.io/v3
-projectName: robot-operator
+projectName: devspace-operator
 repo: github.com/robolaunch/devspace-operator
 resources:
 - api:
@@ -9,8 +9,8 @@ resources:
     namespaced: true
   controller: true
   domain: roboscale.io
-  group: robot
-  kind: Devspace
+  group: dev
+  kind: DevSpace
   path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1
   webhooks:
@@ -22,7 +22,7 @@ resources:
     namespaced: true
   controller: true
   domain: roboscale.io
-  group: robot
+  group: dev
   kind: DevSuite
   path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1
@@ -31,7 +31,7 @@ resources:
     namespaced: true
   controller: true
   domain: roboscale.io
-  group: robot
+  group: dev
   kind: DevSpaceVDI
   path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1
@@ -44,7 +44,7 @@ resources:
     namespaced: true
   controller: true
   domain: roboscale.io
-  group: robot
+  group: dev
   kind: DevSpaceIDE
   path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1
@@ -57,7 +57,7 @@ resources:
     namespaced: true
   controller: true
   domain: roboscale.io
-  group: robot
+  group: dev
   kind: WorkspaceManager
   path: github.com/robolaunch/devspace-operator/api/v1alpha1
   version: v1alpha1

@@ -69,7 +69,7 @@ type Repository struct {
 	Hash string `json:"hash,omitempty"`
 }
 
-// Workspace description. Each robot should contain at least one workspace. A workspace should contain at least one
+// Workspace description. Each devspace should contain at least one workspace. A workspace should contain at least one
 // repository in it.
 type Workspace struct {
 	// Name of workspace. If a workspace's name is `my_ws`, it's absolute path is `/home/workspaces/my_ws`.
@@ -85,7 +85,7 @@ type Workspace struct {
 type WorkspaceManagerSpec struct {
 	// Global path of workspaces. It's fixed to `/root/workspaces` path.
 	WorkspacesPath string `json:"workspacesPath,omitempty"`
-	// Workspace definitions of robot.
+	// Workspace definitions of devspace.
 	// Multiple ROS 2 workspaces can be configured over this field.
 	// +kubebuilder:validation:MinItems=1
 	Workspaces []Workspace `json:"workspaces,omitempty"`

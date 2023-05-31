@@ -5,13 +5,13 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func GetVolumeVar(robot *devv1alpha1.Devspace) corev1.Volume {
+func GetVolumeVar(devspace *devv1alpha1.DevSpace) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "var",
 		VolumeSource: corev1.VolumeSource{
 			PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-				ClaimName: robot.GetPVCVarMetadata().Name,
+				ClaimName: devspace.GetPVCVarMetadata().Name,
 			},
 		},
 	}
@@ -19,13 +19,13 @@ func GetVolumeVar(robot *devv1alpha1.Devspace) corev1.Volume {
 	return volume
 }
 
-func GetVolumeOpt(robot *devv1alpha1.Devspace) corev1.Volume {
+func GetVolumeOpt(devspace *devv1alpha1.DevSpace) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "opt",
 		VolumeSource: corev1.VolumeSource{
 			PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-				ClaimName: robot.GetPVCOptMetadata().Name,
+				ClaimName: devspace.GetPVCOptMetadata().Name,
 			},
 		},
 	}
@@ -33,13 +33,13 @@ func GetVolumeOpt(robot *devv1alpha1.Devspace) corev1.Volume {
 	return volume
 }
 
-func GetVolumeUsr(robot *devv1alpha1.Devspace) corev1.Volume {
+func GetVolumeUsr(devspace *devv1alpha1.DevSpace) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "usr",
 		VolumeSource: corev1.VolumeSource{
 			PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-				ClaimName: robot.GetPVCUsrMetadata().Name,
+				ClaimName: devspace.GetPVCUsrMetadata().Name,
 			},
 		},
 	}
@@ -47,13 +47,13 @@ func GetVolumeUsr(robot *devv1alpha1.Devspace) corev1.Volume {
 	return volume
 }
 
-func GetVolumeEtc(robot *devv1alpha1.Devspace) corev1.Volume {
+func GetVolumeEtc(devspace *devv1alpha1.DevSpace) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "etc",
 		VolumeSource: corev1.VolumeSource{
 			PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-				ClaimName: robot.GetPVCEtcMetadata().Name,
+				ClaimName: devspace.GetPVCEtcMetadata().Name,
 			},
 		},
 	}
@@ -75,13 +75,13 @@ func GetVolumeX11Unix(devSpaceVDI *devv1alpha1.DevSpaceVDI) corev1.Volume {
 	return volume
 }
 
-func GetVolumeWorkspace(robot *devv1alpha1.Devspace) corev1.Volume {
+func GetVolumeWorkspace(devspace *devv1alpha1.DevSpace) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "workspace",
 		VolumeSource: corev1.VolumeSource{
 			PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-				ClaimName: robot.GetPVCWorkspaceMetadata().Name,
+				ClaimName: devspace.GetPVCWorkspaceMetadata().Name,
 			},
 		},
 	}

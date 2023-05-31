@@ -16,7 +16,7 @@ func (r *DevSuiteReconciler) reconcileDeleteDevSpaceVDI(ctx context.Context, ins
 	err := r.Get(ctx, *instance.GetDevSpaceVDIMetadata(), devSpaceVDIQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.DevSpaceVDIStatus = devv1alpha1.OwnedDevspaceServiceStatus{}
+			instance.Status.DevSpaceVDIStatus = devv1alpha1.OwnedDevSpaceServiceStatus{}
 		} else {
 			return err
 		}
@@ -41,7 +41,7 @@ func (r *DevSuiteReconciler) reconcileDeleteDevSpaceVDI(ctx context.Context, ins
 			time.Sleep(time.Second * 1)
 		}
 
-		instance.Status.DevSpaceVDIStatus = devv1alpha1.OwnedDevspaceServiceStatus{}
+		instance.Status.DevSpaceVDIStatus = devv1alpha1.OwnedDevSpaceServiceStatus{}
 	}
 
 	return nil
@@ -53,7 +53,7 @@ func (r *DevSuiteReconciler) reconcileDeleteDevSpaceIDE(ctx context.Context, ins
 	err := r.Get(ctx, *instance.GetDevSpaceIDEMetadata(), devSpaceIDEQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.DevSpaceIDEStatus = devv1alpha1.OwnedDevspaceServiceStatus{}
+			instance.Status.DevSpaceIDEStatus = devv1alpha1.OwnedDevSpaceServiceStatus{}
 		} else {
 			return err
 		}
@@ -78,7 +78,7 @@ func (r *DevSuiteReconciler) reconcileDeleteDevSpaceIDE(ctx context.Context, ins
 			time.Sleep(time.Second * 1)
 		}
 
-		instance.Status.DevSpaceIDEStatus = devv1alpha1.OwnedDevspaceServiceStatus{}
+		instance.Status.DevSpaceIDEStatus = devv1alpha1.OwnedDevSpaceServiceStatus{}
 	}
 
 	return nil

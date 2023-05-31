@@ -1,7 +1,7 @@
 package label
 
 import (
-	robotErr "github.com/robolaunch/devspace-operator/internal/error"
+	devspaceErr "github.com/robolaunch/devspace-operator/internal/error"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -9,7 +9,7 @@ func CheckLabelExistence(objMeta metav1.ObjectMeta, typeMeta metav1.TypeMeta, la
 	labels := objMeta.GetLabels()
 	for _, key := range labelKeys {
 		if _, ok := labels[key]; !ok {
-			return &robotErr.LabelNotFoundError{
+			return &devspaceErr.LabelNotFoundError{
 				LabelKey:          key,
 				ResourceKind:      typeMeta.Kind,
 				ResourceName:      objMeta.Name,

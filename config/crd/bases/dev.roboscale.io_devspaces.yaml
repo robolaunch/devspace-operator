@@ -5,14 +5,14 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
-  name: robots.dev.roboscale.io
+  name: devspaces.dev.roboscale.io
 spec:
   group: dev.roboscale.io
   names:
-    kind: Devspace
-    listKind: DevspaceList
-    plural: robots
-    singular: robot
+    kind: DevSpace
+    listKind: DevSpaceList
+    plural: devspaces
+    singular: devspace
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -25,10 +25,10 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Devspace is the custom resource that contains ROS 2 components (Workloads,
-          Cloud VDI, Cloud IDE, ROS Bridge, Configurational Resources), robolaunch
-          Devspace instances can be decomposed and distributed to both cloud instances
-          and physical instances using federation.
+        description: DevSpace is the custom resource that contains ROS 2 components
+          (Workloads, Cloud VDI, Cloud IDE, ROS Bridge, Configurational Resources),
+          robolaunch DevSpace instances can be decomposed and distributed to both
+          cloud instances and physical instances using federation.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -43,10 +43,10 @@ spec:
           metadata:
             type: object
           spec:
-            description: Specification of the desired behavior of the Devspace.
+            description: Specification of the desired behavior of the DevSpace.
             properties:
               devSuiteTemplate:
-                description: Devspace development suite template
+                description: DevSpace development suite template
                 properties:
                   devSpaceIDETemplate:
                     description: Configurational parameters of DevSpaceIDE. Applied
@@ -183,9 +183,9 @@ spec:
                 - host
                 type: object
               storage:
-                description: Total storage amount to persist via Devspace. Unit of measurement
-                  is MB. (eg. `10240` corresponds 10 GB) This amount is being shared
-                  between different components.
+                description: Total storage amount to persist via DevSpace. Unit of
+                  measurement is MB. (eg. `10240` corresponds 10 GB) This amount is
+                  being shared between different components.
                 properties:
                   amount:
                     default: 10000
@@ -194,7 +194,7 @@ spec:
                       GB)
                     type: integer
                   storageClassConfig:
-                    description: Storage class selection for robot's volumes.
+                    description: Storage class selection for devspace's volumes.
                     properties:
                       accessMode:
                         description: PVC access modes. Currently, only `ReadWriteOnce`
@@ -228,10 +228,10 @@ spec:
                       by operator.
                     type: boolean
                   workspaces:
-                    description: Workspace definitions of robot. Multiple ROS 2 workspaces
-                      can be configured over this field.
+                    description: Workspace definitions of devspace. Multiple ROS 2
+                      workspaces can be configured over this field.
                     items:
-                      description: Workspace description. Each robot should contain
+                      description: Workspace description. Each devspace should contain
                         at least one workspace. A workspace should contain at least
                         one repository in it.
                       properties:
@@ -293,7 +293,7 @@ spec:
             - distributions
             type: object
           status:
-            description: Most recently observed status of the Devspace.
+            description: Most recently observed status of the DevSpace.
             properties:
               attachedDevObjects:
                 description: '[*alpha*] Attached dev object information.'
@@ -342,14 +342,14 @@ spec:
                       properties:
                         active:
                           description: '[*alpha*] Indicates if DevSuite is attached
-                            to a Devspace and actively provisioned it''s resources.'
+                            to a DevSpace and actively provisioned it''s resources.'
                           type: boolean
                         devSpaceIDEStatus:
                           description: Status of DevSpaceIDE.
                           properties:
                             connection:
-                              description: Address of the robot service that can be
-                                reached from outside.
+                              description: Address of the devspace service that can
+                                be reached from outside.
                               type: string
                             resource:
                               description: Generic status for any owned resource.
@@ -414,8 +414,8 @@ spec:
                           description: Status of DevSpaceVDI.
                           properties:
                             connection:
-                              description: Address of the robot service that can be
-                                reached from outside.
+                              description: Address of the devspace service that can
+                                be reached from outside.
                               type: string
                             resource:
                               description: Generic status for any owned resource.
@@ -483,7 +483,7 @@ spec:
                   type: object
                 type: array
               devSuiteStatus:
-                description: Devspace development suite instance status.
+                description: DevSpace development suite instance status.
                 properties:
                   resource:
                     description: Generic status for any owned resource.
@@ -540,14 +540,14 @@ spec:
                     properties:
                       active:
                         description: '[*alpha*] Indicates if DevSuite is attached
-                          to a Devspace and actively provisioned it''s resources.'
+                          to a DevSpace and actively provisioned it''s resources.'
                         type: boolean
                       devSpaceIDEStatus:
                         description: Status of DevSpaceIDE.
                         properties:
                           connection:
-                            description: Address of the robot service that can be
-                              reached from outside.
+                            description: Address of the devspace service that can
+                              be reached from outside.
                             type: string
                           resource:
                             description: Generic status for any owned resource.
@@ -611,8 +611,8 @@ spec:
                         description: Status of DevSpaceVDI.
                         properties:
                           connection:
-                            description: Address of the robot service that can be
-                              reached from outside.
+                            description: Address of the devspace service that can
+                              be reached from outside.
                             type: string
                           resource:
                             description: Generic status for any owned resource.
@@ -678,8 +678,8 @@ spec:
                     type: object
                 type: object
               image:
-                description: Main image of Devspace. It is derived either from the specifications
-                  or determined directly over labels.
+                description: Main image of DevSpace. It is derived either from the
+                  specifications or determined directly over labels.
                 type: string
               loaderJobStatus:
                 description: Status of loader job that configures environment.
@@ -731,13 +731,13 @@ spec:
                 - created
                 type: object
               nodeName:
-                description: Node that Devspace uses. It is selected via tenancy labels.
+                description: Node that DevSpace uses. It is selected via tenancy labels.
                 type: string
               phase:
-                description: Phase of Devspace. It sums the general status of Devspace.
+                description: Phase of DevSpace. It sums the general status of DevSpace.
                 type: string
               volumeStatuses:
-                description: Devspace persists some of the directories of underlying
+                description: DevSpace persists some of the directories of underlying
                   OS inside persistent volumes. This field exposes persistent volume
                   claims that dynamically provision PVs.
                 properties:

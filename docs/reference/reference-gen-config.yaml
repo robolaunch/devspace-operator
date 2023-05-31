@@ -2,7 +2,7 @@ processor:
   ignoreTypes:
     - "List$"
   sortKinds:
-    - "Devspace"
+    - "DevSpace"
     - "WorkspaceManager"
     - "DevSuite"
     - "DevSpaceVDI"

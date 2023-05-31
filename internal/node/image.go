@@ -17,12 +17,12 @@ type Platform struct {
 }
 
 type Version struct {
-	Date             string           `yaml:"date"`
-	Version          string           `yaml:"version"`
-	DevspaceicsCloud DevspaceicsCloud `yaml:"roboticsCloud"`
+	Date          string        `yaml:"date"`
+	Version       string        `yaml:"version"`
+	RoboticsCloud RoboticsCloud `yaml:"roboticsCloud"`
 }
 
-type DevspaceicsCloud struct {
+type RoboticsCloud struct {
 	Kubernetes Kubernetes `yaml:"kubernetes"`
 }
 
@@ -31,10 +31,10 @@ type Kubernetes struct {
 }
 
 type Operators struct {
-	DevspaceOperator DevspaceOperator `yaml:"robot"`
+	DevSpaceOperator DevSpaceOperator `yaml:"devspace"`
 }
 
-type DevspaceOperator struct {
+type DevSpaceOperator struct {
 	Images Images `yaml:"images"`
 }
 
@@ -44,19 +44,19 @@ type Images struct {
 	Tags         []string `yaml:"tags"`
 }
 
-// Not used in robot manifest, needed for internal use.
-type ReadyDevspaceProperties struct {
+// Not used in devspace manifest, needed for internal use.
+type ReadyDevSpaceProperties struct {
 	Enabled bool
 	Image   string
 }
 
-func GetReadyDevspaceProperties(robot devv1alpha1.Devspace) ReadyDevspaceProperties {
-	labels := robot.GetLabels()
+func GetReadyDevSpaceProperties(devspace devv1alpha1.DevSpace) ReadyDevSpaceProperties {
+	labels := devspace.GetLabels()
 
-	if user, hasUser := labels[internal.ROBOT_IMAGE_USER]; hasUser {
-		if repository, hasRepository := labels[internal.ROBOT_IMAGE_REPOSITORY]; hasRepository {
-			if tag, hasTag := labels[internal.ROBOT_IMAGE_TAG]; hasTag {
-				return ReadyDevspaceProperties{
+	if user, hasUser := labels[internal.DEVSPACE_IMAGE_USER]; hasUser {
+		if repository, hasRepository := labels[internal.DEVSPACE_IMAGE_REPOSITORY]; hasRepository {
+			if tag, hasTag := labels[internal.DEVSPACE_IMAGE_TAG]; hasTag {
+				return ReadyDevSpaceProperties{
 					Enabled: true,
 					Image:   user + "/" + repository + ":" + tag,
 				}
@@ -64,22 +64,22 @@ func GetReadyDevspaceProperties(robot devv1alpha1.Devspace) ReadyDevspacePropert
 		}
 	}
 
-	return ReadyDevspaceProperties{
+	return ReadyDevSpaceProperties{
 		Enabled: false,
 	}
 }
 
-func GetImage(node corev1.Node, robot devv1alpha1.Devspace) (string, error) {
+func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 
 	var imageBuilder strings.Builder
 	var tagBuilder strings.Builder
 
-	distributions := robot.Spec.Distributions
-	readyDevspace := GetReadyDevspaceProperties(robot)
+	distributions := devspace.Spec.Distributions
+	readyDevSpace := GetReadyDevSpaceProperties(devspace)
 
-	if readyDevspace.Enabled {
+	if readyDevSpace.Enabled {
 
-		imageBuilder.WriteString(readyDevspace.Image)
+		imageBuilder.WriteString(readyDevSpace.Image)
 
 	} else {
 
@@ -158,7 +158,7 @@ func getImageProps(platformVersion string) (Images, error) {
 	var imageProps Images
 	for _, v := range platform.Versions {
 		if v.Version == platformVersion {
-			imageProps = v.DevspaceicsCloud.Kubernetes.Operators.DevspaceOperator.Images
+			imageProps = v.RoboticsCloud.Kubernetes.Operators.DevSpaceOperator.Images
 		}
 	}
 

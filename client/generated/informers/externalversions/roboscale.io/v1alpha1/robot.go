@@ -31,59 +31,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// DevspaceInformer provides access to a shared informer and lister for
-// Devspaces.
-type DevspaceInformer interface {
+// DevSpaceInformer provides access to a shared informer and lister for
+// DevSpaces.
+type DevSpaceInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.DevspaceLister
+	Lister() v1alpha1.DevSpaceLister
 }
 
-type robotInformer struct {
+type devspaceInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewDevspaceInformer constructs a new informer for Devspace type.
+// NewDevSpaceInformer constructs a new informer for DevSpace type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewDevspaceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredDevspaceInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewDevSpaceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredDevSpaceInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredDevspaceInformer constructs a new informer for Devspace type.
+// NewFilteredDevSpaceInformer constructs a new informer for DevSpace type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredDevspaceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredDevSpaceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RoboscaleV1alpha1().Devspaces(namespace).List(context.TODO(), options)
+				return client.RoboscaleV1alpha1().DevSpaces(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RoboscaleV1alpha1().Devspaces(namespace).Watch(context.TODO(), options)
+				return client.RoboscaleV1alpha1().DevSpaces(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&roboscaleiov1alpha1.Devspace{},
+		&roboscaleiov1alpha1.DevSpace{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *robotInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredDevspaceInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *devspaceInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredDevSpaceInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *robotInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&roboscaleiov1alpha1.Devspace{}, f.defaultInformer)
+func (f *devspaceInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&roboscaleiov1alpha1.DevSpace{}, f.defaultInformer)
 }
 
-func (f *robotInformer) Lister() v1alpha1.DevspaceLister {
-	return v1alpha1.NewDevspaceLister(f.Informer().GetIndexer())
+func (f *devspaceInformer) Lister() v1alpha1.DevSpaceLister {
+	return v1alpha1.NewDevSpaceLister(f.Informer().GetIndexer())
 }

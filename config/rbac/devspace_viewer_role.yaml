@@ -1,20 +1,20 @@
-# permissions for end users to view robots.
+# permissions for end users to view devspaces.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/instance: robot-viewer-role
+    app.kubernetes.io/instance: devspace-viewer-role
     app.kubernetes.io/component: rbac
-    app.kubernetes.io/created-by: robot-operator
-    app.kubernetes.io/part-of: robot-operator
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/part-of: devspace-operator
     app.kubernetes.io/managed-by: kustomize
-  name: robot-viewer-role
+  name: devspace-viewer-role
 rules:
 - apiGroups:
   - dev.roboscale.io
   resources:
-  - robots
+  - devspaces
   verbs:
   - get
   - list
@@ -22,6 +22,6 @@ rules:
 - apiGroups:
   - dev.roboscale.io
   resources:
-  - robots/status
+  - devspaces/status
   verbs:
   - get

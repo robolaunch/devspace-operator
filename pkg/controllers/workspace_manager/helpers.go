@@ -36,17 +36,17 @@ func (r *WorkspaceManagerReconciler) reconcileUpdateInstanceStatus(ctx context.C
 	})
 }
 
-func (r *WorkspaceManagerReconciler) reconcileGetTargetDevspace(ctx context.Context, instance *devv1alpha1.WorkspaceManager) (*devv1alpha1.Devspace, error) {
-	robot := &devv1alpha1.Devspace{}
+func (r *WorkspaceManagerReconciler) reconcileGetTargetDevSpace(ctx context.Context, instance *devv1alpha1.WorkspaceManager) (*devv1alpha1.DevSpace, error) {
+	devspace := &devv1alpha1.DevSpace{}
 	err := r.Get(ctx, types.NamespacedName{
 		Namespace: instance.Namespace,
-		Name:      label.GetTargetDevspace(instance),
-	}, robot)
+		Name:      label.GetTargetDevSpace(instance),
+	}, devspace)
 	if err != nil {
 		return nil, err
 	}
 
-	return robot, nil
+	return devspace, nil
 }
 
 func (r *WorkspaceManagerReconciler) reconcileCleanup(ctx context.Context, instance *devv1alpha1.WorkspaceManager) error {

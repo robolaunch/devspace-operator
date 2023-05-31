@@ -17,13 +17,13 @@ limitations under the License.
 
 package v1alpha1
 
-// DevspaceListerExpansion allows custom methods to be added to
-// DevspaceLister.
-type DevspaceListerExpansion interface{}
+// DevSpaceListerExpansion allows custom methods to be added to
+// DevSpaceLister.
+type DevSpaceListerExpansion interface{}
 
-// DevspaceNamespaceListerExpansion allows custom methods to be added to
-// DevspaceNamespaceLister.
-type DevspaceNamespaceListerExpansion interface{}
+// DevSpaceNamespaceListerExpansion allows custom methods to be added to
+// DevSpaceNamespaceLister.
+type DevSpaceNamespaceListerExpansion interface{}
 
 // DevSuiteListerExpansion allows custom methods to be added to
 // DevSuiteLister.

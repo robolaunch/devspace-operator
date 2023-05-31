@@ -32,7 +32,7 @@ func init() {
 //+kubebuilder:subresource:status
 
 // DevSuite is a custom resource that creates dynamically configured
-// development environments for robots.
+// development environments for devspaces.
 type DevSuite struct {
 	metav1.TypeMeta `json:",inline"`
 	// Standard object's metadata.
@@ -121,10 +121,10 @@ type DevSuiteStatus struct {
 	// Phase of DevSuite.
 	Phase DevSuitePhase `json:"phase,omitempty"`
 	// Status of DevSpaceVDI.
-	DevSpaceVDIStatus OwnedDevspaceServiceStatus `json:"devSpaceVDIStatus,omitempty"`
+	DevSpaceVDIStatus OwnedDevSpaceServiceStatus `json:"devSpaceVDIStatus,omitempty"`
 	// Status of DevSpaceIDE.
-	DevSpaceIDEStatus OwnedDevspaceServiceStatus `json:"devSpaceIDEStatus,omitempty"`
-	// [*alpha*] Indicates if DevSuite is attached to a Devspace and actively provisioned it's resources.
+	DevSpaceIDEStatus OwnedDevSpaceServiceStatus `json:"devSpaceIDEStatus,omitempty"`
+	// [*alpha*] Indicates if DevSuite is attached to a DevSpace and actively provisioned it's resources.
 	Active bool `json:"active,omitempty"`
 }
 

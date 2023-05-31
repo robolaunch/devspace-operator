@@ -61,11 +61,11 @@ func (r *DevSuiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, err
 	}
 
-	// Check target robot's attached object, update activity status
-	err = r.reconcileCheckTargetDevspace(ctx, instance)
+	// Check target devspace's attached object, update activity status
+	err = r.reconcileCheckTargetDevSpace(ctx, instance)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.Phase = devv1alpha1.DevSuitePhaseDevspaceNotFound
+			instance.Status.Phase = devv1alpha1.DevSuitePhaseDevSpaceNotFound
 			instance.Status.Active = false
 		} else {
 			return ctrl.Result{}, err
@@ -229,28 +229,28 @@ func (r *DevSuiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&devv1alpha1.DevSpaceVDI{}).
 		Owns(&devv1alpha1.DevSpaceIDE{}).
 		Watches(
-			&source.Kind{Type: &devv1alpha1.Devspace{}},
-			handler.EnqueueRequestsFromMapFunc(r.watchDevspaces),
+			&source.Kind{Type: &devv1alpha1.DevSpace{}},
+			handler.EnqueueRequestsFromMapFunc(r.watchDevSpaces),
 		).
 		Complete(r)
 }
 
-func (r *DevSuiteReconciler) watchDevspaces(o client.Object) []reconcile.Request {
+func (r *DevSuiteReconciler) watchDevSpaces(o client.Object) []reconcile.Request {
 
-	robot := o.(*devv1alpha1.Devspace)
+	devspace := o.(*devv1alpha1.DevSpace)
 
-	// Get attached build objects for this robot
+	// Get attached build objects for this devspace
 	requirements := []labels.Requirement{}
-	newReq, err := labels.NewRequirement(internal.TARGET_ROBOT_LABEL_KEY, selection.In, []string{robot.Name})
+	newReq, err := labels.NewRequirement(internal.TARGET_DEVSPACE_LABEL_KEY, selection.In, []string{devspace.Name})
 	if err != nil {
 		return []reconcile.Request{}
 	}
 	requirements = append(requirements, *newReq)
 
-	robotSelector := labels.NewSelector().Add(requirements...)
+	devspaceSelector := labels.NewSelector().Add(requirements...)
 
 	devSuiteList := devv1alpha1.DevSuiteList{}
-	err = r.List(context.TODO(), &devSuiteList, &client.ListOptions{Namespace: robot.Namespace, LabelSelector: robotSelector})
+	err = r.List(context.TODO(), &devSuiteList, &client.ListOptions{Namespace: devspace.Namespace, LabelSelector: devspaceSelector})
 	if err != nil {
 		return []reconcile.Request{}
 	}

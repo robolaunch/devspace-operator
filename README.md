@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/robolaunch/trademark/main/logos/svg/rocket.svg" width="40" height="40" align="top"> robolaunch Kubernetes Devspace Operator
+# <img src="https://raw.githubusercontent.com/robolaunch/trademark/main/logos/svg/rocket.svg" width="40" height="40" align="top"> robolaunch Kubernetes DevSpace Operator
 
 <div align="center">
   <p align="center">
@@ -39,7 +39,7 @@
   </p>
 </div>
 
-robolaunch Kubernetes Devspace Operator manages lifecycle of ROS 2 based robots and enables defining, deploying and distributing robots declaratively.
+robolaunch Kubernetes DevSpace Operator manages lifecycle of ROS 2 based robots and enables defining, deploying and distributing robots declaratively.
 
 <img src="https://raw.githubusercontent.com/robolaunch/trademark/main/repository-media/robot-operator/kubectl-get-robots.gif" alt="kubectl-get-robots" width="100%"/>
 
@@ -49,7 +49,7 @@ robolaunch Kubernetes Devspace Operator manages lifecycle of ROS 2 based robots 
 - [Idea](#idea)
 - [Quick Start](#quick-start)
   - [Installation](#installation)
-  - [Deploy Your First Devspace](#deploy-your-first-robot)
+  - [Deploy Your First DevSpace](#deploy-your-first-robot)
 - [Contributing](#contributing)
 
 
@@ -57,13 +57,13 @@ robolaunch Kubernetes Devspace Operator manages lifecycle of ROS 2 based robots 
 
 The main idea of this project is to manage robots as Kubernetes custom resources. As a custom resource, a robot's lifecycle contains following operations and benefits.
 
-- **Devspace Lifecycle Management**
+- **DevSpace Lifecycle Management**
   - Deployment
   - Update
   - Upgrade
   - Vertical Scaling
     - Adjusting robot's resources
-- **Devspace Observability**
+- **DevSpace Observability**
   - ROS observability tools (eg. rViz, Foxglove, ROS Tracker)
   - Exporting ROS nodes, topics, services, actions and bandwidth
 - **GPU Acceleration**
@@ -75,7 +75,7 @@ The main idea of this project is to manage robots as Kubernetes custom resources
 - **Software development lifecycle**
   - Cloud IDE
 - **Connectivity**
-  - Devspace-to-Devspace Discovery
+  - DevSpace-to-DevSpace Discovery
   - Node-to-Node Discovery
 
 Refer [robolaunch.io](robolaunch.io) and [project wiki](https://github.com/robolaunch/devspace-operator/wiki) for more architectural details and documentations.
@@ -94,7 +94,7 @@ kubectl label <NODE> robolaunch.io/cloud-instance=cluster
 kubectl label <NODE> robolaunch.io/cloud-instance-alias=cluster-alias
 ```
 
-Install Devspace Operator with Helm:
+Install DevSpace Operator with Helm:
 
 ```bash
 # add robolaunch Helm repository and update
@@ -109,16 +109,16 @@ helm upgrade -i robot-operator robolaunch/robot-operator  \
 
 See [installation guide for more](./docs/installation/README.md).
 
-### Deploy Your First Devspace
+### Deploy Your First DevSpace
 
-Devspace deployment steps will be instructed here.
+DevSpace deployment steps will be instructed here.
 
 <!-- You can try example robots under [`config/samples/`](./config/samples/). For example, to deploy Linorobot 2, apply the YAML below.
 
 ```yaml
 # linorobot2.yaml
 apiVersion: dev.roboscale.io/v1alpha1
-kind: Devspace
+kind: DevSpace
 metadata:
   name: linorobot2
 spec:

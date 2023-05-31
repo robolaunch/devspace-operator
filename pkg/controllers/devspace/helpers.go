@@ -3,7 +3,7 @@ package devspace
 import (
 	"context"
 
-	robotErr "github.com/robolaunch/devspace-operator/internal/error"
+	devspaceErr "github.com/robolaunch/devspace-operator/internal/error"
 	label "github.com/robolaunch/devspace-operator/internal/label"
 	nodePkg "github.com/robolaunch/devspace-operator/internal/node"
 	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
@@ -15,19 +15,19 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func (r *DevspaceReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*devv1alpha1.Devspace, error) {
-	instance := &devv1alpha1.Devspace{}
+func (r *DevSpaceReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*devv1alpha1.DevSpace, error) {
+	instance := &devv1alpha1.DevSpace{}
 	err := r.Get(ctx, meta, instance)
 	if err != nil {
-		return &devv1alpha1.Devspace{}, err
+		return &devv1alpha1.DevSpace{}, err
 	}
 
 	return instance, nil
 }
 
-func (r *DevspaceReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 	return retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		instanceLV := &devv1alpha1.Devspace{}
+		instanceLV := &devv1alpha1.DevSpace{}
 		err := r.Get(ctx, types.NamespacedName{
 			Name:      instance.Name,
 			Namespace: instance.Namespace,
@@ -42,7 +42,7 @@ func (r *DevspaceReconciler) reconcileUpdateInstanceStatus(ctx context.Context, 
 	})
 }
 
-func (r *DevspaceReconciler) reconcileCheckNode(ctx context.Context, instance *devv1alpha1.Devspace) (*corev1.Node, error) {
+func (r *DevSpaceReconciler) reconcileCheckNode(ctx context.Context, instance *devv1alpha1.DevSpace) (*corev1.Node, error) {
 
 	tenancyMap := label.GetTenancyMap(instance)
 
@@ -66,13 +66,13 @@ func (r *DevspaceReconciler) reconcileCheckNode(ctx context.Context, instance *d
 	}
 
 	if len(nodes.Items) == 0 {
-		return nil, &robotErr.NodeNotFoundError{
+		return nil, &devspaceErr.NodeNotFoundError{
 			ResourceKind:      instance.Kind,
 			ResourceName:      instance.Name,
 			ResourceNamespace: instance.Namespace,
 		}
 	} else if len(nodes.Items) > 1 {
-		return nil, &robotErr.MultipleNodeFoundError{
+		return nil, &devspaceErr.MultipleNodeFoundError{
 			ResourceKind:      instance.Kind,
 			ResourceName:      instance.Name,
 			ResourceNamespace: instance.Namespace,
@@ -84,7 +84,7 @@ func (r *DevspaceReconciler) reconcileCheckNode(ctx context.Context, instance *d
 	return &nodes.Items[0], nil
 }
 
-func (r *DevspaceReconciler) reconcileCheckImage(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) reconcileCheckImage(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 
 	node, err := r.reconcileCheckNode(ctx, instance)
 	if err != nil {

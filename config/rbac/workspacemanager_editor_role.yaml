@@ -6,8 +6,8 @@ metadata:
     app.kubernetes.io/name: clusterrole
     app.kubernetes.io/instance: workspacemanager-editor-role
     app.kubernetes.io/component: rbac
-    app.kubernetes.io/created-by: robot-operator
-    app.kubernetes.io/part-of: robot-operator
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/part-of: devspace-operator
     app.kubernetes.io/managed-by: kustomize
   name: workspacemanager-editor-role
 rules:

@@ -13,12 +13,12 @@ import (
 
 func (r *WorkspaceManagerReconciler) createClonerJob(ctx context.Context, instance *devv1alpha1.WorkspaceManager, jobNamespacedName *types.NamespacedName) error {
 
-	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
+	devspace, err := r.reconcileGetTargetDevSpace(ctx, instance)
 	if err != nil {
 		return err
 	}
 
-	job := resources.GetClonerJob(instance, jobNamespacedName, robot)
+	job := resources.GetClonerJob(instance, jobNamespacedName, devspace)
 
 	err = ctrl.SetControllerReference(instance, job, r.Scheme)
 	if err != nil {
@@ -38,12 +38,12 @@ func (r *WorkspaceManagerReconciler) createClonerJob(ctx context.Context, instan
 
 func (r *WorkspaceManagerReconciler) createCleanupJob(ctx context.Context, instance *devv1alpha1.WorkspaceManager, jobNamespacedName *types.NamespacedName) error {
 
-	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
+	devspace, err := r.reconcileGetTargetDevSpace(ctx, instance)
 	if err != nil {
 		return err
 	}
 
-	job := resources.GetCleanupJob(instance, jobNamespacedName, robot)
+	job := resources.GetCleanupJob(instance, jobNamespacedName, devspace)
 
 	err = ctrl.SetControllerReference(instance, job, r.Scheme)
 	if err != nil {

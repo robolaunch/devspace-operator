@@ -21,12 +21,12 @@ func getDevSpaceIDESelector(devSpaceIDE devv1alpha1.DevSpaceIDE) map[string]stri
 	}
 }
 
-func GetDevSpaceIDEPod(devSpaceIDE *devv1alpha1.DevSpaceIDE, podNamespacedName *types.NamespacedName, robot devv1alpha1.Devspace, devSpaceVDI devv1alpha1.DevSpaceVDI, node corev1.Node) *corev1.Pod {
+func GetDevSpaceIDEPod(devSpaceIDE *devv1alpha1.DevSpaceIDE, podNamespacedName *types.NamespacedName, devspace devv1alpha1.DevSpace, devSpaceVDI devv1alpha1.DevSpaceVDI, node corev1.Node) *corev1.Pod {
 
 	// discovery server
 
 	var cmdBuilder strings.Builder
-	cmdBuilder.WriteString("code-server " + robot.Spec.WorkspaceManagerTemplate.WorkspacesPath + " --bind-addr 0.0.0.0:$CODE_SERVER_PORT --auth none")
+	cmdBuilder.WriteString("code-server " + devspace.Spec.WorkspaceManagerTemplate.WorkspacesPath + " --bind-addr 0.0.0.0:$CODE_SERVER_PORT --auth none")
 
 	labels := getDevSpaceIDESelector(*devSpaceIDE)
 	for k, v := range devSpaceIDE.Labels {
@@ -43,20 +43,20 @@ func GetDevSpaceIDEPod(devSpaceIDE *devv1alpha1.DevSpaceIDE, podNamespacedName *
 			Containers: []corev1.Container{
 				{
 					Name:    "code-server",
-					Image:   robot.Status.Image,
+					Image:   devspace.Status.Image,
 					Command: internal.Bash(cmdBuilder.String()),
 					Env: []corev1.EnvVar{
 						internal.Env("CODE_SERVER_PORT", "9000"),
-						internal.Env("ROBOT_NAMESPACE", robot.Namespace),
-						internal.Env("ROBOT_NAME", robot.Name),
+						internal.Env("DEVSPACE_NAMESPACE", devspace.Namespace),
+						internal.Env("DEVSPACE_NAME", devspace.Name),
 						internal.Env("TERM", "xterm-256color"),
 					},
 					VolumeMounts: []corev1.VolumeMount{
-						configure.GetVolumeMount("", configure.GetVolumeVar(&robot)),
-						configure.GetVolumeMount("", configure.GetVolumeUsr(&robot)),
-						configure.GetVolumeMount("", configure.GetVolumeOpt(&robot)),
-						configure.GetVolumeMount("", configure.GetVolumeEtc(&robot)),
-						configure.GetVolumeMount(robot.Spec.WorkspaceManagerTemplate.WorkspacesPath, configure.GetVolumeWorkspace(&robot)),
+						configure.GetVolumeMount("", configure.GetVolumeVar(&devspace)),
+						configure.GetVolumeMount("", configure.GetVolumeUsr(&devspace)),
+						configure.GetVolumeMount("", configure.GetVolumeOpt(&devspace)),
+						configure.GetVolumeMount("", configure.GetVolumeEtc(&devspace)),
+						configure.GetVolumeMount(devspace.Spec.WorkspaceManagerTemplate.WorkspacesPath, configure.GetVolumeWorkspace(&devspace)),
 					},
 					Ports: []corev1.ContainerPort{
 						{
@@ -73,19 +73,19 @@ func GetDevSpaceIDEPod(devSpaceIDE *devv1alpha1.DevSpaceIDE, podNamespacedName *
 				},
 			},
 			Volumes: []corev1.Volume{
-				configure.GetVolumeVar(&robot),
-				configure.GetVolumeUsr(&robot),
-				configure.GetVolumeOpt(&robot),
-				configure.GetVolumeEtc(&robot),
-				configure.GetVolumeWorkspace(&robot),
+				configure.GetVolumeVar(&devspace),
+				configure.GetVolumeUsr(&devspace),
+				configure.GetVolumeOpt(&devspace),
+				configure.GetVolumeEtc(&devspace),
+				configure.GetVolumeWorkspace(&devspace),
 			},
 			RestartPolicy: corev1.RestartPolicyNever,
 		},
 	}
 
 	configure.SchedulePod(&pod, label.GetTenancyMap(devSpaceIDE))
-	configure.InjectGenericEnvironmentVariables(&pod, robot)
-	configure.InjectRuntimeClass(&pod, robot, node)
+	configure.InjectGenericEnvironmentVariables(&pod, devspace)
+	configure.InjectRuntimeClass(&pod, devspace, node)
 	if devSpaceIDE.Spec.Display && label.GetTargetDevSpaceVDI(devSpaceIDE) != "" {
 		// TODO: Add control for validating DevSpace VDI
 		configure.InjectPodDisplayConfiguration(&pod, devSpaceVDI)
@@ -122,12 +122,12 @@ func GetDevSpaceIDEService(devSpaceIDE *devv1alpha1.DevSpaceIDE, svcNamespacedNa
 	return &service
 }
 
-func GetDevSpaceIDEIngress(devSpaceIDE *devv1alpha1.DevSpaceIDE, ingressNamespacedName *types.NamespacedName, robot devv1alpha1.Devspace) *networkingv1.Ingress {
+func GetDevSpaceIDEIngress(devSpaceIDE *devv1alpha1.DevSpaceIDE, ingressNamespacedName *types.NamespacedName, devspace devv1alpha1.DevSpace) *networkingv1.Ingress {
 
-	tenancy := label.GetTenancy(&robot)
+	tenancy := label.GetTenancy(&devspace)
 
-	rootDNSConfig := robot.Spec.RootDNSConfig
-	secretName := robot.Spec.TLSSecretReference.Name
+	rootDNSConfig := devspace.Spec.RootDNSConfig
+	secretName := devspace.Spec.TLSSecretReference.Name
 
 	annotations := map[string]string{
 		internal.INGRESS_AUTH_URL_KEY:                fmt.Sprintf(internal.INGRESS_AUTH_URL_VAL, tenancy.Organization, rootDNSConfig.Host),
@@ -158,7 +158,7 @@ func GetDevSpaceIDEIngress(devSpaceIDE *devv1alpha1.DevSpaceIDE, ingressNamespac
 					HTTP: &networkingv1.HTTPIngressRuleValue{
 						Paths: []networkingv1.HTTPIngressPath{
 							{
-								Path:     devv1alpha1.GetDevspaceServicePath(robot, "/ide") + "(/|$)(.*)",
+								Path:     devv1alpha1.GetDevSpaceServicePath(devspace, "/ide") + "(/|$)(.*)",
 								PathType: &pathTypePrefix,
 								Backend: networkingv1.IngressBackend{
 									Service: &networkingv1.IngressServiceBackend{

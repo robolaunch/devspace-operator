@@ -15,14 +15,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (r *DevspaceReconciler) reconcileCheckDeletion(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) reconcileCheckDeletion(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 
-	robotFinalizer := "dev.roboscale.io/finalizer"
+	devspaceFinalizer := "dev.roboscale.io/finalizer"
 
 	if instance.DeletionTimestamp.IsZero() {
 
-		if !controllerutil.ContainsFinalizer(instance, robotFinalizer) {
-			controllerutil.AddFinalizer(instance, robotFinalizer)
+		if !controllerutil.ContainsFinalizer(instance, devspaceFinalizer) {
+			controllerutil.AddFinalizer(instance, devspaceFinalizer)
 			if err := r.Update(ctx, instance); err != nil {
 				return err
 			}
@@ -30,7 +30,7 @@ func (r *DevspaceReconciler) reconcileCheckDeletion(ctx context.Context, instanc
 
 	} else {
 
-		if controllerutil.ContainsFinalizer(instance, robotFinalizer) {
+		if controllerutil.ContainsFinalizer(instance, devspaceFinalizer) {
 
 			err := r.waitForLoaderJobDeletion(ctx, instance)
 			if err != nil {
@@ -62,7 +62,7 @@ func (r *DevspaceReconciler) reconcileCheckDeletion(ctx context.Context, instanc
 				return err
 			}
 
-			controllerutil.RemoveFinalizer(instance, robotFinalizer)
+			controllerutil.RemoveFinalizer(instance, devspaceFinalizer)
 			if err := r.Update(ctx, instance); err != nil {
 				return err
 			}
@@ -77,9 +77,9 @@ func (r *DevspaceReconciler) reconcileCheckDeletion(ctx context.Context, instanc
 	return nil
 }
 
-func (r *DevspaceReconciler) waitForLoaderJobDeletion(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) waitForLoaderJobDeletion(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 
-	instance.Status.Phase = devv1alpha1.DevspacePhaseDeletingLoaderJob
+	instance.Status.Phase = devv1alpha1.DevSpacePhaseDeletingLoaderJob
 	err := r.reconcileUpdateInstanceStatus(ctx, instance)
 	if err != nil {
 		return err
@@ -144,7 +144,7 @@ func (r *DevspaceReconciler) waitForLoaderJobDeletion(ctx context.Context, insta
 	return nil
 }
 
-func (r *DevspaceReconciler) waitForPersistentVolumeClaimDeletion(ctx context.Context, instance *devv1alpha1.Devspace, pvcNamespacedName *types.NamespacedName) error {
+func (r *DevSpaceReconciler) waitForPersistentVolumeClaimDeletion(ctx context.Context, instance *devv1alpha1.DevSpace, pvcNamespacedName *types.NamespacedName) error {
 
 	pvcQuery := &corev1.PersistentVolumeClaim{}
 	err := r.Get(ctx, *pvcNamespacedName, pvcQuery)
@@ -159,7 +159,7 @@ func (r *DevspaceReconciler) waitForPersistentVolumeClaimDeletion(ctx context.Co
 			return err
 		}
 
-		instance.Status.Phase = devv1alpha1.DevspacePhaseDeletingVolumes
+		instance.Status.Phase = devv1alpha1.DevSpacePhaseDeletingVolumes
 		err = r.reconcileUpdateInstanceStatus(ctx, instance)
 		if err != nil {
 			return err

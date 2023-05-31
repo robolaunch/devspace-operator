@@ -3,7 +3,7 @@ package devspace_vdi
 import (
 	"context"
 
-	robotErr "github.com/robolaunch/devspace-operator/internal/error"
+	devspaceErr "github.com/robolaunch/devspace-operator/internal/error"
 	"github.com/robolaunch/devspace-operator/internal/label"
 	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
@@ -41,20 +41,20 @@ func (r *DevSpaceVDIReconciler) reconcileUpdateInstanceStatus(ctx context.Contex
 	})
 }
 
-func (r *DevSpaceVDIReconciler) reconcileGetTargetDevspace(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) (*devv1alpha1.Devspace, error) {
-	robot := &devv1alpha1.Devspace{}
+func (r *DevSpaceVDIReconciler) reconcileGetTargetDevSpace(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) (*devv1alpha1.DevSpace, error) {
+	devspace := &devv1alpha1.DevSpace{}
 	err := r.Get(ctx, types.NamespacedName{
 		Namespace: instance.Namespace,
-		Name:      label.GetTargetDevspace(instance),
-	}, robot)
+		Name:      label.GetTargetDevSpace(instance),
+	}, devspace)
 	if err != nil {
 		return nil, err
 	}
 
-	return robot, nil
+	return devspace, nil
 }
 
-func (r *DevSpaceVDIReconciler) reconcileCheckNode(ctx context.Context, instance *devv1alpha1.Devspace) (*corev1.Node, error) {
+func (r *DevSpaceVDIReconciler) reconcileCheckNode(ctx context.Context, instance *devv1alpha1.DevSpace) (*corev1.Node, error) {
 
 	tenancyMap := label.GetTenancyMap(instance)
 
@@ -78,13 +78,13 @@ func (r *DevSpaceVDIReconciler) reconcileCheckNode(ctx context.Context, instance
 	}
 
 	if len(nodes.Items) == 0 {
-		return nil, &robotErr.NodeNotFoundError{
+		return nil, &devspaceErr.NodeNotFoundError{
 			ResourceKind:      instance.Kind,
 			ResourceName:      instance.Name,
 			ResourceNamespace: instance.Namespace,
 		}
 	} else if len(nodes.Items) > 1 {
-		return nil, &robotErr.MultipleNodeFoundError{
+		return nil, &devspaceErr.MultipleNodeFoundError{
 			ResourceKind:      instance.Kind,
 			ResourceName:      instance.Name,
 			ResourceNamespace: instance.Namespace,

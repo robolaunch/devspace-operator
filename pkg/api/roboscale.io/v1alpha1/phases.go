@@ -1,21 +1,21 @@
 package v1alpha1
 
-type DevspacePhase string
+type DevSpacePhase string
 
 const (
-	DevspacePhaseCreatingEnvironment      DevspacePhase = "CreatingEnvironment"
-	DevspacePhaseConfiguringEnvironment   DevspacePhase = "ConfiguringEnvironment"
-	DevspacePhaseCreatingDevelopmentSuite DevspacePhase = "CreatingDevelopmentSuite"
-	DevspacePhaseConfiguringWorkspaces    DevspacePhase = "ConfiguringWorkspaces"
-	DevspacePhaseEnvironmentReady         DevspacePhase = "EnvironmentReady"
-	DevspacePhaseBuilding                 DevspacePhase = "Building"
-	DevspacePhaseBuilt                    DevspacePhase = "Built"
-	DevspacePhaseLaunching                DevspacePhase = "Launching"
-	DevspacePhaseRunning                  DevspacePhase = "Running"
-	DevspacePhaseDeletingLoaderJob        DevspacePhase = "DeletingLoaderJob"
-	DevspacePhaseDeletingVolumes          DevspacePhase = "DeletingVolumes"
+	DevSpacePhaseCreatingEnvironment      DevSpacePhase = "CreatingEnvironment"
+	DevSpacePhaseConfiguringEnvironment   DevSpacePhase = "ConfiguringEnvironment"
+	DevSpacePhaseCreatingDevelopmentSuite DevSpacePhase = "CreatingDevelopmentSuite"
+	DevSpacePhaseConfiguringWorkspaces    DevSpacePhase = "ConfiguringWorkspaces"
+	DevSpacePhaseEnvironmentReady         DevSpacePhase = "EnvironmentReady"
+	DevSpacePhaseBuilding                 DevSpacePhase = "Building"
+	DevSpacePhaseBuilt                    DevSpacePhase = "Built"
+	DevSpacePhaseLaunching                DevSpacePhase = "Launching"
+	DevSpacePhaseRunning                  DevSpacePhase = "Running"
+	DevSpacePhaseDeletingLoaderJob        DevSpacePhase = "DeletingLoaderJob"
+	DevSpacePhaseDeletingVolumes          DevSpacePhase = "DeletingVolumes"
 
-	DevspacePhaseFailed DevspacePhase = "Failed"
+	DevSpacePhaseFailed DevSpacePhase = "Failed"
 )
 
 type WorkspaceManagerPhase string
@@ -29,9 +29,9 @@ const (
 type DevSuitePhase string
 
 const (
-	DevSuitePhaseDevspaceNotFound    DevSuitePhase = "DevspaceNotFound"
+	DevSuitePhaseDevSpaceNotFound    DevSuitePhase = "DevSpaceNotFound"
 	DevSuitePhaseCreatingDevSpaceVDI DevSuitePhase = "CreatingDevSpaceVDI"
-	DevSuitePhaseCreatingDevSpaceIDE DevSuitePhase = "CreatingDevspaceIDE"
+	DevSuitePhaseCreatingDevSpaceIDE DevSuitePhase = "CreatingDevSpaceIDE"
 	DevSuitePhaseRunning             DevSuitePhase = "Running"
 	DevSuitePhaseDeactivating        DevSuitePhase = "Deactivating"
 	DevSuitePhaseInactive            DevSuitePhase = "Inactive"

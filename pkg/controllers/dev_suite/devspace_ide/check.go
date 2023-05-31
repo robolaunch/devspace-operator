@@ -22,7 +22,7 @@ func (r *DevSpaceIDEReconciler) reconcileCheckService(ctx context.Context, insta
 			return err
 		}
 	} else {
-		robot, err := r.reconcileGetTargetDevspace(ctx, instance)
+		devspace, err := r.reconcileGetTargetDevSpace(ctx, instance)
 		if err != nil {
 			return err
 		}
@@ -30,7 +30,7 @@ func (r *DevSpaceIDEReconciler) reconcileCheckService(ctx context.Context, insta
 		instance.Status.ServiceStatus.Resource.Created = true
 		reference.SetReference(&instance.Status.ServiceStatus.Resource.Reference, serviceQuery.TypeMeta, serviceQuery.ObjectMeta)
 		if instance.Spec.Ingress {
-			instance.Status.ServiceStatus.URL = devv1alpha1.GetDevspaceServiceDNS(*robot, "https://", "/ide/")
+			instance.Status.ServiceStatus.URL = devv1alpha1.GetDevSpaceServiceDNS(*devspace, "https://", "/ide/")
 		} else if instance.Spec.ServiceType == corev1.ServiceTypeNodePort {
 			// TODO: Address with Node IP and port will be generated.
 			instance.Status.ServiceStatus.URL = "http://<NODE-IP>:<PORT>"

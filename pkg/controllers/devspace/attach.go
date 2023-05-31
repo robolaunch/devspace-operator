@@ -12,20 +12,20 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func (r *DevspaceReconciler) reconcileAttachDevObject(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) reconcileAttachDevObject(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 
-	// Get attached dev objects for this robot
+	// Get attached dev objects for this devspace
 	requirements := []labels.Requirement{}
-	newReq, err := labels.NewRequirement(internal.TARGET_ROBOT_LABEL_KEY, selection.In, []string{instance.Name})
+	newReq, err := labels.NewRequirement(internal.TARGET_DEVSPACE_LABEL_KEY, selection.In, []string{instance.Name})
 	if err != nil {
 		return err
 	}
 	requirements = append(requirements, *newReq)
 
-	robotSelector := labels.NewSelector().Add(requirements...)
+	devspaceSelector := labels.NewSelector().Add(requirements...)
 
 	devSuiteList := devv1alpha1.DevSuiteList{}
-	err = r.List(ctx, &devSuiteList, &client.ListOptions{Namespace: instance.Namespace, LabelSelector: robotSelector})
+	err = r.List(ctx, &devSuiteList, &client.ListOptions{Namespace: instance.Namespace, LabelSelector: devspaceSelector})
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func (r *DevspaceReconciler) reconcileAttachDevObject(ctx context.Context, insta
 		return nil
 	}
 
-	// Sort attached dev objects for this robot according to their creation timestamps
+	// Sort attached dev objects for this devspace according to their creation timestamps
 	sort.SliceStable(devSuiteList.Items[:], func(i, j int) bool {
 		return devSuiteList.Items[i].CreationTimestamp.String() < devSuiteList.Items[j].CreationTimestamp.String()
 	})

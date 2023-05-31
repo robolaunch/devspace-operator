@@ -33,7 +33,7 @@ func (r *DevSpaceIDEReconciler) reconcileCreateService(ctx context.Context, inst
 
 func (r *DevSpaceIDEReconciler) reconcileCreatePod(ctx context.Context, instance *devv1alpha1.DevSpaceIDE) error {
 
-	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
+	devspace, err := r.reconcileGetTargetDevSpace(ctx, instance)
 	if err != nil {
 		return err
 	}
@@ -46,12 +46,12 @@ func (r *DevSpaceIDEReconciler) reconcileCreatePod(ctx context.Context, instance
 		}
 	}
 
-	activeNode, err := r.reconcileCheckNode(ctx, robot)
+	activeNode, err := r.reconcileCheckNode(ctx, devspace)
 	if err != nil {
 		return err
 	}
 
-	idePod := resources.GetDevSpaceIDEPod(instance, instance.GetDevSpaceIDEPodMetadata(), *robot, *devSpaceVDI, *activeNode)
+	idePod := resources.GetDevSpaceIDEPod(instance, instance.GetDevSpaceIDEPodMetadata(), *devspace, *devSpaceVDI, *activeNode)
 
 	err = ctrl.SetControllerReference(instance, idePod, r.Scheme)
 	if err != nil {
@@ -72,12 +72,12 @@ func (r *DevSpaceIDEReconciler) reconcileCreatePod(ctx context.Context, instance
 
 func (r *DevSpaceIDEReconciler) reconcileCreateIngress(ctx context.Context, instance *devv1alpha1.DevSpaceIDE) error {
 
-	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
+	devspace, err := r.reconcileGetTargetDevSpace(ctx, instance)
 	if err != nil {
 		return err
 	}
 
-	ideIngress := resources.GetDevSpaceIDEIngress(instance, instance.GetDevSpaceIDEIngressMetadata(), *robot)
+	ideIngress := resources.GetDevSpaceIDEIngress(instance, instance.GetDevSpaceIDEIngressMetadata(), *devspace)
 
 	err = ctrl.SetControllerReference(instance, ideIngress, r.Scheme)
 	if err != nil {

@@ -21,8 +21,8 @@ import (
 	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
-// DevspaceReconciler reconciles a Devspace object
-type DevspaceReconciler struct {
+// DevSpaceReconciler reconciles a DevSpace object
+type DevSpaceReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	DynamicClient dynamic.Interface
@@ -39,7 +39,7 @@ type DevspaceReconciler struct {
 
 var logger logr.Logger
 
-func (r *DevspaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *DevSpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger = log.FromContext(ctx)
 
 	instance, err := r.reconcileGetInstance(ctx, req.NamespacedName)
@@ -93,7 +93,7 @@ func (r *DevspaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	return ctrl.Result{}, nil
 }
 
-func (r *DevspaceReconciler) reconcileCheckStatus(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) reconcileCheckStatus(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 	switch instance.Status.VolumeStatuses.Var.Created &&
 		instance.Status.VolumeStatuses.Opt.Created &&
 		instance.Status.VolumeStatuses.Etc.Created &&
@@ -116,13 +116,13 @@ func (r *DevspaceReconciler) reconcileCheckStatus(ctx context.Context, instance 
 						switch instance.Status.DevSuiteStatus.Status.Phase {
 						case devv1alpha1.DevSuitePhaseRunning:
 
-							instance.Status.Phase = devv1alpha1.DevspacePhaseEnvironmentReady
+							instance.Status.Phase = devv1alpha1.DevSpacePhaseEnvironmentReady
 
 						}
 
 					case false:
 
-						instance.Status.Phase = devv1alpha1.DevspacePhaseCreatingDevelopmentSuite
+						instance.Status.Phase = devv1alpha1.DevSpacePhaseCreatingDevelopmentSuite
 						err := r.createDevSuite(ctx, instance, instance.GetDevSuiteMetadata())
 						if err != nil {
 							return err
@@ -133,24 +133,24 @@ func (r *DevspaceReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 				case false:
 
-					instance.Status.Phase = devv1alpha1.DevspacePhaseEnvironmentReady
+					instance.Status.Phase = devv1alpha1.DevSpacePhaseEnvironmentReady
 
 				}
 
 			case string(devv1alpha1.JobActive):
 
-				instance.Status.Phase = devv1alpha1.DevspacePhaseConfiguringEnvironment
+				instance.Status.Phase = devv1alpha1.DevSpacePhaseConfiguringEnvironment
 
 			case string(devv1alpha1.JobFailed):
 
 				// TODO: add reason
-				instance.Status.Phase = devv1alpha1.DevspacePhaseFailed
+				instance.Status.Phase = devv1alpha1.DevSpacePhaseFailed
 
 			}
 
 		case false:
 
-			instance.Status.Phase = devv1alpha1.DevspacePhaseConfiguringEnvironment
+			instance.Status.Phase = devv1alpha1.DevSpacePhaseConfiguringEnvironment
 			err := r.createJob(ctx, instance, instance.GetLoaderJobMetadata())
 			if err != nil {
 				return err
@@ -160,7 +160,7 @@ func (r *DevspaceReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 	case false:
 
-		instance.Status.Phase = devv1alpha1.DevspacePhaseCreatingEnvironment
+		instance.Status.Phase = devv1alpha1.DevSpacePhaseCreatingEnvironment
 
 		if !instance.Status.VolumeStatuses.Var.Created {
 			err := r.createPVC(ctx, instance, instance.GetPVCVarMetadata())
@@ -206,7 +206,7 @@ func (r *DevspaceReconciler) reconcileCheckStatus(ctx context.Context, instance 
 	return nil
 }
 
-func (r *DevspaceReconciler) reconcileCheckResources(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) reconcileCheckResources(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 
 	err := r.reconcileCheckPVCs(ctx, instance)
 	if err != nil {
@@ -232,9 +232,9 @@ func (r *DevspaceReconciler) reconcileCheckResources(ctx context.Context, instan
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *DevspaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *DevSpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&devv1alpha1.Devspace{}).
+		For(&devv1alpha1.DevSpace{}).
 		Owns(&corev1.PersistentVolumeClaim{}).
 		Owns(&batchv1.Job{}).
 		Owns(&devv1alpha1.WorkspaceManager{}).
@@ -245,15 +245,15 @@ func (r *DevspaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *DevspaceReconciler) watchAttachedDevSuites(o client.Object) []reconcile.Request {
+func (r *DevSpaceReconciler) watchAttachedDevSuites(o client.Object) []reconcile.Request {
 
 	obj := o.(*devv1alpha1.DevSuite)
 
-	robot := &devv1alpha1.Devspace{}
+	devspace := &devv1alpha1.DevSpace{}
 	err := r.Get(context.TODO(), types.NamespacedName{
-		Name:      label.GetTargetDevspace(obj),
+		Name:      label.GetTargetDevSpace(obj),
 		Namespace: obj.Namespace,
-	}, robot)
+	}, devspace)
 	if err != nil {
 		return []reconcile.Request{}
 	}
@@ -261,8 +261,8 @@ func (r *DevspaceReconciler) watchAttachedDevSuites(o client.Object) []reconcile
 	return []reconcile.Request{
 		{
 			NamespacedName: types.NamespacedName{
-				Name:      robot.Name,
-				Namespace: robot.Namespace,
+				Name:      devspace.Name,
+				Namespace: devspace.Namespace,
 			},
 		},
 	}

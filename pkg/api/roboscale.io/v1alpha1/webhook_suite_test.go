@@ -99,7 +99,7 @@ var _ = BeforeSuite(func() {
 	})
 	Expect(err).NotTo(HaveOccurred())
 
-	err = (&Devspace{}).SetupWebhookWithManager(mgr)
+	err = (&DevSpace{}).SetupWebhookWithManager(mgr)
 	Expect(err).NotTo(HaveOccurred())
 
 	err = (&DevSpaceVDI{}).SetupWebhookWithManager(mgr)

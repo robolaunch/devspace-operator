@@ -11,7 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 )
 
-func (r *DevspaceReconciler) reconcileCheckPVCs(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) reconcileCheckPVCs(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 
 	pvcVarQuery := &corev1.PersistentVolumeClaim{}
 	err := r.Get(ctx, *instance.GetPVCVarMetadata(), pvcVarQuery)
@@ -71,9 +71,9 @@ func (r *DevspaceReconciler) reconcileCheckPVCs(ctx context.Context, instance *d
 	return nil
 }
 
-func (r *DevspaceReconciler) reconcileCheckLoaderJob(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) reconcileCheckLoaderJob(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 
-	if instance.Status.Phase != devv1alpha1.DevspacePhaseEnvironmentReady {
+	if instance.Status.Phase != devv1alpha1.DevSpacePhaseEnvironmentReady {
 		loaderJobQuery := &batchv1.Job{}
 		err := r.Get(ctx, *instance.GetLoaderJobMetadata(), loaderJobQuery)
 		if err != nil && errors.IsNotFound(err) {
@@ -96,7 +96,7 @@ func (r *DevspaceReconciler) reconcileCheckLoaderJob(ctx context.Context, instan
 	return nil
 }
 
-func (r *DevspaceReconciler) reconcileCheckDevSuite(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) reconcileCheckDevSuite(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 
 	devSuiteQuery := &devv1alpha1.DevSuite{}
 	err := r.Get(ctx, *instance.GetDevSuiteMetadata(), devSuiteQuery)
@@ -134,7 +134,7 @@ func (r *DevspaceReconciler) reconcileCheckDevSuite(ctx context.Context, instanc
 	return nil
 }
 
-func (r *DevspaceReconciler) reconcileCheckWorkspaceManager(ctx context.Context, instance *devv1alpha1.Devspace) error {
+func (r *DevSpaceReconciler) reconcileCheckWorkspaceManager(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 
 	workspaceManagerQuery := &devv1alpha1.WorkspaceManager{}
 	err := r.Get(ctx, *instance.GetWorkspaceManagerMetadata(), workspaceManagerQuery)

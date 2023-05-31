@@ -27,7 +27,7 @@ import (
 
 type RoboscaleV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	DevspacesGetter
+	DevSpacesGetter
 	DevSuitesGetter
 	DevSpaceIDEsGetter
 	DevSpaceVDIsGetter
@@ -38,8 +38,8 @@ type RoboscaleV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *RoboscaleV1alpha1Client) Devspaces(namespace string) DevspaceInterface {
-	return newDevspaces(c, namespace)
+func (c *RoboscaleV1alpha1Client) DevSpaces(namespace string) DevSpaceInterface {
+	return newDevSpaces(c, namespace)
 }
 
 func (c *RoboscaleV1alpha1Client) DevSuites(namespace string) DevSuiteInterface {

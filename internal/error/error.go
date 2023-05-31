@@ -39,13 +39,13 @@ func (r *MultipleNodeFoundError) Error() string {
 	return fmt.Sprintf("multiple nodes are found for resource %v %v in namespace %v", r.ResourceKind, r.ResourceName, r.ResourceNamespace)
 }
 
-type DevspaceResourcesHasNotBeenReleasedError struct {
+type DevSpaceResourcesHasNotBeenReleasedError struct {
 	Err               error
 	ResourceKind      string
 	ResourceName      string
 	ResourceNamespace string
 }
 
-func (r *DevspaceResourcesHasNotBeenReleasedError) Error() string {
-	return fmt.Sprintf("robot resources has not been released yet for resource %v %v in namespace %v", r.ResourceKind, r.ResourceName, r.ResourceNamespace)
+func (r *DevSpaceResourcesHasNotBeenReleasedError) Error() string {
+	return fmt.Sprintf("devspace resources has not been released yet for resource %v %v in namespace %v", r.ResourceKind, r.ResourceName, r.ResourceNamespace)
 }

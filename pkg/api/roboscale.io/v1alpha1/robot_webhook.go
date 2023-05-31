@@ -11,27 +11,27 @@ import (
 )
 
 // log is for logging in this package.
-var robotlog = logf.Log.WithName("robot-resource")
+var devspacelog = logf.Log.WithName("devspace-resource")
 
-func (r *Devspace) SetupWebhookWithManager(mgr ctrl.Manager) error {
+func (r *DevSpace) SetupWebhookWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewWebhookManagedBy(mgr).
 		For(r).
 		Complete()
 }
 
-//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-robot,mutating=true,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=devspaces,verbs=create;update,versions=v1alpha1,name=mrobot.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/mutate-dev-roboscale-io-v1alpha1-devspace,mutating=true,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=devspaces,verbs=create;update,versions=v1alpha1,name=mdevspace.kb.io,admissionReviewVersions=v1
 
-var _ webhook.Defaulter = &Devspace{}
+var _ webhook.Defaulter = &DevSpace{}
 
 // Default implements webhook.Defaulter so a webhook will be registered for the type
-func (r *Devspace) Default() {
-	robotlog.Info("default", "name", r.Name)
+func (r *DevSpace) Default() {
+	devspacelog.Info("default", "name", r.Name)
 
 	DefaultRepositoryPaths(r)
 	_ = r.setRepositoryInfo()
 }
 
-func DefaultRepositoryPaths(r *Devspace) {
+func DefaultRepositoryPaths(r *DevSpace) {
 	for wsKey := range r.Spec.WorkspaceManagerTemplate.Workspaces {
 		ws := r.Spec.WorkspaceManagerTemplate.Workspaces[wsKey]
 		for repoKey := range ws.Repositories {
@@ -43,13 +43,13 @@ func DefaultRepositoryPaths(r *Devspace) {
 	}
 }
 
-//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-robot,mutating=false,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=devspaces,verbs=create;update,versions=v1alpha1,name=vrobot.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/validate-dev-roboscale-io-v1alpha1-devspace,mutating=false,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=devspaces,verbs=create;update,versions=v1alpha1,name=vdevspace.kb.io,admissionReviewVersions=v1
 
-var _ webhook.Validator = &Devspace{}
+var _ webhook.Validator = &DevSpace{}
 
 // ValidateCreate implements webhook.Validator so a webhook will be registered for the type
-func (r *Devspace) ValidateCreate() error {
-	robotlog.Info("validate create", "name", r.Name)
+func (r *DevSpace) ValidateCreate() error {
+	devspacelog.Info("validate create", "name", r.Name)
 
 	err := r.checkTenancyLabels()
 	if err != nil {
@@ -75,8 +75,8 @@ func (r *Devspace) ValidateCreate() error {
 }
 
 // ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
-func (r *Devspace) ValidateUpdate(old runtime.Object) error {
-	robotlog.Info("validate update", "name", r.Name)
+func (r *DevSpace) ValidateUpdate(old runtime.Object) error {
+	devspacelog.Info("validate update", "name", r.Name)
 
 	err := r.checkTenancyLabels()
 	if err != nil {
@@ -102,12 +102,12 @@ func (r *Devspace) ValidateUpdate(old runtime.Object) error {
 }
 
 // ValidateDelete implements webhook.Validator so a webhook will be registered for the type
-func (r *Devspace) ValidateDelete() error {
-	robotlog.Info("validate delete", "name", r.Name)
+func (r *DevSpace) ValidateDelete() error {
+	devspacelog.Info("validate delete", "name", r.Name)
 	return nil
 }
 
-func (r *Devspace) checkTenancyLabels() error {
+func (r *DevSpace) checkTenancyLabels() error {
 	labels := r.GetLabels()
 
 	if _, ok := labels[internal.ORGANIZATION_LABEL_KEY]; !ok {
@@ -132,7 +132,7 @@ func (r *Devspace) checkTenancyLabels() error {
 	return nil
 }
 
-func (r *Devspace) checkDistributions() error {
+func (r *DevSpace) checkDistributions() error {
 
 	if len(r.Spec.Distributions) == 2 && (r.Spec.Distributions[0] == ROSDistroHumble || r.Spec.Distributions[1] == ROSDistroHumble) {
 		return errors.New("humble cannot be used in a multidistro environment")
@@ -141,7 +141,7 @@ func (r *Devspace) checkDistributions() error {
 	return nil
 }
 
-func (r *Devspace) checkWorkspaces() error {
+func (r *DevSpace) checkWorkspaces() error {
 
 	for _, ws := range r.Spec.WorkspaceManagerTemplate.Workspaces {
 
@@ -161,7 +161,7 @@ func (r *Devspace) checkWorkspaces() error {
 	return nil
 }
 
-func (r *Devspace) checkDevSuite() error {
+func (r *DevSpace) checkDevSuite() error {
 
 	dst := r.Spec.DevSuiteTemplate
 
@@ -172,7 +172,7 @@ func (r *Devspace) checkDevSuite() error {
 	return nil
 }
 
-func (r *Devspace) setRepositoryInfo() error {
+func (r *DevSpace) setRepositoryInfo() error {
 
 	for k1, ws := range r.Spec.WorkspaceManagerTemplate.Workspaces {
 		for k2, repo := range ws.Repositories {

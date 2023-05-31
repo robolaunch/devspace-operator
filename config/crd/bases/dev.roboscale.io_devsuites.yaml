@@ -19,7 +19,7 @@ spec:
     schema:
       openAPIV3Schema:
         description: DevSuite is a custom resource that creates dynamically configured
-          development environments for robots.
+          development environments for devspaces.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -146,14 +146,14 @@ spec:
             description: Most recently observed status of the DevSuite.
             properties:
               active:
-                description: '[*alpha*] Indicates if DevSuite is attached to a Devspace
+                description: '[*alpha*] Indicates if DevSuite is attached to a DevSpace
                   and actively provisioned it''s resources.'
                 type: boolean
               devSpaceIDEStatus:
                 description: Status of DevSpaceIDE.
                 properties:
                   connection:
-                    description: Address of the robot service that can be reached
+                    description: Address of the devspace service that can be reached
                       from outside.
                     type: string
                   resource:
@@ -211,7 +211,7 @@ spec:
                 description: Status of DevSpaceVDI.
                 properties:
                   connection:
-                    description: Address of the robot service that can be reached
+                    description: Address of the devspace service that can be reached
                       from outside.
                     type: string
                   resource:

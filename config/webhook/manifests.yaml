@@ -11,7 +11,7 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /mutate-robot-roboscale-io-v1alpha1-devspaceide
+      path: /mutate-dev-roboscale-io-v1alpha1-devspaceide
   failurePolicy: Fail
   name: mdevspaceide.kb.io
   rules:
@@ -31,7 +31,7 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /mutate-robot-roboscale-io-v1alpha1-devspacevdi
+      path: /mutate-dev-roboscale-io-v1alpha1-devspacevdi
   failurePolicy: Fail
   name: mdevspacevdi.kb.io
   rules:
@@ -51,7 +51,7 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /mutate-robot-roboscale-io-v1alpha1-workspacemanager
+      path: /mutate-dev-roboscale-io-v1alpha1-workspacemanager
   failurePolicy: Fail
   name: mworkspacemanager.kb.io
   rules:
@@ -71,9 +71,9 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /mutate-robot-roboscale-io-v1alpha1-robot
+      path: /mutate-dev-roboscale-io-v1alpha1-devspace
   failurePolicy: Fail
-  name: mrobot.kb.io
+  name: mdevspace.kb.io
   rules:
   - apiGroups:
     - dev.roboscale.io
@@ -83,7 +83,7 @@ webhooks:
     - CREATE
     - UPDATE
     resources:
-    - robots
+    - devspaces
   sideEffects: None
 ---
 apiVersion: admissionregistration.k8s.io/v1
@@ -98,7 +98,7 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /validate-robot-roboscale-io-v1alpha1-devspaceide
+      path: /validate-dev-roboscale-io-v1alpha1-devspaceide
   failurePolicy: Fail
   name: vdevspaceide.kb.io
   rules:
@@ -118,7 +118,7 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /validate-robot-roboscale-io-v1alpha1-devspacevdi
+      path: /validate-dev-roboscale-io-v1alpha1-devspacevdi
   failurePolicy: Fail
   name: vdevspacevdi.kb.io
   rules:
@@ -138,7 +138,7 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /validate-robot-roboscale-io-v1alpha1-workspacemanager
+      path: /validate-dev-roboscale-io-v1alpha1-workspacemanager
   failurePolicy: Fail
   name: vworkspacemanager.kb.io
   rules:
@@ -158,9 +158,9 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /validate-robot-roboscale-io-v1alpha1-robot
+      path: /validate-dev-roboscale-io-v1alpha1-devspace
   failurePolicy: Fail
-  name: vrobot.kb.io
+  name: vdevspace.kb.io
   rules:
   - apiGroups:
     - dev.roboscale.io
@@ -170,5 +170,5 @@ webhooks:
     - CREATE
     - UPDATE
     resources:
-    - robots
+    - devspaces
   sideEffects: None

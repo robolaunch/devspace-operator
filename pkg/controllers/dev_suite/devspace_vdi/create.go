@@ -11,12 +11,12 @@ import (
 
 func (r *DevSpaceVDIReconciler) reconcileCreatePVC(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) error {
 
-	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
+	devspace, err := r.reconcileGetTargetDevSpace(ctx, instance)
 	if err != nil {
 		return err
 	}
 
-	vdiPVC := resources.GetDevSpaceVDIPVC(instance, instance.GetDevSpaceVDIPVCMetadata(), *robot)
+	vdiPVC := resources.GetDevSpaceVDIPVC(instance, instance.GetDevSpaceVDIPVCMetadata(), *devspace)
 
 	err = ctrl.SetControllerReference(instance, vdiPVC, r.Scheme)
 	if err != nil {
@@ -79,17 +79,17 @@ func (r *DevSpaceVDIReconciler) reconcileCreateServiceUDP(ctx context.Context, i
 
 func (r *DevSpaceVDIReconciler) reconcileCreatePod(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) error {
 
-	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
+	devspace, err := r.reconcileGetTargetDevSpace(ctx, instance)
 	if err != nil {
 		return err
 	}
 
-	activeNode, err := r.reconcileCheckNode(ctx, robot)
+	activeNode, err := r.reconcileCheckNode(ctx, devspace)
 	if err != nil {
 		return err
 	}
 
-	vdiPod := resources.GetDevSpaceVDIPod(instance, instance.GetDevSpaceVDIPodMetadata(), *robot, *activeNode)
+	vdiPod := resources.GetDevSpaceVDIPod(instance, instance.GetDevSpaceVDIPodMetadata(), *devspace, *activeNode)
 
 	err = ctrl.SetControllerReference(instance, vdiPod, r.Scheme)
 	if err != nil {
@@ -110,12 +110,12 @@ func (r *DevSpaceVDIReconciler) reconcileCreatePod(ctx context.Context, instance
 
 func (r *DevSpaceVDIReconciler) reconcileCreateIngress(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) error {
 
-	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
+	devspace, err := r.reconcileGetTargetDevSpace(ctx, instance)
 	if err != nil {
 		return err
 	}
 
-	vdiIngress := resources.GetDevSpaceVDIIngress(instance, instance.GetDevSpaceVDIPodMetadata(), *robot)
+	vdiIngress := resources.GetDevSpaceVDIIngress(instance, instance.GetDevSpaceVDIPodMetadata(), *devspace)
 
 	err = ctrl.SetControllerReference(instance, vdiIngress, r.Scheme)
 	if err != nil {

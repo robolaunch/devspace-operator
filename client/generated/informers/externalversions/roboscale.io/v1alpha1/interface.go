@@ -23,8 +23,8 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// Devspaces returns a DevspaceInformer.
-	Devspaces() DevspaceInformer
+	// DevSpaces returns a DevSpaceInformer.
+	DevSpaces() DevSpaceInformer
 	// DevSuites returns a DevSuiteInformer.
 	DevSuites() DevSuiteInformer
 	// DevSpaceIDEs returns a DevSpaceIDEInformer.
@@ -44,9 +44,9 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// Devspaces returns a DevspaceInformer.
-func (v *version) Devspaces() DevspaceInformer {
-	return &robotInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// DevSpaces returns a DevSpaceInformer.
+func (v *version) DevSpaces() DevSpaceInformer {
+	return &devspaceInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // DevSuites returns a DevSuiteInformer.

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/robolaunch/devspace-operator/internal"
-	robotErr "github.com/robolaunch/devspace-operator/internal/error"
+	devspaceErr "github.com/robolaunch/devspace-operator/internal/error"
 	"github.com/robolaunch/devspace-operator/internal/label"
 	"github.com/robolaunch/devspace-operator/internal/reference"
 	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
@@ -70,23 +70,23 @@ func (r *WorkspaceManagerReconciler) reconcileCheckCleanupJob(ctx context.Contex
 
 func (r *WorkspaceManagerReconciler) reconcileCheckOtherAttachedResources(ctx context.Context, instance *devv1alpha1.WorkspaceManager) error {
 
-	// Get attached build manager objects for this robot
+	// Get attached build manager objects for this devspace
 	requirements := []labels.Requirement{}
-	targetReq, err := labels.NewRequirement(internal.TARGET_ROBOT_LABEL_KEY, selection.In, []string{label.GetTargetDevspace(instance)})
+	targetReq, err := labels.NewRequirement(internal.TARGET_DEVSPACE_LABEL_KEY, selection.In, []string{label.GetTargetDevSpace(instance)})
 	if err != nil {
 		return err
 	}
 
-	ownedReq, err := labels.NewRequirement(internal.ROBOT_DEV_SUITE_OWNED, selection.DoesNotExist, []string{})
+	ownedReq, err := labels.NewRequirement(internal.DEVSPACE_DEV_SUITE_OWNED, selection.DoesNotExist, []string{})
 	if err != nil {
 		return err
 	}
 	requirements = append(requirements, *targetReq, *ownedReq)
 
-	robotSelector := labels.NewSelector().Add(requirements...)
+	devspaceSelector := labels.NewSelector().Add(requirements...)
 
 	devSuiteList := devv1alpha1.DevSuiteList{}
-	err = r.List(ctx, &devSuiteList, &client.ListOptions{Namespace: instance.Namespace, LabelSelector: robotSelector.Add()})
+	err = r.List(ctx, &devSuiteList, &client.ListOptions{Namespace: instance.Namespace, LabelSelector: devspaceSelector.Add()})
 	if err != nil {
 		return err
 	}
@@ -94,7 +94,7 @@ func (r *WorkspaceManagerReconciler) reconcileCheckOtherAttachedResources(ctx co
 	for _, rds := range devSuiteList.Items {
 
 		if rds.Status.Active {
-			return &robotErr.DevspaceResourcesHasNotBeenReleasedError{
+			return &devspaceErr.DevSpaceResourcesHasNotBeenReleasedError{
 				ResourceKind:      instance.Kind,
 				ResourceName:      instance.Name,
 				ResourceNamespace: instance.Namespace,
@@ -102,7 +102,7 @@ func (r *WorkspaceManagerReconciler) reconcileCheckOtherAttachedResources(ctx co
 		}
 
 		if rds.Status.Phase != devv1alpha1.DevSuitePhaseInactive {
-			return &robotErr.DevspaceResourcesHasNotBeenReleasedError{
+			return &devspaceErr.DevSpaceResourcesHasNotBeenReleasedError{
 				ResourceKind:      instance.Kind,
 				ResourceName:      instance.Name,
 				ResourceNamespace: instance.Namespace,

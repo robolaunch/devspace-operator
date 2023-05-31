@@ -36,31 +36,31 @@ func (r *DevSuiteReconciler) reconcileUpdateInstanceStatus(ctx context.Context, 
 	})
 }
 
-func (r *DevSuiteReconciler) reconcileGetTargetDevspace(ctx context.Context, instance *devv1alpha1.DevSuite) (*devv1alpha1.Devspace, error) {
-	robot := &devv1alpha1.Devspace{}
+func (r *DevSuiteReconciler) reconcileGetTargetDevSpace(ctx context.Context, instance *devv1alpha1.DevSuite) (*devv1alpha1.DevSpace, error) {
+	devspace := &devv1alpha1.DevSpace{}
 	err := r.Get(ctx, types.NamespacedName{
 		Namespace: instance.Namespace,
-		Name:      label.GetTargetDevspace(instance),
-	}, robot)
+		Name:      label.GetTargetDevSpace(instance),
+	}, devspace)
 	if err != nil {
 		return nil, err
 	}
 
-	return robot, nil
+	return devspace, nil
 }
 
-func (r *DevSuiteReconciler) reconcileCheckTargetDevspace(ctx context.Context, instance *devv1alpha1.DevSuite) error {
+func (r *DevSuiteReconciler) reconcileCheckTargetDevSpace(ctx context.Context, instance *devv1alpha1.DevSuite) error {
 
 	if label.GetDevSuiteOwned(instance) == "true" {
 		instance.Status.Active = true
 	} else {
-		robot, err := r.reconcileGetTargetDevspace(ctx, instance)
+		devspace, err := r.reconcileGetTargetDevSpace(ctx, instance)
 		if err != nil {
 			return err
 		}
 
 		isActive := false
-		for _, rds := range robot.Status.AttachedDevObjects {
+		for _, rds := range devspace.Status.AttachedDevObjects {
 			if rds.Reference.Kind == instance.Kind && rds.Reference.Name == instance.Name {
 				isActive = true
 				break

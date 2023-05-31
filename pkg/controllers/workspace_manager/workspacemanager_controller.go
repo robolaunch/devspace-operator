@@ -21,7 +21,7 @@ import (
 	goErr "errors"
 	"time"
 
-	robotErr "github.com/robolaunch/devspace-operator/internal/error"
+	devspaceErr "github.com/robolaunch/devspace-operator/internal/error"
 	batchv1 "k8s.io/api/batch/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -63,10 +63,10 @@ func (r *WorkspaceManagerReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		return ctrl.Result{}, err
 	}
 
-	// Check target robot's other attached objects to see if robot's resources are released
+	// Check target devspace's other attached objects to see if devspace's resources are released
 	err = r.reconcileCheckOtherAttachedResources(ctx, instance)
 	if err != nil {
-		var e *robotErr.DevspaceResourcesHasNotBeenReleasedError
+		var e *devspaceErr.DevSpaceResourcesHasNotBeenReleasedError
 		if goErr.As(err, &e) {
 			return ctrl.Result{
 				Requeue:      true,

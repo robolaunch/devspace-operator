@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	SchemeBuilder.Register(&Devspace{}, &DevspaceList{})
+	SchemeBuilder.Register(&DevSpace{}, &DevSpaceList{})
 }
 
 //+genclient
@@ -15,28 +15,28 @@ func init() {
 //+kubebuilder:printcolumn:name="Distributions",type=string,JSONPath=`.spec.distributions`
 //+kubebuilder:printcolumn:name="Phase",type=string,JSONPath=`.status.phase`
 
-// Devspace is the custom resource that contains ROS 2 components (Workloads, Cloud VDI, Cloud IDE, ROS Bridge, Configurational Resources), robolaunch Devspace instances can be decomposed and distributed to both cloud instances and physical instances using federation.
-type Devspace struct {
+// DevSpace is the custom resource that contains ROS 2 components (Workloads, Cloud VDI, Cloud IDE, ROS Bridge, Configurational Resources), robolaunch DevSpace instances can be decomposed and distributed to both cloud instances and physical instances using federation.
+type DevSpace struct {
 	metav1.TypeMeta `json:",inline"`
 	// Standard object's metadata.
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// Specification of the desired behavior of the Devspace.
-	Spec DevspaceSpec `json:"spec,omitempty"`
-	// Most recently observed status of the Devspace.
-	Status DevspaceStatus `json:"status,omitempty"`
+	// Specification of the desired behavior of the DevSpace.
+	Spec DevSpaceSpec `json:"spec,omitempty"`
+	// Most recently observed status of the DevSpace.
+	Status DevSpaceStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// DevspaceList contains a list of Devspace
-type DevspaceList struct {
+// DevSpaceList contains a list of DevSpace
+type DevSpaceList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Devspace `json:"items"`
+	Items           []DevSpace `json:"items"`
 }
 
 // ********************************
-// Devspace types
+// DevSpace types
 // ********************************
 
 // ROS 2 distribution selection. Currently supported distributions are Humble, Foxy, Galactic.
@@ -64,12 +64,12 @@ type StorageClassConfig struct {
 	AccessMode corev1.PersistentVolumeAccessMode `json:"accessMode,omitempty"`
 }
 
-// Devspace's resource limitations.
+// DevSpace's resource limitations.
 type Storage struct {
 	// Specifies how much storage will be allocated in total. Use MB as a unit of measurement. (eg. `10240` is equal to 10 GB)
 	// +kubebuilder:default=10000
 	Amount int `json:"amount,omitempty"`
-	// Storage class selection for robot's volumes.
+	// Storage class selection for devspace's volumes.
 	StorageClassConfig StorageClassConfig `json:"storageClassConfig,omitempty"`
 }
 
@@ -88,18 +88,18 @@ type RootDNSConfig struct {
 	Host string `json:"host"`
 }
 
-// DevspaceSpec defines the desired state of Devspace.
-type DevspaceSpec struct {
+// DevSpaceSpec defines the desired state of DevSpace.
+type DevSpaceSpec struct {
 	// ROS 2 distributions to be used. You can select multiple distributions if they are supported in the same underlying OS.
 	// (eg. `foxy` and `galactic` are supported in Ubuntu Focal, so they can be used together but both cannot be used with `humble`)
 	// +kubebuilder:validation:Required
 	// +kubebuilder:validation:MinItems=1
 	// +kubebuilder:validation:MaxItems=2
 	Distributions []ROSDistro `json:"distributions"`
-	// Total storage amount to persist via Devspace. Unit of measurement is MB. (eg. `10240` corresponds 10 GB)
+	// Total storage amount to persist via DevSpace. Unit of measurement is MB. (eg. `10240` corresponds 10 GB)
 	// This amount is being shared between different components.
 	Storage Storage `json:"storage,omitempty"`
-	// Devspace development suite template
+	// DevSpace development suite template
 	DevSuiteTemplate DevSuiteSpec `json:"devSuiteTemplate,omitempty"`
 	// Workspace manager template to configure ROS 2 workspaces.
 	WorkspaceManagerTemplate WorkspaceManagerSpec `json:"workspaceManagerTemplate,omitempty"`
@@ -139,22 +139,22 @@ type AttachedDevObject struct {
 	Status DevSuiteStatus `json:"status,omitempty"`
 }
 
-// DevspaceStatus defines the observed state of Devspace.
-type DevspaceStatus struct {
-	// Phase of Devspace. It sums the general status of Devspace.
-	Phase DevspacePhase `json:"phase,omitempty"`
-	// Main image of Devspace. It is derived either from the specifications or determined directly over labels.
+// DevSpaceStatus defines the observed state of DevSpace.
+type DevSpaceStatus struct {
+	// Phase of DevSpace. It sums the general status of DevSpace.
+	Phase DevSpacePhase `json:"phase,omitempty"`
+	// Main image of DevSpace. It is derived either from the specifications or determined directly over labels.
 	Image string `json:"image,omitempty"`
-	// Node that Devspace uses. It is selected via tenancy labels.
+	// Node that DevSpace uses. It is selected via tenancy labels.
 	NodeName string `json:"nodeName,omitempty"`
-	// Devspace persists some of the directories of underlying OS inside persistent volumes.
+	// DevSpace persists some of the directories of underlying OS inside persistent volumes.
 	// This field exposes persistent volume claims that dynamically provision PVs.
 	VolumeStatuses VolumeStatuses `json:"volumeStatuses,omitempty"`
 	// Status of loader job that configures environment.
 	LoaderJobStatus OwnedResourceStatus `json:"loaderJobStatus,omitempty"`
 	// Workspace manager instance status if exists.
 	WorkspaceManagerStatus WorkspaceManagerInstanceStatus `json:"workspaceManagerStatus,omitempty"`
-	// Devspace development suite instance status.
+	// DevSpace development suite instance status.
 	DevSuiteStatus DevSuiteInstanceStatus `json:"devSuiteStatus,omitempty"`
 	// [*alpha*] Attached dev object information.
 	AttachedDevObjects []AttachedDevObject `json:"attachedDevObjects,omitempty"`

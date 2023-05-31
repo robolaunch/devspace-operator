@@ -1,3 +1,3 @@
-# Devspace Operator Concepts
+# DevSpace Operator Concepts
 
 Will be added.

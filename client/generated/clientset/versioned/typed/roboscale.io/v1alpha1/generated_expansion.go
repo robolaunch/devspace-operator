@@ -17,7 +17,7 @@ limitations under the License.
 
 package v1alpha1
 
-type DevspaceExpansion interface{}
+type DevSpaceExpansion interface{}
 
 type DevSuiteExpansion interface{}
 

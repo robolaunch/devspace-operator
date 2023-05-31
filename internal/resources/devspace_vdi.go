@@ -24,7 +24,7 @@ func getDevSpaceVDISelector(devSpaceVDI devv1alpha1.DevSpaceVDI) map[string]stri
 	}
 }
 
-func GetDevSpaceVDIPVC(devSpaceVDI *devv1alpha1.DevSpaceVDI, pvcNamespacedName *types.NamespacedName, robot devv1alpha1.Devspace) *corev1.PersistentVolumeClaim {
+func GetDevSpaceVDIPVC(devSpaceVDI *devv1alpha1.DevSpaceVDI, pvcNamespacedName *types.NamespacedName, devspace devv1alpha1.DevSpace) *corev1.PersistentVolumeClaim {
 
 	pvc := corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
@@ -32,9 +32,9 @@ func GetDevSpaceVDIPVC(devSpaceVDI *devv1alpha1.DevSpaceVDI, pvcNamespacedName *
 			Namespace: pvcNamespacedName.Namespace,
 		},
 		Spec: corev1.PersistentVolumeClaimSpec{
-			StorageClassName: &robot.Spec.Storage.StorageClassConfig.Name,
+			StorageClassName: &devspace.Spec.Storage.StorageClassConfig.Name,
 			AccessModes: []corev1.PersistentVolumeAccessMode{
-				robot.Spec.Storage.StorageClassConfig.AccessMode,
+				devspace.Spec.Storage.StorageClassConfig.AccessMode,
 			},
 			Resources: corev1.ResourceRequirements{
 				Limits: corev1.ResourceList{
@@ -50,7 +50,7 @@ func GetDevSpaceVDIPVC(devSpaceVDI *devv1alpha1.DevSpaceVDI, pvcNamespacedName *
 	return &pvc
 }
 
-func GetDevSpaceVDIPod(devSpaceVDI *devv1alpha1.DevSpaceVDI, podNamespacedName *types.NamespacedName, robot devv1alpha1.Devspace, node corev1.Node) *corev1.Pod {
+func GetDevSpaceVDIPod(devSpaceVDI *devv1alpha1.DevSpaceVDI, podNamespacedName *types.NamespacedName, devspace devv1alpha1.DevSpace, node corev1.Node) *corev1.Pod {
 
 	// add tcp port
 	ports := []corev1.ContainerPort{
@@ -100,7 +100,7 @@ func GetDevSpaceVDIPod(devSpaceVDI *devv1alpha1.DevSpaceVDI, podNamespacedName *
 			Containers: []corev1.Container{
 				{
 					Name:    "vdi",
-					Image:   robot.Status.Image,
+					Image:   devspace.Status.Image,
 					Command: internal.Bash(cmdBuilder.String()),
 					Env: []corev1.EnvVar{
 						internal.Env("VIDEO_PORT", "DFP"),
@@ -114,11 +114,11 @@ func GetDevSpaceVDIPod(devSpaceVDI *devv1alpha1.DevSpaceVDI, podNamespacedName *
 					TTY:   true,
 					Ports: ports,
 					VolumeMounts: []corev1.VolumeMount{
-						configure.GetVolumeMount("", configure.GetVolumeVar(&robot)),
-						configure.GetVolumeMount("", configure.GetVolumeUsr(&robot)),
-						configure.GetVolumeMount("", configure.GetVolumeOpt(&robot)),
-						configure.GetVolumeMount("", configure.GetVolumeEtc(&robot)),
-						configure.GetVolumeMount(robot.Spec.WorkspaceManagerTemplate.WorkspacesPath, configure.GetVolumeWorkspace(&robot)),
+						configure.GetVolumeMount("", configure.GetVolumeVar(&devspace)),
+						configure.GetVolumeMount("", configure.GetVolumeUsr(&devspace)),
+						configure.GetVolumeMount("", configure.GetVolumeOpt(&devspace)),
+						configure.GetVolumeMount("", configure.GetVolumeEtc(&devspace)),
+						configure.GetVolumeMount(devspace.Spec.WorkspaceManagerTemplate.WorkspacesPath, configure.GetVolumeWorkspace(&devspace)),
 						configure.GetVolumeMount("/dev/shm", configure.GetVolumeDshm()),
 						configure.GetVolumeMount("/cache", configure.GetVolumeXglCache()),
 					},
@@ -133,11 +133,11 @@ func GetDevSpaceVDIPod(devSpaceVDI *devv1alpha1.DevSpaceVDI, podNamespacedName *
 				},
 			},
 			Volumes: []corev1.Volume{
-				configure.GetVolumeVar(&robot),
-				configure.GetVolumeUsr(&robot),
-				configure.GetVolumeOpt(&robot),
-				configure.GetVolumeEtc(&robot),
-				configure.GetVolumeWorkspace(&robot),
+				configure.GetVolumeVar(&devspace),
+				configure.GetVolumeUsr(&devspace),
+				configure.GetVolumeOpt(&devspace),
+				configure.GetVolumeEtc(&devspace),
+				configure.GetVolumeWorkspace(&devspace),
 				configure.GetVolumeDshm(),
 				configure.GetVolumeXglCache(),
 			},
@@ -146,9 +146,9 @@ func GetDevSpaceVDIPod(devSpaceVDI *devv1alpha1.DevSpaceVDI, podNamespacedName *
 	}
 
 	configure.SchedulePod(vdiPod, label.GetTenancyMap(devSpaceVDI))
-	configure.InjectGenericEnvironmentVariables(vdiPod, robot)
+	configure.InjectGenericEnvironmentVariables(vdiPod, devspace)
 	configure.InjectPodDisplayConfiguration(vdiPod, *devSpaceVDI)
-	configure.InjectRuntimeClass(vdiPod, robot, node)
+	configure.InjectRuntimeClass(vdiPod, devspace, node)
 
 	return vdiPod
 }
@@ -224,12 +224,12 @@ func GetDevSpaceVDIServiceUDP(devSpaceVDI *devv1alpha1.DevSpaceVDI, svcNamespace
 	return &service
 }
 
-func GetDevSpaceVDIIngress(devSpaceVDI *devv1alpha1.DevSpaceVDI, ingressNamespacedName *types.NamespacedName, robot devv1alpha1.Devspace) *networkingv1.Ingress {
+func GetDevSpaceVDIIngress(devSpaceVDI *devv1alpha1.DevSpaceVDI, ingressNamespacedName *types.NamespacedName, devspace devv1alpha1.DevSpace) *networkingv1.Ingress {
 
-	tenancy := label.GetTenancy(&robot)
+	tenancy := label.GetTenancy(&devspace)
 
-	rootDNSConfig := robot.Spec.RootDNSConfig
-	secretName := robot.Spec.TLSSecretReference.Name
+	rootDNSConfig := devspace.Spec.RootDNSConfig
+	secretName := devspace.Spec.TLSSecretReference.Name
 
 	annotations := map[string]string{
 		internal.INGRESS_AUTH_URL_KEY:                   fmt.Sprintf(internal.INGRESS_AUTH_URL_VAL, tenancy.Organization, rootDNSConfig.Host),
@@ -261,7 +261,7 @@ func GetDevSpaceVDIIngress(devSpaceVDI *devv1alpha1.DevSpaceVDI, ingressNamespac
 					HTTP: &networkingv1.HTTPIngressRuleValue{
 						Paths: []networkingv1.HTTPIngressPath{
 							{
-								Path:     devv1alpha1.GetDevspaceServicePath(robot, "/vdi") + "(/|$)(.*)",
+								Path:     devv1alpha1.GetDevSpaceServicePath(devspace, "/vdi") + "(/|$)(.*)",
 								PathType: &pathTypePrefix,
 								Backend: networkingv1.IngressBackend{
 									Service: &networkingv1.IngressServiceBackend{

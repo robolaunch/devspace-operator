@@ -201,10 +201,6 @@ type RobotSpec struct {
 	RobotDevSuiteTemplate RobotDevSuiteSpec `json:"robotDevSuiteTemplate,omitempty"`
 	// Workspace manager template to configure ROS 2 workspaces.
 	WorkspaceManagerTemplate WorkspaceManagerSpec `json:"workspaceManagerTemplate,omitempty"`
-	// [*alpha*] Build manager template for initial configuration.
-	BuildManagerTemplate BuildManagerSpec `json:"buildManagerTemplate,omitempty"`
-	// [*alpha*] Launch manager template for initial configuration.
-	LaunchManagerTemplates []LaunchManagerSpec `json:"launchManagerTemplates,omitempty"`
 	// [*alpha*] Switch to development mode if `true`.
 	Development bool `json:"development,omitempty"`
 	// [*alpha*] Root DNS configuration.
@@ -234,20 +230,6 @@ const (
 	JobFailed    JobPhase = "Failed"
 )
 
-type AttachedBuildObject struct {
-	// Reference to the BuildManager instance.
-	Reference corev1.ObjectReference `json:"reference,omitempty"`
-	// Status of attached BuildManager.
-	Status BuildManagerStatus `json:"status,omitempty"`
-}
-
-type AttachedLaunchObject struct {
-	// Reference to the LaunchManager instance.
-	Reference corev1.ObjectReference `json:"reference,omitempty"`
-	// Status of attached LaunchManager.
-	Status LaunchManagerStatus `json:"status,omitempty"`
-}
-
 type AttachedDevObject struct {
 	// Reference to the RobotDevSuite instance.
 	Reference corev1.ObjectReference `json:"reference,omitempty"`
@@ -276,20 +258,6 @@ type RobotStatus struct {
 	WorkspaceManagerStatus WorkspaceManagerInstanceStatus `json:"workspaceManagerStatus,omitempty"`
 	// Robot development suite instance status.
 	RobotDevSuiteStatus RobotDevSuiteInstanceStatus `json:"robotDevSuiteStatus,omitempty"`
-	// Attached build object information.
-	// A BuildManager can be attached with a label on it with key `robolaunch.io/target-robot`
-	// and value of the target robot's name.
-	// Robot sorts the BuildManagers targeted itself, and picks the last created object to process.
-	AttachedBuildObject AttachedBuildObject `json:"attachedBuildObject,omitempty"`
-	// Attached launch object information.
-	// A LaunchManager can be attached with a label on it with key `robolaunch.io/target-robot`
-	// and value of the target robot's name.
-	// Multiple LaunchManager could work together if they targeted the same Robot.
-	AttachedLaunchObjects []AttachedLaunchObject `json:"attachedLaunchObjects,omitempty"`
-	// [*alpha*] Initial build manager creation status if exists.
-	InitialBuildManagerStatus OwnedResourceStatus `json:"initialBuildManagerStatus,omitempty"`
-	// [*alpha*] Initial launch manager creation status if exists.
-	InitialLaunchManagerStatuses []OwnedResourceStatus `json:"initialLaunchManagerStatuses,omitempty"`
 	// [*alpha*] Attached dev object information.
 	AttachedDevObjects []AttachedDevObject `json:"attachedDevObjects,omitempty"`
 }

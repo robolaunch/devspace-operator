@@ -27,16 +27,8 @@ type FakeRoboscaleV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeRoboscaleV1alpha1) BuildManagers(namespace string) v1alpha1.BuildManagerInterface {
-	return &FakeBuildManagers{c, namespace}
-}
-
 func (c *FakeRoboscaleV1alpha1) DiscoveryServers(namespace string) v1alpha1.DiscoveryServerInterface {
 	return &FakeDiscoveryServers{c, namespace}
-}
-
-func (c *FakeRoboscaleV1alpha1) LaunchManagers(namespace string) v1alpha1.LaunchManagerInterface {
-	return &FakeLaunchManagers{c, namespace}
 }
 
 func (c *FakeRoboscaleV1alpha1) ROSBridges(namespace string) v1alpha1.ROSBridgeInterface {

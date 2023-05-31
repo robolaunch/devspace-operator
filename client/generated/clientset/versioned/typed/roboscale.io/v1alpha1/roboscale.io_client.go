@@ -27,9 +27,7 @@ import (
 
 type RoboscaleV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	BuildManagersGetter
 	DiscoveryServersGetter
-	LaunchManagersGetter
 	ROSBridgesGetter
 	RobotsGetter
 	RobotDevSuitesGetter
@@ -42,16 +40,8 @@ type RoboscaleV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *RoboscaleV1alpha1Client) BuildManagers(namespace string) BuildManagerInterface {
-	return newBuildManagers(c, namespace)
-}
-
 func (c *RoboscaleV1alpha1Client) DiscoveryServers(namespace string) DiscoveryServerInterface {
 	return newDiscoveryServers(c, namespace)
-}
-
-func (c *RoboscaleV1alpha1Client) LaunchManagers(namespace string) LaunchManagerInterface {
-	return newLaunchManagers(c, namespace)
 }
 
 func (c *RoboscaleV1alpha1Client) ROSBridges(namespace string) ROSBridgeInterface {

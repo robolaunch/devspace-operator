@@ -9,7 +9,6 @@ import (
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/types"
 )
 
 func (r *RobotReconciler) reconcileCheckPVCs(ctx context.Context, instance *robotv1alpha1.Robot) error {
@@ -218,49 +217,6 @@ func (r *RobotReconciler) reconcileCheckWorkspaceManager(ctx context.Context, in
 			instance.Status.WorkspaceManagerStatus.Status.Phase = robotv1alpha1.WorkspaceManagerPhaseConfiguringWorkspaces
 		}
 
-	}
-
-	return nil
-}
-
-func (r *RobotReconciler) reconcileCheckAttachedBuildManager(ctx context.Context, instance *robotv1alpha1.Robot) error {
-
-	bmReference := instance.Status.AttachedBuildObject.Reference
-
-	// If any build object was attached, record it's status
-	if bmReference.Name != "" {
-
-		buildManager := &robotv1alpha1.BuildManager{}
-		err := r.Get(ctx, types.NamespacedName{Namespace: bmReference.Namespace, Name: bmReference.Name}, buildManager)
-		if err != nil && errors.IsNotFound(err) {
-			// TODO: Empty the reference fields
-			return err
-		} else if err != nil {
-			return err
-		} else {
-			instance.Status.AttachedBuildObject.Status = buildManager.Status
-		}
-
-	}
-
-	return nil
-}
-
-func (r *RobotReconciler) reconcileCheckAttachedLaunchManager(ctx context.Context, instance *robotv1alpha1.Robot) error {
-
-	for k, lm := range instance.Status.AttachedLaunchObjects {
-		launchManager := &robotv1alpha1.LaunchManager{}
-		err := r.Get(ctx, types.NamespacedName{Namespace: lm.Reference.Namespace, Name: lm.Reference.Name}, launchManager)
-		if err != nil && errors.IsNotFound(err) {
-			// TODO: Empty the reference fields
-			return err
-		} else if err != nil {
-			return err
-		} else {
-			lm.Status = launchManager.Status
-		}
-
-		instance.Status.AttachedLaunchObjects[k] = lm
 	}
 
 	return nil

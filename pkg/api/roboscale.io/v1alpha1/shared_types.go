@@ -66,13 +66,6 @@ type WorkspaceManagerInstanceStatus struct {
 	Status WorkspaceManagerStatus `json:"status,omitempty"`
 }
 
-type StepStatus struct {
-	// Generic status for any owned resource.
-	Resource OwnedResourceStatus `json:"resource,omitempty"`
-	// Status of the step.
-	Step Step `json:"step,omitempty"`
-}
-
 func GetRobotServiceDNS(robot Robot, prefix, postfix string) string {
 	tenancy := label.GetTenancy(&robot)
 	connectionStr := tenancy.Organization + "." + robot.Spec.RootDNSConfig.Host + GetRobotServicePath(robot, postfix)

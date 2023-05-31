@@ -4,8 +4,6 @@ processor:
   sortKinds:
     - "Robot"
     - "WorkspaceManager"
-    - "BuildManager"
-    - "LaunchManager"
     - "RobotDevSuite"
     - "MetricsExporter"
     - "RobotVDI"

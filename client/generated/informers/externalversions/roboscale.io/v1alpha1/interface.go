@@ -23,12 +23,8 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// BuildManagers returns a BuildManagerInformer.
-	BuildManagers() BuildManagerInformer
 	// DiscoveryServers returns a DiscoveryServerInformer.
 	DiscoveryServers() DiscoveryServerInformer
-	// LaunchManagers returns a LaunchManagerInformer.
-	LaunchManagers() LaunchManagerInformer
 	// ROSBridges returns a ROSBridgeInformer.
 	ROSBridges() ROSBridgeInformer
 	// Robots returns a RobotInformer.
@@ -52,19 +48,9 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// BuildManagers returns a BuildManagerInformer.
-func (v *version) BuildManagers() BuildManagerInformer {
-	return &buildManagerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
 // DiscoveryServers returns a DiscoveryServerInformer.
 func (v *version) DiscoveryServers() DiscoveryServerInformer {
 	return &discoveryServerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
-// LaunchManagers returns a LaunchManagerInformer.
-func (v *version) LaunchManagers() LaunchManagerInformer {
-	return &launchManagerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // ROSBridges returns a ROSBridgeInformer.

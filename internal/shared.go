@@ -56,16 +56,6 @@ const (
 	JOB_CLEANUP_POSTFIX = "-cleanup"
 )
 
-// BuildManager owned resources' postfixes
-const (
-	CONFIG_MAP_SCRIPTS = "-scripts"
-)
-
-// LaunchManager owned resources' postfixes
-const (
-	POD_LAUNCH_POSTFIX = "-launch"
-)
-
 // RobotVDI owned resources' postfixes
 const (
 	PVC_VDI_POSTFIX     = "-display"

@@ -17,14 +17,6 @@ limitations under the License.
 
 package v1alpha1
 
-// BuildManagerListerExpansion allows custom methods to be added to
-// BuildManagerLister.
-type BuildManagerListerExpansion interface{}
-
-// BuildManagerNamespaceListerExpansion allows custom methods to be added to
-// BuildManagerNamespaceLister.
-type BuildManagerNamespaceListerExpansion interface{}
-
 // DiscoveryServerListerExpansion allows custom methods to be added to
 // DiscoveryServerLister.
 type DiscoveryServerListerExpansion interface{}
@@ -32,14 +24,6 @@ type DiscoveryServerListerExpansion interface{}
 // DiscoveryServerNamespaceListerExpansion allows custom methods to be added to
 // DiscoveryServerNamespaceLister.
 type DiscoveryServerNamespaceListerExpansion interface{}
-
-// LaunchManagerListerExpansion allows custom methods to be added to
-// LaunchManagerLister.
-type LaunchManagerListerExpansion interface{}
-
-// LaunchManagerNamespaceListerExpansion allows custom methods to be added to
-// LaunchManagerNamespaceLister.
-type LaunchManagerNamespaceListerExpansion interface{}
 
 // ROSBridgeListerExpansion allows custom methods to be added to
 // ROSBridgeLister.

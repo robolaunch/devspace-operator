@@ -38,8 +38,6 @@ type RobotReconciler struct {
 //+kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=robot.roboscale.io,resources=rosbridges,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=robot.roboscale.io,resources=workspacemanagers,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=buildmanagers,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=launchmanagers,verbs=get;list;watch;create;update;patch;delete
 
 var logger logr.Logger
 
@@ -137,11 +135,6 @@ func (r *RobotReconciler) reconcileCheckStatus(ctx context.Context, instance *ro
 
 												instance.Status.Phase = robotv1alpha1.RobotPhaseEnvironmentReady
 
-												err := r.reconcileHandleAttachments(ctx, instance)
-												if err != nil {
-													return err
-												}
-
 											}
 
 										case false:
@@ -158,11 +151,6 @@ func (r *RobotReconciler) reconcileCheckStatus(ctx context.Context, instance *ro
 									case false:
 
 										instance.Status.Phase = robotv1alpha1.RobotPhaseEnvironmentReady
-
-										err := r.reconcileHandleAttachments(ctx, instance)
-										if err != nil {
-											return err
-										}
 
 									}
 
@@ -192,11 +180,6 @@ func (r *RobotReconciler) reconcileCheckStatus(ctx context.Context, instance *ro
 
 										instance.Status.Phase = robotv1alpha1.RobotPhaseEnvironmentReady
 
-										err := r.reconcileHandleAttachments(ctx, instance)
-										if err != nil {
-											return err
-										}
-
 									}
 
 								case false:
@@ -214,21 +197,11 @@ func (r *RobotReconciler) reconcileCheckStatus(ctx context.Context, instance *ro
 
 								instance.Status.Phase = robotv1alpha1.RobotPhaseEnvironmentReady
 
-								err := r.reconcileHandleAttachments(ctx, instance)
-								if err != nil {
-									return err
-								}
-
 							}
 
 						case false:
 
 							instance.Status.Phase = robotv1alpha1.RobotPhaseEnvironmentReady
-
-							err := r.reconcileHandleAttachments(ctx, instance)
-							if err != nil {
-								return err
-							}
 
 						}
 
@@ -346,16 +319,6 @@ func (r *RobotReconciler) reconcileCheckResources(ctx context.Context, instance 
 		return err
 	}
 
-	err = r.reconcileCheckAttachedBuildManager(ctx, instance)
-	if err != nil {
-		return err
-	}
-
-	err = r.reconcileCheckAttachedLaunchManager(ctx, instance)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -369,64 +332,10 @@ func (r *RobotReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&robotv1alpha1.ROSBridge{}).
 		Owns(&robotv1alpha1.WorkspaceManager{}).
 		Watches(
-			&source.Kind{Type: &robotv1alpha1.BuildManager{}},
-			handler.EnqueueRequestsFromMapFunc(r.watchAttachedBuildManagers),
-		).
-		Watches(
-			&source.Kind{Type: &robotv1alpha1.LaunchManager{}},
-			handler.EnqueueRequestsFromMapFunc(r.watchAttachedLaunchManagers),
-		).
-		Watches(
 			&source.Kind{Type: &robotv1alpha1.RobotDevSuite{}},
 			handler.EnqueueRequestsFromMapFunc(r.watchAttachedRobotDevSuites),
 		).
 		Complete(r)
-}
-
-func (r *RobotReconciler) watchAttachedBuildManagers(o client.Object) []reconcile.Request {
-
-	obj := o.(*robotv1alpha1.BuildManager)
-
-	robot := &robotv1alpha1.Robot{}
-	err := r.Get(context.TODO(), types.NamespacedName{
-		Name:      label.GetTargetRobot(obj),
-		Namespace: obj.Namespace,
-	}, robot)
-	if err != nil {
-		return []reconcile.Request{}
-	}
-
-	return []reconcile.Request{
-		{
-			NamespacedName: types.NamespacedName{
-				Name:      robot.Name,
-				Namespace: robot.Namespace,
-			},
-		},
-	}
-}
-
-func (r *RobotReconciler) watchAttachedLaunchManagers(o client.Object) []reconcile.Request {
-
-	obj := o.(*robotv1alpha1.LaunchManager)
-
-	robot := &robotv1alpha1.Robot{}
-	err := r.Get(context.TODO(), types.NamespacedName{
-		Name:      label.GetTargetRobot(obj),
-		Namespace: obj.Namespace,
-	}, robot)
-	if err != nil {
-		return []reconcile.Request{}
-	}
-
-	return []reconcile.Request{
-		{
-			NamespacedName: types.NamespacedName{
-				Name:      robot.Name,
-				Namespace: robot.Namespace,
-			},
-		},
-	}
 }
 
 func (r *RobotReconciler) watchAttachedRobotDevSuites(o client.Object) []reconcile.Request {

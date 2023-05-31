@@ -54,30 +54,6 @@ const (
 	WorkspaceManagerPhaseFailed                WorkspaceManagerPhase = "Failed"
 )
 
-type BuildManagerPhase string
-
-const (
-	BuildManagerRobotNotFound            BuildManagerPhase = "RobotNotFound"
-	BuildManagerWaitingForOtherResources BuildManagerPhase = "WaitingForOtherResources"
-	BuildManagerCreatingConfigMap        BuildManagerPhase = "CreatingConfigMap"
-	BuildManagerBuildingRobot            BuildManagerPhase = "BuildingRobot"
-	BuildManagerReady                    BuildManagerPhase = "Ready"
-	BuildManagerFailed                   BuildManagerPhase = "Failed"
-	BuildManagerDeactivating             BuildManagerPhase = "Deactivating"
-	BuildManagerInactive                 BuildManagerPhase = "Inactive"
-)
-
-type LaunchManagerPhase string
-
-const (
-	LaunchManagerPhaseRobotNotFound LaunchManagerPhase = "RobotNotFound"
-	LaunchManagerPhaseCreatingPod   LaunchManagerPhase = "CreatingPod"
-	LaunchManagerPhaseLaunching     LaunchManagerPhase = "Launching"
-	LaunchManagerPhaseReady         LaunchManagerPhase = "Ready"
-	LaunchManagerPhaseDeactivating  LaunchManagerPhase = "Deactivating"
-	LaunchManagerPhaseInactive      LaunchManagerPhase = "Inactive"
-)
-
 type RobotDevSuitePhase string
 
 const (

@@ -17,22 +17,6 @@ func InjectPodDisplayConfiguration(pod *corev1.Pod, robotVDI robotv1alpha1.Robot
 	return pod
 }
 
-func InjectLaunchPodDisplayConfiguration(pod *corev1.Pod, launchManager robotv1alpha1.LaunchManager, robotVDI robotv1alpha1.RobotVDI) *corev1.Pod {
-
-	configurePod(pod, robotVDI)
-	for launchName, l := range launchManager.Spec.Launches {
-		if l.Container.Display {
-			for k, container := range pod.Spec.Containers {
-				if container.Name == launchName {
-					configureContainer(&pod.Spec.Containers[k], robotVDI)
-				}
-			}
-		}
-	}
-
-	return pod
-}
-
 func configurePod(pod *corev1.Pod, robotVDI robotv1alpha1.RobotVDI) {
 	volume := GetVolumeX11Unix(&robotVDI)
 	pod.Spec.Volumes = append(pod.Spec.Volumes, volume)

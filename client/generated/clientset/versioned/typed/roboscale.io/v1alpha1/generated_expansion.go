@@ -17,11 +17,7 @@ limitations under the License.
 
 package v1alpha1
 
-type BuildManagerExpansion interface{}
-
 type DiscoveryServerExpansion interface{}
-
-type LaunchManagerExpansion interface{}
 
 type ROSBridgeExpansion interface{}
 

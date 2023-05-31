@@ -5,13 +5,13 @@ import (
 
 	"github.com/robolaunch/devspace-operator/internal/node"
 	"github.com/robolaunch/devspace-operator/internal/resources"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-func (r *RobotReconciler) createPVC(ctx context.Context, instance *robotv1alpha1.Robot, pvcNamespacedName *types.NamespacedName) error {
+func (r *DevspaceReconciler) createPVC(ctx context.Context, instance *devv1alpha1.Devspace, pvcNamespacedName *types.NamespacedName) error {
 
 	pvc := resources.GetPersistentVolumeClaim(instance, pvcNamespacedName)
 
@@ -31,7 +31,7 @@ func (r *RobotReconciler) createPVC(ctx context.Context, instance *robotv1alpha1
 	return nil
 }
 
-func (r *RobotReconciler) createJob(ctx context.Context, instance *robotv1alpha1.Robot, jobNamespacedName *types.NamespacedName) error {
+func (r *DevspaceReconciler) createJob(ctx context.Context, instance *devv1alpha1.Devspace, jobNamespacedName *types.NamespacedName) error {
 
 	activeNode, err := r.reconcileCheckNode(ctx, instance)
 	if err != nil {
@@ -56,7 +56,7 @@ func (r *RobotReconciler) createJob(ctx context.Context, instance *robotv1alpha1
 	return nil
 }
 
-func (r *RobotReconciler) createDevSuite(ctx context.Context, instance *robotv1alpha1.Robot, rdsNamespacedName *types.NamespacedName) error {
+func (r *DevspaceReconciler) createDevSuite(ctx context.Context, instance *devv1alpha1.Devspace, rdsNamespacedName *types.NamespacedName) error {
 
 	devSuite := resources.GetDevSuite(instance, rdsNamespacedName)
 
@@ -72,11 +72,11 @@ func (r *RobotReconciler) createDevSuite(ctx context.Context, instance *robotv1a
 		return err
 	}
 
-	logger.Info("STATUS: Robot dev suite " + devSuite.Name + " is created.")
+	logger.Info("STATUS: Devspace dev suite " + devSuite.Name + " is created.")
 	return nil
 }
 
-func (r *RobotReconciler) createWorkspaceManager(ctx context.Context, instance *robotv1alpha1.Robot, wsmNamespacedName *types.NamespacedName) error {
+func (r *DevspaceReconciler) createWorkspaceManager(ctx context.Context, instance *devv1alpha1.Devspace, wsmNamespacedName *types.NamespacedName) error {
 
 	workspaceManager := resources.GetWorkspaceManager(instance, wsmNamespacedName)
 

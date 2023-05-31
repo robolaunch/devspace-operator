@@ -4,20 +4,20 @@ import (
 	"context"
 	"time"
 
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	batchv1 "k8s.io/api/batch/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func (r *WorkspaceManagerReconciler) reconcileDeleteClonerJob(ctx context.Context, instance *robotv1alpha1.WorkspaceManager) error {
+func (r *WorkspaceManagerReconciler) reconcileDeleteClonerJob(ctx context.Context, instance *devv1alpha1.WorkspaceManager) error {
 
 	clonerJobQuery := &batchv1.Job{}
 	err := r.Get(ctx, *instance.GetClonerJobMetadata(), clonerJobQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.ClonerJobStatus = robotv1alpha1.OwnedResourceStatus{}
+			instance.Status.ClonerJobStatus = devv1alpha1.OwnedResourceStatus{}
 		} else {
 			return err
 		}
@@ -43,19 +43,19 @@ func (r *WorkspaceManagerReconciler) reconcileDeleteClonerJob(ctx context.Contex
 			time.Sleep(time.Second * 1)
 		}
 
-		instance.Status.ClonerJobStatus = robotv1alpha1.OwnedResourceStatus{}
+		instance.Status.ClonerJobStatus = devv1alpha1.OwnedResourceStatus{}
 	}
 
 	return nil
 }
 
-func (r *WorkspaceManagerReconciler) reconcileDeleteCleanupJob(ctx context.Context, instance *robotv1alpha1.WorkspaceManager) error {
+func (r *WorkspaceManagerReconciler) reconcileDeleteCleanupJob(ctx context.Context, instance *devv1alpha1.WorkspaceManager) error {
 
 	cleanupJobQuery := &batchv1.Job{}
 	err := r.Get(ctx, *instance.GetCleanupJobMetadata(), cleanupJobQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.CleanupJobStatus = robotv1alpha1.OwnedResourceStatus{}
+			instance.Status.CleanupJobStatus = devv1alpha1.OwnedResourceStatus{}
 		} else {
 			return err
 		}
@@ -81,7 +81,7 @@ func (r *WorkspaceManagerReconciler) reconcileDeleteCleanupJob(ctx context.Conte
 			time.Sleep(time.Second * 1)
 		}
 
-		instance.Status.CleanupJobStatus = robotv1alpha1.OwnedResourceStatus{}
+		instance.Status.CleanupJobStatus = devv1alpha1.OwnedResourceStatus{}
 	}
 
 	return nil

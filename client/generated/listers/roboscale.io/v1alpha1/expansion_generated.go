@@ -17,13 +17,13 @@ limitations under the License.
 
 package v1alpha1
 
-// RobotListerExpansion allows custom methods to be added to
-// RobotLister.
-type RobotListerExpansion interface{}
+// DevspaceListerExpansion allows custom methods to be added to
+// DevspaceLister.
+type DevspaceListerExpansion interface{}
 
-// RobotNamespaceListerExpansion allows custom methods to be added to
-// RobotNamespaceLister.
-type RobotNamespaceListerExpansion interface{}
+// DevspaceNamespaceListerExpansion allows custom methods to be added to
+// DevspaceNamespaceLister.
+type DevspaceNamespaceListerExpansion interface{}
 
 // DevSuiteListerExpansion allows custom methods to be added to
 // DevSuiteLister.

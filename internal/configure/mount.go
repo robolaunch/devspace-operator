@@ -1,11 +1,11 @@
 package configure
 
 import (
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 )
 
-func GetVolumeVar(robot *robotv1alpha1.Robot) corev1.Volume {
+func GetVolumeVar(robot *devv1alpha1.Devspace) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "var",
@@ -19,7 +19,7 @@ func GetVolumeVar(robot *robotv1alpha1.Robot) corev1.Volume {
 	return volume
 }
 
-func GetVolumeOpt(robot *robotv1alpha1.Robot) corev1.Volume {
+func GetVolumeOpt(robot *devv1alpha1.Devspace) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "opt",
@@ -33,7 +33,7 @@ func GetVolumeOpt(robot *robotv1alpha1.Robot) corev1.Volume {
 	return volume
 }
 
-func GetVolumeUsr(robot *robotv1alpha1.Robot) corev1.Volume {
+func GetVolumeUsr(robot *devv1alpha1.Devspace) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "usr",
@@ -47,7 +47,7 @@ func GetVolumeUsr(robot *robotv1alpha1.Robot) corev1.Volume {
 	return volume
 }
 
-func GetVolumeEtc(robot *robotv1alpha1.Robot) corev1.Volume {
+func GetVolumeEtc(robot *devv1alpha1.Devspace) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "etc",
@@ -61,7 +61,7 @@ func GetVolumeEtc(robot *robotv1alpha1.Robot) corev1.Volume {
 	return volume
 }
 
-func GetVolumeX11Unix(devSpaceVDI *robotv1alpha1.DevSpaceVDI) corev1.Volume {
+func GetVolumeX11Unix(devSpaceVDI *devv1alpha1.DevSpaceVDI) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "x11-unix",
@@ -75,7 +75,7 @@ func GetVolumeX11Unix(devSpaceVDI *robotv1alpha1.DevSpaceVDI) corev1.Volume {
 	return volume
 }
 
-func GetVolumeWorkspace(robot *robotv1alpha1.Robot) corev1.Volume {
+func GetVolumeWorkspace(robot *devv1alpha1.Devspace) corev1.Volume {
 
 	volume := corev1.Volume{
 		Name: "workspace",

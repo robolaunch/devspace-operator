@@ -5,7 +5,7 @@ import (
 
 	robotErr "github.com/robolaunch/devspace-operator/internal/error"
 	"github.com/robolaunch/devspace-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/selection"
@@ -14,19 +14,19 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func (r *DevSpaceVDIReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*robotv1alpha1.DevSpaceVDI, error) {
-	instance := &robotv1alpha1.DevSpaceVDI{}
+func (r *DevSpaceVDIReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*devv1alpha1.DevSpaceVDI, error) {
+	instance := &devv1alpha1.DevSpaceVDI{}
 	err := r.Get(ctx, meta, instance)
 	if err != nil {
-		return &robotv1alpha1.DevSpaceVDI{}, err
+		return &devv1alpha1.DevSpaceVDI{}, err
 	}
 
 	return instance, nil
 }
 
-func (r *DevSpaceVDIReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) error {
 	return retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		instanceLV := &robotv1alpha1.DevSpaceVDI{}
+		instanceLV := &devv1alpha1.DevSpaceVDI{}
 		err := r.Get(ctx, types.NamespacedName{
 			Name:      instance.Name,
 			Namespace: instance.Namespace,
@@ -41,11 +41,11 @@ func (r *DevSpaceVDIReconciler) reconcileUpdateInstanceStatus(ctx context.Contex
 	})
 }
 
-func (r *DevSpaceVDIReconciler) reconcileGetTargetRobot(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) (*robotv1alpha1.Robot, error) {
-	robot := &robotv1alpha1.Robot{}
+func (r *DevSpaceVDIReconciler) reconcileGetTargetDevspace(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) (*devv1alpha1.Devspace, error) {
+	robot := &devv1alpha1.Devspace{}
 	err := r.Get(ctx, types.NamespacedName{
 		Namespace: instance.Namespace,
-		Name:      label.GetTargetRobot(instance),
+		Name:      label.GetTargetDevspace(instance),
 	}, robot)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (r *DevSpaceVDIReconciler) reconcileGetTargetRobot(ctx context.Context, ins
 	return robot, nil
 }
 
-func (r *DevSpaceVDIReconciler) reconcileCheckNode(ctx context.Context, instance *robotv1alpha1.Robot) (*corev1.Node, error) {
+func (r *DevSpaceVDIReconciler) reconcileCheckNode(ctx context.Context, instance *devv1alpha1.Devspace) (*corev1.Node, error) {
 
 	tenancyMap := label.GetTenancyMap(instance)
 

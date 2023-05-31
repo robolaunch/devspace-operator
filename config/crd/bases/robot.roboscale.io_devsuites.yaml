@@ -5,9 +5,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
-  name: devsuites.robot.roboscale.io
+  name: devsuites.dev.roboscale.io
 spec:
-  group: robot.roboscale.io
+  group: dev.roboscale.io
   names:
     kind: DevSuite
     listKind: DevSuiteList
@@ -146,7 +146,7 @@ spec:
             description: Most recently observed status of the DevSuite.
             properties:
               active:
-                description: '[*alpha*] Indicates if DevSuite is attached to a Robot
+                description: '[*alpha*] Indicates if DevSuite is attached to a Devspace
                   and actively provisioned it''s resources.'
                 type: boolean
               devSpaceIDEStatus:

@@ -9,7 +9,7 @@ import (
 	"github.com/robolaunch/devspace-operator/internal"
 	"github.com/robolaunch/devspace-operator/internal/configure"
 	"github.com/robolaunch/devspace-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -18,13 +18,13 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func getDevSpaceVDISelector(devSpaceVDI robotv1alpha1.DevSpaceVDI) map[string]string {
+func getDevSpaceVDISelector(devSpaceVDI devv1alpha1.DevSpaceVDI) map[string]string {
 	return map[string]string{
 		"devSpaceVDI": devSpaceVDI.Name,
 	}
 }
 
-func GetDevSpaceVDIPVC(devSpaceVDI *robotv1alpha1.DevSpaceVDI, pvcNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot) *corev1.PersistentVolumeClaim {
+func GetDevSpaceVDIPVC(devSpaceVDI *devv1alpha1.DevSpaceVDI, pvcNamespacedName *types.NamespacedName, robot devv1alpha1.Devspace) *corev1.PersistentVolumeClaim {
 
 	pvc := corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
@@ -50,7 +50,7 @@ func GetDevSpaceVDIPVC(devSpaceVDI *robotv1alpha1.DevSpaceVDI, pvcNamespacedName
 	return &pvc
 }
 
-func GetDevSpaceVDIPod(devSpaceVDI *robotv1alpha1.DevSpaceVDI, podNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot, node corev1.Node) *corev1.Pod {
+func GetDevSpaceVDIPod(devSpaceVDI *devv1alpha1.DevSpaceVDI, podNamespacedName *types.NamespacedName, robot devv1alpha1.Devspace, node corev1.Node) *corev1.Pod {
 
 	// add tcp port
 	ports := []corev1.ContainerPort{
@@ -153,7 +153,7 @@ func GetDevSpaceVDIPod(devSpaceVDI *robotv1alpha1.DevSpaceVDI, podNamespacedName
 	return vdiPod
 }
 
-func GetDevSpaceVDIServiceTCP(devSpaceVDI *robotv1alpha1.DevSpaceVDI, svcNamespacedName *types.NamespacedName) *corev1.Service {
+func GetDevSpaceVDIServiceTCP(devSpaceVDI *devv1alpha1.DevSpaceVDI, svcNamespacedName *types.NamespacedName) *corev1.Service {
 
 	ports := []corev1.ServicePort{
 		{
@@ -183,7 +183,7 @@ func GetDevSpaceVDIServiceTCP(devSpaceVDI *robotv1alpha1.DevSpaceVDI, svcNamespa
 	return &service
 }
 
-func GetDevSpaceVDIServiceUDP(devSpaceVDI *robotv1alpha1.DevSpaceVDI, svcNamespacedName *types.NamespacedName) *corev1.Service {
+func GetDevSpaceVDIServiceUDP(devSpaceVDI *devv1alpha1.DevSpaceVDI, svcNamespacedName *types.NamespacedName) *corev1.Service {
 
 	ports := []corev1.ServicePort{}
 
@@ -224,7 +224,7 @@ func GetDevSpaceVDIServiceUDP(devSpaceVDI *robotv1alpha1.DevSpaceVDI, svcNamespa
 	return &service
 }
 
-func GetDevSpaceVDIIngress(devSpaceVDI *robotv1alpha1.DevSpaceVDI, ingressNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot) *networkingv1.Ingress {
+func GetDevSpaceVDIIngress(devSpaceVDI *devv1alpha1.DevSpaceVDI, ingressNamespacedName *types.NamespacedName, robot devv1alpha1.Devspace) *networkingv1.Ingress {
 
 	tenancy := label.GetTenancy(&robot)
 
@@ -261,7 +261,7 @@ func GetDevSpaceVDIIngress(devSpaceVDI *robotv1alpha1.DevSpaceVDI, ingressNamesp
 					HTTP: &networkingv1.HTTPIngressRuleValue{
 						Paths: []networkingv1.HTTPIngressPath{
 							{
-								Path:     robotv1alpha1.GetRobotServicePath(robot, "/vdi") + "(/|$)(.*)",
+								Path:     devv1alpha1.GetDevspaceServicePath(robot, "/vdi") + "(/|$)(.*)",
 								PathType: &pathTypePrefix,
 								Backend: networkingv1.IngressBackend{
 									Service: &networkingv1.IngressServiceBackend{
@@ -292,7 +292,7 @@ func GetDevSpaceVDIIngress(devSpaceVDI *robotv1alpha1.DevSpaceVDI, ingressNamesp
 	return ingress
 }
 
-func getResourceLimits(resources robotv1alpha1.Resources) corev1.ResourceList {
+func getResourceLimits(resources devv1alpha1.Resources) corev1.ResourceList {
 	resourceLimits := corev1.ResourceList{}
 	if resources.GPUCore != 0 {
 		resourceLimits["nvidia.com/gpu"] = resource.MustParse(strconv.Itoa(resources.GPUCore))

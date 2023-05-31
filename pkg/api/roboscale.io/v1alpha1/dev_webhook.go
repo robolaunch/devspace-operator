@@ -23,7 +23,7 @@ func (r *DevSpaceIDE) SetupWebhookWithManager(mgr ctrl.Manager) error {
 		Complete()
 }
 
-//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-devspaceide,mutating=true,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=devspaceides,verbs=create;update,versions=v1alpha1,name=mdevspaceide.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-devspaceide,mutating=true,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=devspaceides,verbs=create;update,versions=v1alpha1,name=mdevspaceide.kb.io,admissionReviewVersions=v1
 
 var _ webhook.Defaulter = &DevSpaceIDE{}
 
@@ -32,7 +32,7 @@ func (r *DevSpaceIDE) Default() {
 	devspaceidelog.Info("default", "name", r.Name)
 }
 
-//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-devspaceide,mutating=false,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=devspaceides,verbs=create;update,versions=v1alpha1,name=vdevspaceide.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-devspaceide,mutating=false,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=devspaceides,verbs=create;update,versions=v1alpha1,name=vdevspaceide.kb.io,admissionReviewVersions=v1
 
 var _ webhook.Validator = &DevSpaceIDE{}
 
@@ -40,7 +40,7 @@ var _ webhook.Validator = &DevSpaceIDE{}
 func (r *DevSpaceIDE) ValidateCreate() error {
 	devspaceidelog.Info("validate create", "name", r.Name)
 
-	err := r.checkTargetRobotLabel()
+	err := r.checkTargetDevspaceLabel()
 	if err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func (r *DevSpaceIDE) ValidateCreate() error {
 func (r *DevSpaceIDE) ValidateUpdate(old runtime.Object) error {
 	devspaceidelog.Info("validate update", "name", r.Name)
 
-	err := r.checkTargetRobotLabel()
+	err := r.checkTargetDevspaceLabel()
 	if err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func (r *DevSpaceIDE) ValidateDelete() error {
 	return nil
 }
 
-func (r *DevSpaceIDE) checkTargetRobotLabel() error {
+func (r *DevSpaceIDE) checkTargetDevspaceLabel() error {
 	labels := r.GetLabels()
 
 	if _, ok := labels[internal.TARGET_ROBOT_LABEL_KEY]; !ok {
@@ -111,7 +111,7 @@ func (r *DevSpaceVDI) SetupWebhookWithManager(mgr ctrl.Manager) error {
 		Complete()
 }
 
-//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-devspacevdi,mutating=true,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=devspacevdis,verbs=create;update,versions=v1alpha1,name=mdevspacevdi.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-devspacevdi,mutating=true,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=devspacevdis,verbs=create;update,versions=v1alpha1,name=mdevspacevdi.kb.io,admissionReviewVersions=v1
 
 var _ webhook.Defaulter = &DevSpaceVDI{}
 
@@ -120,7 +120,7 @@ func (r *DevSpaceVDI) Default() {
 	devspacevdilog.Info("default", "name", r.Name)
 }
 
-//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-devspacevdi,mutating=false,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=devspacevdis,verbs=create;update,versions=v1alpha1,name=vdevspacevdi.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-devspacevdi,mutating=false,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=devspacevdis,verbs=create;update,versions=v1alpha1,name=vdevspacevdi.kb.io,admissionReviewVersions=v1
 
 var _ webhook.Validator = &DevSpaceVDI{}
 
@@ -128,7 +128,7 @@ var _ webhook.Validator = &DevSpaceVDI{}
 func (r *DevSpaceVDI) ValidateCreate() error {
 	devspacevdilog.Info("validate create", "name", r.Name)
 
-	err := r.checkTargetRobotLabel()
+	err := r.checkTargetDevspaceLabel()
 	if err != nil {
 		return err
 	}
@@ -140,7 +140,7 @@ func (r *DevSpaceVDI) ValidateCreate() error {
 func (r *DevSpaceVDI) ValidateUpdate(old runtime.Object) error {
 	devspacevdilog.Info("validate update", "name", r.Name)
 
-	err := r.checkTargetRobotLabel()
+	err := r.checkTargetDevspaceLabel()
 	if err != nil {
 		return err
 	}
@@ -154,7 +154,7 @@ func (r *DevSpaceVDI) ValidateDelete() error {
 	return nil
 }
 
-func (r *DevSpaceVDI) checkTargetRobotLabel() error {
+func (r *DevSpaceVDI) checkTargetDevspaceLabel() error {
 	labels := r.GetLabels()
 
 	if _, ok := labels[internal.TARGET_ROBOT_LABEL_KEY]; !ok {

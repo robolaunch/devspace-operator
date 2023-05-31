@@ -15,7 +15,7 @@ type OwnedResourceStatus struct {
 	Phase string `json:"phase,omitempty"`
 }
 
-type OwnedRobotServiceStatus struct {
+type OwnedDevspaceServiceStatus struct {
 	// Generic status for any owned resource.
 	Resource OwnedResourceStatus `json:"resource,omitempty"`
 	// Address of the robot service that can be reached from outside.
@@ -50,9 +50,9 @@ type WorkspaceManagerInstanceStatus struct {
 	Status WorkspaceManagerStatus `json:"status,omitempty"`
 }
 
-func GetRobotServiceDNS(robot Robot, prefix, postfix string) string {
+func GetDevspaceServiceDNS(robot Devspace, prefix, postfix string) string {
 	tenancy := label.GetTenancy(&robot)
-	connectionStr := tenancy.Organization + "." + robot.Spec.RootDNSConfig.Host + GetRobotServicePath(robot, postfix)
+	connectionStr := tenancy.Organization + "." + robot.Spec.RootDNSConfig.Host + GetDevspaceServicePath(robot, postfix)
 
 	if prefix != "" {
 		connectionStr = prefix + connectionStr
@@ -61,7 +61,7 @@ func GetRobotServiceDNS(robot Robot, prefix, postfix string) string {
 	return connectionStr
 }
 
-func GetRobotServicePath(robot Robot, postfix string) string {
+func GetDevspaceServicePath(robot Devspace, postfix string) string {
 	tenancy := label.GetTenancy(&robot)
 	connectionStr := "/" + tenancy.Team +
 		"/" + tenancy.Region +

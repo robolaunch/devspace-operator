@@ -2,11 +2,11 @@
 # since it depends on service name and namespace that are out of this kustomize package.
 # It should be run by config/default
 resources:
-- bases/robot.roboscale.io_robots.yaml
-- bases/robot.roboscale.io_devsuites.yaml
-- bases/robot.roboscale.io_devspacevdis.yaml
-- bases/robot.roboscale.io_devspaceides.yaml
-- bases/robot.roboscale.io_workspacemanagers.yaml
+- bases/dev.roboscale.io_robots.yaml
+- bases/dev.roboscale.io_devsuites.yaml
+- bases/dev.roboscale.io_devspacevdis.yaml
+- bases/dev.roboscale.io_devspaceides.yaml
+- bases/dev.roboscale.io_workspacemanagers.yaml
 - bases/multicluster.x-k8s.io_serviceexports.yaml
 - bases/multicluster.x-k8s.io_serviceimports.yaml
 #+kubebuilder:scaffold:crdkustomizeresource

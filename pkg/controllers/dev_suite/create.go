@@ -1,15 +1,15 @@
-package robot_dev_suite
+package dev_suite
 
 import (
 	"context"
 
 	"github.com/robolaunch/devspace-operator/internal/resources"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-func (r *DevSuiteReconciler) reconcileCreateDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
+func (r *DevSuiteReconciler) reconcileCreateDevSpaceVDI(ctx context.Context, instance *devv1alpha1.DevSuite) error {
 
 	devSpaceVDI := resources.GetDevSpaceVDI(instance, instance.GetDevSpaceVDIMetadata())
 
@@ -30,7 +30,7 @@ func (r *DevSuiteReconciler) reconcileCreateDevSpaceVDI(ctx context.Context, ins
 	return nil
 }
 
-func (r *DevSuiteReconciler) reconcileCreateDevSpaceIDE(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
+func (r *DevSuiteReconciler) reconcileCreateDevSpaceIDE(ctx context.Context, instance *devv1alpha1.DevSuite) error {
 
 	devSpaceIDE := resources.GetDevSpaceIDE(instance, instance.GetDevSpaceIDEMetadata())
 
@@ -46,7 +46,7 @@ func (r *DevSuiteReconciler) reconcileCreateDevSpaceIDE(ctx context.Context, ins
 		return err
 	}
 
-	logger.Info("STATUS: Robot IDE is created.")
+	logger.Info("STATUS: Devspace IDE is created.")
 
 	return nil
 }

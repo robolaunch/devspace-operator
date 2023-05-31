@@ -35,7 +35,7 @@ const (
 	ROBOT_DEV_SUITE_OWNED = "robolaunch.io/dev-suite-owned"
 )
 
-// Robot owned resources' postfixes
+// Devspace owned resources' postfixes
 const (
 	PVC_VAR_POSTFIX           = "-pvc-var"
 	PVC_ETC_POSTFIX           = "-pvc-etc"

@@ -1,21 +1,21 @@
 package v1alpha1
 
-type RobotPhase string
+type DevspacePhase string
 
 const (
-	RobotPhaseCreatingEnvironment      RobotPhase = "CreatingEnvironment"
-	RobotPhaseConfiguringEnvironment   RobotPhase = "ConfiguringEnvironment"
-	RobotPhaseCreatingDevelopmentSuite RobotPhase = "CreatingDevelopmentSuite"
-	RobotPhaseConfiguringWorkspaces    RobotPhase = "ConfiguringWorkspaces"
-	RobotPhaseEnvironmentReady         RobotPhase = "EnvironmentReady"
-	RobotPhaseBuilding                 RobotPhase = "Building"
-	RobotPhaseBuilt                    RobotPhase = "Built"
-	RobotPhaseLaunching                RobotPhase = "Launching"
-	RobotPhaseRunning                  RobotPhase = "Running"
-	RobotPhaseDeletingLoaderJob        RobotPhase = "DeletingLoaderJob"
-	RobotPhaseDeletingVolumes          RobotPhase = "DeletingVolumes"
+	DevspacePhaseCreatingEnvironment      DevspacePhase = "CreatingEnvironment"
+	DevspacePhaseConfiguringEnvironment   DevspacePhase = "ConfiguringEnvironment"
+	DevspacePhaseCreatingDevelopmentSuite DevspacePhase = "CreatingDevelopmentSuite"
+	DevspacePhaseConfiguringWorkspaces    DevspacePhase = "ConfiguringWorkspaces"
+	DevspacePhaseEnvironmentReady         DevspacePhase = "EnvironmentReady"
+	DevspacePhaseBuilding                 DevspacePhase = "Building"
+	DevspacePhaseBuilt                    DevspacePhase = "Built"
+	DevspacePhaseLaunching                DevspacePhase = "Launching"
+	DevspacePhaseRunning                  DevspacePhase = "Running"
+	DevspacePhaseDeletingLoaderJob        DevspacePhase = "DeletingLoaderJob"
+	DevspacePhaseDeletingVolumes          DevspacePhase = "DeletingVolumes"
 
-	RobotPhaseFailed RobotPhase = "Failed"
+	DevspacePhaseFailed DevspacePhase = "Failed"
 )
 
 type WorkspaceManagerPhase string
@@ -29,7 +29,7 @@ const (
 type DevSuitePhase string
 
 const (
-	DevSuitePhaseRobotNotFound       DevSuitePhase = "RobotNotFound"
+	DevSuitePhaseDevspaceNotFound    DevSuitePhase = "DevspaceNotFound"
 	DevSuitePhaseCreatingDevSpaceVDI DevSuitePhase = "CreatingDevSpaceVDI"
 	DevSuitePhaseCreatingDevSpaceIDE DevSuitePhase = "CreatingDevspaceIDE"
 	DevSuitePhaseRunning             DevSuitePhase = "Running"

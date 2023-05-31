@@ -7,7 +7,7 @@ import (
 	"github.com/robolaunch/devspace-operator/internal"
 	"github.com/robolaunch/devspace-operator/internal/configure"
 	"github.com/robolaunch/devspace-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -15,13 +15,13 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func getDevSpaceIDESelector(devSpaceIDE robotv1alpha1.DevSpaceIDE) map[string]string {
+func getDevSpaceIDESelector(devSpaceIDE devv1alpha1.DevSpaceIDE) map[string]string {
 	return map[string]string{
 		"devSpaceIDE": devSpaceIDE.Name,
 	}
 }
 
-func GetDevSpaceIDEPod(devSpaceIDE *robotv1alpha1.DevSpaceIDE, podNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot, devSpaceVDI robotv1alpha1.DevSpaceVDI, node corev1.Node) *corev1.Pod {
+func GetDevSpaceIDEPod(devSpaceIDE *devv1alpha1.DevSpaceIDE, podNamespacedName *types.NamespacedName, robot devv1alpha1.Devspace, devSpaceVDI devv1alpha1.DevSpaceVDI, node corev1.Node) *corev1.Pod {
 
 	// discovery server
 
@@ -94,7 +94,7 @@ func GetDevSpaceIDEPod(devSpaceIDE *robotv1alpha1.DevSpaceIDE, podNamespacedName
 	return &pod
 }
 
-func GetDevSpaceIDEService(devSpaceIDE *robotv1alpha1.DevSpaceIDE, svcNamespacedName *types.NamespacedName) *corev1.Service {
+func GetDevSpaceIDEService(devSpaceIDE *devv1alpha1.DevSpaceIDE, svcNamespacedName *types.NamespacedName) *corev1.Service {
 
 	serviceSpec := corev1.ServiceSpec{
 		Type:     devSpaceIDE.Spec.ServiceType,
@@ -122,7 +122,7 @@ func GetDevSpaceIDEService(devSpaceIDE *robotv1alpha1.DevSpaceIDE, svcNamespaced
 	return &service
 }
 
-func GetDevSpaceIDEIngress(devSpaceIDE *robotv1alpha1.DevSpaceIDE, ingressNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot) *networkingv1.Ingress {
+func GetDevSpaceIDEIngress(devSpaceIDE *devv1alpha1.DevSpaceIDE, ingressNamespacedName *types.NamespacedName, robot devv1alpha1.Devspace) *networkingv1.Ingress {
 
 	tenancy := label.GetTenancy(&robot)
 
@@ -158,7 +158,7 @@ func GetDevSpaceIDEIngress(devSpaceIDE *robotv1alpha1.DevSpaceIDE, ingressNamesp
 					HTTP: &networkingv1.HTTPIngressRuleValue{
 						Paths: []networkingv1.HTTPIngressPath{
 							{
-								Path:     robotv1alpha1.GetRobotServicePath(robot, "/ide") + "(/|$)(.*)",
+								Path:     devv1alpha1.GetDevspaceServicePath(robot, "/ide") + "(/|$)(.*)",
 								PathType: &pathTypePrefix,
 								Backend: networkingv1.IngressBackend{
 									Service: &networkingv1.IngressServiceBackend{

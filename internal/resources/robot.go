@@ -14,10 +14,10 @@ import (
 	"github.com/robolaunch/devspace-operator/internal"
 	"github.com/robolaunch/devspace-operator/internal/configure"
 	"github.com/robolaunch/devspace-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
-func GetPersistentVolumeClaim(robot *robotv1alpha1.Robot, pvcNamespacedName *types.NamespacedName) *corev1.PersistentVolumeClaim {
+func GetPersistentVolumeClaim(robot *devv1alpha1.Devspace, pvcNamespacedName *types.NamespacedName) *corev1.PersistentVolumeClaim {
 
 	pvc := corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
@@ -65,7 +65,7 @@ func getClaimStorage(pvc *types.NamespacedName, totalStorage int) string {
 
 }
 
-func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.NamespacedName, hasGPU bool) *batchv1.Job {
+func GetLoaderJob(robot *devv1alpha1.Devspace, jobNamespacedName *types.NamespacedName, hasGPU bool) *batchv1.Job {
 
 	var copierCmdBuilder strings.Builder
 	copierCmdBuilder.WriteString("yes | cp -rf /var /ros/;")
@@ -166,13 +166,13 @@ func GetLoaderJob(robot *robotv1alpha1.Robot, jobNamespacedName *types.Namespace
 	return &job
 }
 
-func GetDevSuite(robot *robotv1alpha1.Robot, rdsNamespacedName *types.NamespacedName) *robotv1alpha1.DevSuite {
+func GetDevSuite(robot *devv1alpha1.Devspace, rdsNamespacedName *types.NamespacedName) *devv1alpha1.DevSuite {
 
 	labels := robot.Labels
 	labels[internal.TARGET_ROBOT_LABEL_KEY] = robot.Name
 	labels[internal.ROBOT_DEV_SUITE_OWNED] = "true"
 
-	devSuite := robotv1alpha1.DevSuite{
+	devSuite := devv1alpha1.DevSuite{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      rdsNamespacedName.Name,
 			Namespace: rdsNamespacedName.Namespace,
@@ -185,12 +185,12 @@ func GetDevSuite(robot *robotv1alpha1.Robot, rdsNamespacedName *types.Namespaced
 
 }
 
-func GetWorkspaceManager(robot *robotv1alpha1.Robot, wsmNamespacedName *types.NamespacedName) *robotv1alpha1.WorkspaceManager {
+func GetWorkspaceManager(robot *devv1alpha1.Devspace, wsmNamespacedName *types.NamespacedName) *devv1alpha1.WorkspaceManager {
 
 	labels := robot.Labels
 	labels[internal.TARGET_ROBOT_LABEL_KEY] = robot.Name
 
-	workspaceManager := robotv1alpha1.WorkspaceManager{
+	workspaceManager := devv1alpha1.WorkspaceManager{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      wsmNamespacedName.Name,
 			Namespace: wsmNamespacedName.Namespace,
@@ -203,7 +203,7 @@ func GetWorkspaceManager(robot *robotv1alpha1.Robot, wsmNamespacedName *types.Na
 
 }
 
-func GetCloneCommand(workspaces []robotv1alpha1.Workspace, wsKey int) string {
+func GetCloneCommand(workspaces []devv1alpha1.Workspace, wsKey int) string {
 
 	var cmdBuilder strings.Builder
 	for key, repo := range workspaces[wsKey].Repositories {

@@ -121,10 +121,10 @@ type DevSuiteStatus struct {
 	// Phase of DevSuite.
 	Phase DevSuitePhase `json:"phase,omitempty"`
 	// Status of DevSpaceVDI.
-	DevSpaceVDIStatus OwnedRobotServiceStatus `json:"devSpaceVDIStatus,omitempty"`
+	DevSpaceVDIStatus OwnedDevspaceServiceStatus `json:"devSpaceVDIStatus,omitempty"`
 	// Status of DevSpaceIDE.
-	DevSpaceIDEStatus OwnedRobotServiceStatus `json:"devSpaceIDEStatus,omitempty"`
-	// [*alpha*] Indicates if DevSuite is attached to a Robot and actively provisioned it's resources.
+	DevSpaceIDEStatus OwnedDevspaceServiceStatus `json:"devSpaceIDEStatus,omitempty"`
+	// [*alpha*] Indicates if DevSuite is attached to a Devspace and actively provisioned it's resources.
 	Active bool `json:"active,omitempty"`
 }
 

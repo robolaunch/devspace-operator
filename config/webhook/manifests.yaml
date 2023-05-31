@@ -16,7 +16,7 @@ webhooks:
   name: mdevspaceide.kb.io
   rules:
   - apiGroups:
-    - robot.roboscale.io
+    - dev.roboscale.io
     apiVersions:
     - v1alpha1
     operations:
@@ -36,7 +36,7 @@ webhooks:
   name: mdevspacevdi.kb.io
   rules:
   - apiGroups:
-    - robot.roboscale.io
+    - dev.roboscale.io
     apiVersions:
     - v1alpha1
     operations:
@@ -56,7 +56,7 @@ webhooks:
   name: mworkspacemanager.kb.io
   rules:
   - apiGroups:
-    - robot.roboscale.io
+    - dev.roboscale.io
     apiVersions:
     - v1alpha1
     operations:
@@ -76,7 +76,7 @@ webhooks:
   name: mrobot.kb.io
   rules:
   - apiGroups:
-    - robot.roboscale.io
+    - dev.roboscale.io
     apiVersions:
     - v1alpha1
     operations:
@@ -103,7 +103,7 @@ webhooks:
   name: vdevspaceide.kb.io
   rules:
   - apiGroups:
-    - robot.roboscale.io
+    - dev.roboscale.io
     apiVersions:
     - v1alpha1
     operations:
@@ -123,7 +123,7 @@ webhooks:
   name: vdevspacevdi.kb.io
   rules:
   - apiGroups:
-    - robot.roboscale.io
+    - dev.roboscale.io
     apiVersions:
     - v1alpha1
     operations:
@@ -143,7 +143,7 @@ webhooks:
   name: vworkspacemanager.kb.io
   rules:
   - apiGroups:
-    - robot.roboscale.io
+    - dev.roboscale.io
     apiVersions:
     - v1alpha1
     operations:
@@ -163,7 +163,7 @@ webhooks:
   name: vrobot.kb.io
   rules:
   - apiGroups:
-    - robot.roboscale.io
+    - dev.roboscale.io
     apiVersions:
     - v1alpha1
     operations:

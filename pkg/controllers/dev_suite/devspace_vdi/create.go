@@ -4,14 +4,14 @@ import (
 	"context"
 
 	"github.com/robolaunch/devspace-operator/internal/resources"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-func (r *DevSpaceVDIReconciler) reconcileCreatePVC(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCreatePVC(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) error {
 
-	robot, err := r.reconcileGetTargetRobot(ctx, instance)
+	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func (r *DevSpaceVDIReconciler) reconcileCreatePVC(ctx context.Context, instance
 	return nil
 }
 
-func (r *DevSpaceVDIReconciler) reconcileCreateServiceTCP(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCreateServiceTCP(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) error {
 
 	vdiService := resources.GetDevSpaceVDIServiceTCP(instance, instance.GetDevSpaceVDIServiceTCPMetadata())
 
@@ -56,7 +56,7 @@ func (r *DevSpaceVDIReconciler) reconcileCreateServiceTCP(ctx context.Context, i
 	return nil
 }
 
-func (r *DevSpaceVDIReconciler) reconcileCreateServiceUDP(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCreateServiceUDP(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) error {
 
 	vdiService := resources.GetDevSpaceVDIServiceUDP(instance, instance.GetDevSpaceVDIServiceUDPMetadata())
 
@@ -77,9 +77,9 @@ func (r *DevSpaceVDIReconciler) reconcileCreateServiceUDP(ctx context.Context, i
 	return nil
 }
 
-func (r *DevSpaceVDIReconciler) reconcileCreatePod(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCreatePod(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) error {
 
-	robot, err := r.reconcileGetTargetRobot(ctx, instance)
+	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
 	if err != nil {
 		return err
 	}
@@ -108,9 +108,9 @@ func (r *DevSpaceVDIReconciler) reconcileCreatePod(ctx context.Context, instance
 	return nil
 }
 
-func (r *DevSpaceVDIReconciler) reconcileCreateIngress(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCreateIngress(ctx context.Context, instance *devv1alpha1.DevSpaceVDI) error {
 
-	robot, err := r.reconcileGetTargetRobot(ctx, instance)
+	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
 	if err != nil {
 		return err
 	}

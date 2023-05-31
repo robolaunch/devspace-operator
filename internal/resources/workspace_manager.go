@@ -8,14 +8,14 @@ import (
 	"github.com/robolaunch/devspace-operator/internal"
 	"github.com/robolaunch/devspace-operator/internal/configure"
 	"github.com/robolaunch/devspace-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
 
-func GetClonerJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespacedName *types.NamespacedName, robot *robotv1alpha1.Robot) *batchv1.Job {
+func GetClonerJob(workspaceManager *devv1alpha1.WorkspaceManager, jobNamespacedName *types.NamespacedName, robot *devv1alpha1.Devspace) *batchv1.Job {
 
 	var clonerCmdBuilder strings.Builder
 	for wsKey, ws := range workspaceManager.Spec.Workspaces {
@@ -74,7 +74,7 @@ func GetClonerJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespace
 	return &job
 }
 
-func GetCleanupJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespacedName *types.NamespacedName, robot *robotv1alpha1.Robot) *batchv1.Job {
+func GetCleanupJob(workspaceManager *devv1alpha1.WorkspaceManager, jobNamespacedName *types.NamespacedName, robot *devv1alpha1.Devspace) *batchv1.Job {
 
 	var cmdBuilder strings.Builder
 	cmdBuilder.WriteString("cd " + workspaceManager.Spec.WorkspacesPath + " && ")

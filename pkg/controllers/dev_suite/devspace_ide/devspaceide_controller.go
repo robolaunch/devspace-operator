@@ -29,7 +29,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	"github.com/go-logr/logr"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
 // DevSpaceIDEReconciler reconciles a DevSpaceIDE object
@@ -39,9 +39,9 @@ type DevSpaceIDEReconciler struct {
 	DynamicClient dynamic.Interface
 }
 
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspaceides,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspaceides/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspaceides/finalizers,verbs=update
+//+kubebuilder:rbac:groups=dev.roboscale.io,resources=devspaceides,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=dev.roboscale.io,resources=devspaceides/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=dev.roboscale.io,resources=devspaceides/finalizers,verbs=update
 
 //+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
@@ -87,7 +87,7 @@ func (r *DevSpaceIDEReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	return ctrl.Result{}, nil
 }
 
-func (r *DevSpaceIDEReconciler) reconcileCheckStatus(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
+func (r *DevSpaceIDEReconciler) reconcileCheckStatus(ctx context.Context, instance *devv1alpha1.DevSpaceIDE) error {
 
 	switch instance.Status.ServiceStatus.Resource.Created {
 	case true:
@@ -101,13 +101,13 @@ func (r *DevSpaceIDEReconciler) reconcileCheckStatus(ctx context.Context, instan
 				switch instance.Status.PodStatus.Resource.Phase {
 				case string(corev1.PodRunning):
 
-					instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseRunning
+					instance.Status.Phase = devv1alpha1.DevSpaceIDEPhaseRunning
 
 				}
 
 			case false:
 
-				instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseCreatingIngress
+				instance.Status.Phase = devv1alpha1.DevSpaceIDEPhaseCreatingIngress
 				err := r.reconcileCreateIngress(ctx, instance)
 				if err != nil {
 					return err
@@ -118,7 +118,7 @@ func (r *DevSpaceIDEReconciler) reconcileCheckStatus(ctx context.Context, instan
 
 		case false:
 
-			instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseCreatingPod
+			instance.Status.Phase = devv1alpha1.DevSpaceIDEPhaseCreatingPod
 			err := r.reconcileCreatePod(ctx, instance)
 			if err != nil {
 				return err
@@ -128,7 +128,7 @@ func (r *DevSpaceIDEReconciler) reconcileCheckStatus(ctx context.Context, instan
 
 	case false:
 
-		instance.Status.Phase = robotv1alpha1.DevSpaceIDEPhaseCreatingService
+		instance.Status.Phase = devv1alpha1.DevSpaceIDEPhaseCreatingService
 		err := r.reconcileCreateService(ctx, instance)
 		if err != nil {
 			return err
@@ -140,7 +140,7 @@ func (r *DevSpaceIDEReconciler) reconcileCheckStatus(ctx context.Context, instan
 	return nil
 }
 
-func (r *DevSpaceIDEReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
+func (r *DevSpaceIDEReconciler) reconcileCheckResources(ctx context.Context, instance *devv1alpha1.DevSpaceIDE) error {
 
 	err := r.reconcileCheckService(ctx, instance)
 	if err != nil {
@@ -163,7 +163,7 @@ func (r *DevSpaceIDEReconciler) reconcileCheckResources(ctx context.Context, ins
 // SetupWithManager sets up the controller with the Manager.
 func (r *DevSpaceIDEReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&robotv1alpha1.DevSpaceIDE{}).
+		For(&devv1alpha1.DevSpaceIDE{}).
 		Owns(&corev1.Pod{}).
 		Owns(&corev1.Service{}).
 		Owns(&networkingv1.Ingress{}).

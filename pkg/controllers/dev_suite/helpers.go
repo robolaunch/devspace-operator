@@ -1,27 +1,27 @@
-package robot_dev_suite
+package dev_suite
 
 import (
 	"context"
 
 	"github.com/robolaunch/devspace-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/retry"
 )
 
-func (r *DevSuiteReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*robotv1alpha1.DevSuite, error) {
-	instance := &robotv1alpha1.DevSuite{}
+func (r *DevSuiteReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*devv1alpha1.DevSuite, error) {
+	instance := &devv1alpha1.DevSuite{}
 	err := r.Get(ctx, meta, instance)
 	if err != nil {
-		return &robotv1alpha1.DevSuite{}, err
+		return &devv1alpha1.DevSuite{}, err
 	}
 
 	return instance, nil
 }
 
-func (r *DevSuiteReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
+func (r *DevSuiteReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *devv1alpha1.DevSuite) error {
 	return retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		instanceLV := &robotv1alpha1.DevSuite{}
+		instanceLV := &devv1alpha1.DevSuite{}
 		err := r.Get(ctx, types.NamespacedName{
 			Name:      instance.Name,
 			Namespace: instance.Namespace,
@@ -36,11 +36,11 @@ func (r *DevSuiteReconciler) reconcileUpdateInstanceStatus(ctx context.Context, 
 	})
 }
 
-func (r *DevSuiteReconciler) reconcileGetTargetRobot(ctx context.Context, instance *robotv1alpha1.DevSuite) (*robotv1alpha1.Robot, error) {
-	robot := &robotv1alpha1.Robot{}
+func (r *DevSuiteReconciler) reconcileGetTargetDevspace(ctx context.Context, instance *devv1alpha1.DevSuite) (*devv1alpha1.Devspace, error) {
+	robot := &devv1alpha1.Devspace{}
 	err := r.Get(ctx, types.NamespacedName{
 		Namespace: instance.Namespace,
-		Name:      label.GetTargetRobot(instance),
+		Name:      label.GetTargetDevspace(instance),
 	}, robot)
 	if err != nil {
 		return nil, err
@@ -49,12 +49,12 @@ func (r *DevSuiteReconciler) reconcileGetTargetRobot(ctx context.Context, instan
 	return robot, nil
 }
 
-func (r *DevSuiteReconciler) reconcileCheckTargetRobot(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
+func (r *DevSuiteReconciler) reconcileCheckTargetDevspace(ctx context.Context, instance *devv1alpha1.DevSuite) error {
 
 	if label.GetDevSuiteOwned(instance) == "true" {
 		instance.Status.Active = true
 	} else {
-		robot, err := r.reconcileGetTargetRobot(ctx, instance)
+		robot, err := r.reconcileGetTargetDevspace(ctx, instance)
 		if err != nil {
 			return err
 		}

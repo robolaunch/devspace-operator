@@ -53,7 +53,7 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 	switch resource {
 	// Group=roboscale.io, Version=v1alpha1
 	case v1alpha1.SchemeGroupVersion.WithResource("robots"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().Robots().Informer()}, nil
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().Devspaces().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("devsuites"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Roboscale().V1alpha1().DevSuites().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("devspaceides"):

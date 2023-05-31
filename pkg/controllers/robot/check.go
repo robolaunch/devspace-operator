@@ -5,18 +5,18 @@ import (
 	"reflect"
 
 	"github.com/robolaunch/devspace-operator/internal/reference"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 )
 
-func (r *RobotReconciler) reconcileCheckPVCs(ctx context.Context, instance *robotv1alpha1.Robot) error {
+func (r *DevspaceReconciler) reconcileCheckPVCs(ctx context.Context, instance *devv1alpha1.Devspace) error {
 
 	pvcVarQuery := &corev1.PersistentVolumeClaim{}
 	err := r.Get(ctx, *instance.GetPVCVarMetadata(), pvcVarQuery)
 	if err != nil && errors.IsNotFound(err) {
-		instance.Status.VolumeStatuses.Var = robotv1alpha1.OwnedResourceStatus{}
+		instance.Status.VolumeStatuses.Var = devv1alpha1.OwnedResourceStatus{}
 	} else if err != nil {
 		return err
 	} else {
@@ -27,7 +27,7 @@ func (r *RobotReconciler) reconcileCheckPVCs(ctx context.Context, instance *robo
 	pvcOptQuery := &corev1.PersistentVolumeClaim{}
 	err = r.Get(ctx, *instance.GetPVCOptMetadata(), pvcOptQuery)
 	if err != nil && errors.IsNotFound(err) {
-		instance.Status.VolumeStatuses.Opt = robotv1alpha1.OwnedResourceStatus{}
+		instance.Status.VolumeStatuses.Opt = devv1alpha1.OwnedResourceStatus{}
 	} else if err != nil {
 		return err
 	} else {
@@ -38,7 +38,7 @@ func (r *RobotReconciler) reconcileCheckPVCs(ctx context.Context, instance *robo
 	pvcEtcQuery := &corev1.PersistentVolumeClaim{}
 	err = r.Get(ctx, *instance.GetPVCEtcMetadata(), pvcEtcQuery)
 	if err != nil && errors.IsNotFound(err) {
-		instance.Status.VolumeStatuses.Etc = robotv1alpha1.OwnedResourceStatus{}
+		instance.Status.VolumeStatuses.Etc = devv1alpha1.OwnedResourceStatus{}
 	} else if err != nil {
 		return err
 	} else {
@@ -49,7 +49,7 @@ func (r *RobotReconciler) reconcileCheckPVCs(ctx context.Context, instance *robo
 	pvcUsrQuery := &corev1.PersistentVolumeClaim{}
 	err = r.Get(ctx, *instance.GetPVCUsrMetadata(), pvcUsrQuery)
 	if err != nil && errors.IsNotFound(err) {
-		instance.Status.VolumeStatuses.Usr = robotv1alpha1.OwnedResourceStatus{}
+		instance.Status.VolumeStatuses.Usr = devv1alpha1.OwnedResourceStatus{}
 	} else if err != nil {
 		return err
 	} else {
@@ -60,7 +60,7 @@ func (r *RobotReconciler) reconcileCheckPVCs(ctx context.Context, instance *robo
 	pvcWorkspaceQuery := &corev1.PersistentVolumeClaim{}
 	err = r.Get(ctx, *instance.GetPVCWorkspaceMetadata(), pvcWorkspaceQuery)
 	if err != nil && errors.IsNotFound(err) {
-		instance.Status.VolumeStatuses.Workspace = robotv1alpha1.OwnedResourceStatus{}
+		instance.Status.VolumeStatuses.Workspace = devv1alpha1.OwnedResourceStatus{}
 	} else if err != nil {
 		return err
 	} else {
@@ -71,24 +71,24 @@ func (r *RobotReconciler) reconcileCheckPVCs(ctx context.Context, instance *robo
 	return nil
 }
 
-func (r *RobotReconciler) reconcileCheckLoaderJob(ctx context.Context, instance *robotv1alpha1.Robot) error {
+func (r *DevspaceReconciler) reconcileCheckLoaderJob(ctx context.Context, instance *devv1alpha1.Devspace) error {
 
-	if instance.Status.Phase != robotv1alpha1.RobotPhaseEnvironmentReady {
+	if instance.Status.Phase != devv1alpha1.DevspacePhaseEnvironmentReady {
 		loaderJobQuery := &batchv1.Job{}
 		err := r.Get(ctx, *instance.GetLoaderJobMetadata(), loaderJobQuery)
 		if err != nil && errors.IsNotFound(err) {
-			instance.Status.LoaderJobStatus = robotv1alpha1.OwnedResourceStatus{}
+			instance.Status.LoaderJobStatus = devv1alpha1.OwnedResourceStatus{}
 		} else if err != nil {
 			return err
 		} else {
 			reference.SetReference(&instance.Status.LoaderJobStatus.Reference, loaderJobQuery.TypeMeta, loaderJobQuery.ObjectMeta)
 			switch 1 {
 			case int(loaderJobQuery.Status.Succeeded):
-				instance.Status.LoaderJobStatus.Phase = string(robotv1alpha1.JobSucceeded)
+				instance.Status.LoaderJobStatus.Phase = string(devv1alpha1.JobSucceeded)
 			case int(loaderJobQuery.Status.Active):
-				instance.Status.LoaderJobStatus.Phase = string(robotv1alpha1.JobActive)
+				instance.Status.LoaderJobStatus.Phase = string(devv1alpha1.JobActive)
 			case int(loaderJobQuery.Status.Failed):
-				instance.Status.LoaderJobStatus.Phase = string(robotv1alpha1.JobFailed)
+				instance.Status.LoaderJobStatus.Phase = string(devv1alpha1.JobFailed)
 			}
 		}
 	}
@@ -96,12 +96,12 @@ func (r *RobotReconciler) reconcileCheckLoaderJob(ctx context.Context, instance 
 	return nil
 }
 
-func (r *RobotReconciler) reconcileCheckDevSuite(ctx context.Context, instance *robotv1alpha1.Robot) error {
+func (r *DevspaceReconciler) reconcileCheckDevSuite(ctx context.Context, instance *devv1alpha1.Devspace) error {
 
-	devSuiteQuery := &robotv1alpha1.DevSuite{}
+	devSuiteQuery := &devv1alpha1.DevSuite{}
 	err := r.Get(ctx, *instance.GetDevSuiteMetadata(), devSuiteQuery)
 	if err != nil && errors.IsNotFound(err) {
-		instance.Status.DevSuiteStatus = robotv1alpha1.DevSuiteInstanceStatus{}
+		instance.Status.DevSuiteStatus = devv1alpha1.DevSuiteInstanceStatus{}
 	} else if err != nil {
 		return err
 	} else {
@@ -134,12 +134,12 @@ func (r *RobotReconciler) reconcileCheckDevSuite(ctx context.Context, instance *
 	return nil
 }
 
-func (r *RobotReconciler) reconcileCheckWorkspaceManager(ctx context.Context, instance *robotv1alpha1.Robot) error {
+func (r *DevspaceReconciler) reconcileCheckWorkspaceManager(ctx context.Context, instance *devv1alpha1.Devspace) error {
 
-	workspaceManagerQuery := &robotv1alpha1.WorkspaceManager{}
+	workspaceManagerQuery := &devv1alpha1.WorkspaceManager{}
 	err := r.Get(ctx, *instance.GetWorkspaceManagerMetadata(), workspaceManagerQuery)
 	if err != nil && errors.IsNotFound(err) {
-		instance.Status.WorkspaceManagerStatus = robotv1alpha1.WorkspaceManagerInstanceStatus{}
+		instance.Status.WorkspaceManagerStatus = devv1alpha1.WorkspaceManagerInstanceStatus{}
 	} else if err != nil {
 		return err
 	} else {
@@ -158,8 +158,8 @@ func (r *RobotReconciler) reconcileCheckWorkspaceManager(ctx context.Context, in
 
 			// set phase configuring
 			instance.Status.WorkspaceManagerStatus.Resource.Created = true
-			instance.Status.WorkspaceManagerStatus.Status = robotv1alpha1.WorkspaceManagerStatus{}
-			instance.Status.WorkspaceManagerStatus.Status.Phase = robotv1alpha1.WorkspaceManagerPhaseConfiguringWorkspaces
+			instance.Status.WorkspaceManagerStatus.Status = devv1alpha1.WorkspaceManagerStatus{}
+			instance.Status.WorkspaceManagerStatus.Status.Phase = devv1alpha1.WorkspaceManagerPhaseConfiguringWorkspaces
 		}
 
 	}

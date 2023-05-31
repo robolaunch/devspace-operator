@@ -8,66 +8,66 @@ import (
 )
 
 // ********************************
-// Robot helpers
+// Devspace helpers
 // ********************************
 
-func (robot *Robot) GetPVCVarMetadata() *types.NamespacedName {
+func (robot *Devspace) GetPVCVarMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Name:      robot.Name + internal.PVC_VAR_POSTFIX,
 		Namespace: robot.Namespace,
 	}
 }
 
-func (robot *Robot) GetPVCOptMetadata() *types.NamespacedName {
+func (robot *Devspace) GetPVCOptMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Name:      robot.Name + internal.PVC_OPT_POSTFIX,
 		Namespace: robot.Namespace,
 	}
 }
 
-func (robot *Robot) GetPVCUsrMetadata() *types.NamespacedName {
+func (robot *Devspace) GetPVCUsrMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Name:      robot.Name + internal.PVC_USR_POSTFIX,
 		Namespace: robot.Namespace,
 	}
 }
 
-func (robot *Robot) GetPVCEtcMetadata() *types.NamespacedName {
+func (robot *Devspace) GetPVCEtcMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Name:      robot.Name + internal.PVC_ETC_POSTFIX,
 		Namespace: robot.Namespace,
 	}
 }
 
-func (robot *Robot) GetPVCWorkspaceMetadata() *types.NamespacedName {
+func (robot *Devspace) GetPVCWorkspaceMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Name:      robot.Name + internal.PVC_WORKSPACE_POSTFIX,
 		Namespace: robot.Namespace,
 	}
 }
 
-func (robot *Robot) GetLoaderJobMetadata() *types.NamespacedName {
+func (robot *Devspace) GetLoaderJobMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Name:      robot.Name + internal.JOB_LOADER_POSTFIX,
 		Namespace: robot.Namespace,
 	}
 }
 
-func (robot *Robot) GetDevSuiteMetadata() *types.NamespacedName {
+func (robot *Devspace) GetDevSuiteMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Name:      robot.Name + internal.ROBOT_DEV_SUITE_POSTFIX,
 		Namespace: robot.Namespace,
 	}
 }
 
-func (robot *Robot) GetWorkspaceManagerMetadata() *types.NamespacedName {
+func (robot *Devspace) GetWorkspaceManagerMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Name:      robot.Name + internal.WORKSPACE_MANAGER_POSTFIX,
 		Namespace: robot.Namespace,
 	}
 }
 
-func (robot *Robot) GetWorkspaceByName(name string) (Workspace, error) {
+func (robot *Devspace) GetWorkspaceByName(name string) (Workspace, error) {
 
 	for _, ws := range robot.Spec.WorkspaceManagerTemplate.Workspaces {
 		if ws.Name == name {

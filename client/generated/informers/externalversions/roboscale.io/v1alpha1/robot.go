@@ -31,11 +31,11 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// RobotInformer provides access to a shared informer and lister for
-// Robots.
-type RobotInformer interface {
+// DevspaceInformer provides access to a shared informer and lister for
+// Devspaces.
+type DevspaceInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.RobotLister
+	Lister() v1alpha1.DevspaceLister
 }
 
 type robotInformer struct {
@@ -44,46 +44,46 @@ type robotInformer struct {
 	namespace        string
 }
 
-// NewRobotInformer constructs a new informer for Robot type.
+// NewDevspaceInformer constructs a new informer for Devspace type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewRobotInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredRobotInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewDevspaceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredDevspaceInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredRobotInformer constructs a new informer for Robot type.
+// NewFilteredDevspaceInformer constructs a new informer for Devspace type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredRobotInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredDevspaceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RoboscaleV1alpha1().Robots(namespace).List(context.TODO(), options)
+				return client.RoboscaleV1alpha1().Devspaces(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RoboscaleV1alpha1().Robots(namespace).Watch(context.TODO(), options)
+				return client.RoboscaleV1alpha1().Devspaces(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&roboscaleiov1alpha1.Robot{},
+		&roboscaleiov1alpha1.Devspace{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
 func (f *robotInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredRobotInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+	return NewFilteredDevspaceInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
 func (f *robotInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&roboscaleiov1alpha1.Robot{}, f.defaultInformer)
+	return f.factory.InformerFor(&roboscaleiov1alpha1.Devspace{}, f.defaultInformer)
 }
 
-func (f *robotInformer) Lister() v1alpha1.RobotLister {
-	return v1alpha1.NewRobotLister(f.Informer().GetIndexer())
+func (f *robotInformer) Lister() v1alpha1.DevspaceLister {
+	return v1alpha1.NewDevspaceLister(f.Informer().GetIndexer())
 }

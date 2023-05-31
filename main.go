@@ -34,11 +34,11 @@ import (
 
 	mcsv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/external/apis/mcsv1alpha1/v1alpha1"
 
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devSuite "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite"
+	devSpaceIDE "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite/devspace_ide"
+	devSpaceVDI "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite/devspace_vdi"
 	robot "github.com/robolaunch/devspace-operator/pkg/controllers/robot"
-	devSuite "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite"
-	devSpaceIDE "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite/devspace_ide"
-	devSpaceVDI "github.com/robolaunch/devspace-operator/pkg/controllers/robot_dev_suite/devspace_vdi"
 	workspaceManager "github.com/robolaunch/devspace-operator/pkg/controllers/workspace_manager"
 	//+kubebuilder:scaffold:imports
 )
@@ -51,7 +51,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
-	utilruntime.Must(robotv1alpha1.AddToScheme(scheme))
+	utilruntime.Must(devv1alpha1.AddToScheme(scheme))
 
 	utilruntime.Must(mcsv1alpha1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
@@ -114,16 +114,16 @@ func main() {
 	// 	setupLog.Error(err, "unable to create REST client")
 	// }
 
-	if err = (&robot.RobotReconciler{
+	if err = (&robot.DevspaceReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		DynamicClient: dynamicClient,
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Robot")
+		setupLog.Error(err, "unable to create controller", "controller", "Devspace")
 		os.Exit(1)
 	}
-	if err = (&robotv1alpha1.Robot{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "Robot")
+	if err = (&devv1alpha1.Devspace{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "Devspace")
 		os.Exit(1)
 	}
 	if err = (&devSuite.DevSuiteReconciler{
@@ -142,7 +142,7 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "DevSpaceVDI")
 		os.Exit(1)
 	}
-	if err = (&robotv1alpha1.DevSpaceVDI{}).SetupWebhookWithManager(mgr); err != nil {
+	if err = (&devv1alpha1.DevSpaceVDI{}).SetupWebhookWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create webhook", "webhook", "DevSpaceVDI")
 		os.Exit(1)
 	}
@@ -154,7 +154,7 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "DevSpaceIDE")
 		os.Exit(1)
 	}
-	if err = (&robotv1alpha1.DevSpaceIDE{}).SetupWebhookWithManager(mgr); err != nil {
+	if err = (&devv1alpha1.DevSpaceIDE{}).SetupWebhookWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create webhook", "webhook", "DevSpaceIDE")
 		os.Exit(1)
 	}
@@ -165,7 +165,7 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "WorkspaceManager")
 		os.Exit(1)
 	}
-	if err = (&robotv1alpha1.WorkspaceManager{}).SetupWebhookWithManager(mgr); err != nil {
+	if err = (&devv1alpha1.WorkspaceManager{}).SetupWebhookWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create webhook", "webhook", "WorkspaceManager")
 		os.Exit(1)
 	}

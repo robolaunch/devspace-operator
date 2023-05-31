@@ -5,14 +5,14 @@ import (
 	"sort"
 
 	"github.com/robolaunch/devspace-operator/internal"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/selection"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func (r *RobotReconciler) reconcileAttachDevObject(ctx context.Context, instance *robotv1alpha1.Robot) error {
+func (r *DevspaceReconciler) reconcileAttachDevObject(ctx context.Context, instance *devv1alpha1.Devspace) error {
 
 	// Get attached dev objects for this robot
 	requirements := []labels.Requirement{}
@@ -24,14 +24,14 @@ func (r *RobotReconciler) reconcileAttachDevObject(ctx context.Context, instance
 
 	robotSelector := labels.NewSelector().Add(requirements...)
 
-	devSuiteList := robotv1alpha1.DevSuiteList{}
+	devSuiteList := devv1alpha1.DevSuiteList{}
 	err = r.List(ctx, &devSuiteList, &client.ListOptions{Namespace: instance.Namespace, LabelSelector: robotSelector})
 	if err != nil {
 		return err
 	}
 
 	if len(devSuiteList.Items) == 0 {
-		instance.Status.AttachedDevObjects = []robotv1alpha1.AttachedDevObject{}
+		instance.Status.AttachedDevObjects = []devv1alpha1.AttachedDevObject{}
 		return nil
 	}
 
@@ -40,10 +40,10 @@ func (r *RobotReconciler) reconcileAttachDevObject(ctx context.Context, instance
 		return devSuiteList.Items[i].CreationTimestamp.String() < devSuiteList.Items[j].CreationTimestamp.String()
 	})
 
-	instance.Status.AttachedDevObjects = []robotv1alpha1.AttachedDevObject{}
+	instance.Status.AttachedDevObjects = []devv1alpha1.AttachedDevObject{}
 
 	for _, rds := range devSuiteList.Items {
-		instance.Status.AttachedDevObjects = append(instance.Status.AttachedDevObjects, robotv1alpha1.AttachedDevObject{
+		instance.Status.AttachedDevObjects = append(instance.Status.AttachedDevObjects, devv1alpha1.AttachedDevObject{
 			Reference: corev1.ObjectReference{
 				Kind:            rds.Kind,
 				Namespace:       rds.Namespace,

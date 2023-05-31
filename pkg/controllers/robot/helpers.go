@@ -6,7 +6,7 @@ import (
 	robotErr "github.com/robolaunch/devspace-operator/internal/error"
 	label "github.com/robolaunch/devspace-operator/internal/label"
 	nodePkg "github.com/robolaunch/devspace-operator/internal/node"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/selection"
@@ -15,19 +15,19 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func (r *RobotReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*robotv1alpha1.Robot, error) {
-	instance := &robotv1alpha1.Robot{}
+func (r *DevspaceReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*devv1alpha1.Devspace, error) {
+	instance := &devv1alpha1.Devspace{}
 	err := r.Get(ctx, meta, instance)
 	if err != nil {
-		return &robotv1alpha1.Robot{}, err
+		return &devv1alpha1.Devspace{}, err
 	}
 
 	return instance, nil
 }
 
-func (r *RobotReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *robotv1alpha1.Robot) error {
+func (r *DevspaceReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *devv1alpha1.Devspace) error {
 	return retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		instanceLV := &robotv1alpha1.Robot{}
+		instanceLV := &devv1alpha1.Devspace{}
 		err := r.Get(ctx, types.NamespacedName{
 			Name:      instance.Name,
 			Namespace: instance.Namespace,
@@ -42,7 +42,7 @@ func (r *RobotReconciler) reconcileUpdateInstanceStatus(ctx context.Context, ins
 	})
 }
 
-func (r *RobotReconciler) reconcileCheckNode(ctx context.Context, instance *robotv1alpha1.Robot) (*corev1.Node, error) {
+func (r *DevspaceReconciler) reconcileCheckNode(ctx context.Context, instance *devv1alpha1.Devspace) (*corev1.Node, error) {
 
 	tenancyMap := label.GetTenancyMap(instance)
 
@@ -84,7 +84,7 @@ func (r *RobotReconciler) reconcileCheckNode(ctx context.Context, instance *robo
 	return &nodes.Items[0], nil
 }
 
-func (r *RobotReconciler) reconcileCheckImage(ctx context.Context, instance *robotv1alpha1.Robot) error {
+func (r *DevspaceReconciler) reconcileCheckImage(ctx context.Context, instance *devv1alpha1.Devspace) error {
 
 	node, err := r.reconcileCheckNode(ctx, instance)
 	if err != nil {

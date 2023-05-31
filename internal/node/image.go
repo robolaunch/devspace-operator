@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/robolaunch/devspace-operator/internal"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
 )
@@ -17,12 +17,12 @@ type Platform struct {
 }
 
 type Version struct {
-	Date          string        `yaml:"date"`
-	Version       string        `yaml:"version"`
-	RoboticsCloud RoboticsCloud `yaml:"roboticsCloud"`
+	Date             string           `yaml:"date"`
+	Version          string           `yaml:"version"`
+	DevspaceicsCloud DevspaceicsCloud `yaml:"roboticsCloud"`
 }
 
-type RoboticsCloud struct {
+type DevspaceicsCloud struct {
 	Kubernetes Kubernetes `yaml:"kubernetes"`
 }
 
@@ -31,10 +31,10 @@ type Kubernetes struct {
 }
 
 type Operators struct {
-	RobotOperator RobotOperator `yaml:"robot"`
+	DevspaceOperator DevspaceOperator `yaml:"robot"`
 }
 
-type RobotOperator struct {
+type DevspaceOperator struct {
 	Images Images `yaml:"images"`
 }
 
@@ -45,18 +45,18 @@ type Images struct {
 }
 
 // Not used in robot manifest, needed for internal use.
-type ReadyRobotProperties struct {
+type ReadyDevspaceProperties struct {
 	Enabled bool
 	Image   string
 }
 
-func GetReadyRobotProperties(robot robotv1alpha1.Robot) ReadyRobotProperties {
+func GetReadyDevspaceProperties(robot devv1alpha1.Devspace) ReadyDevspaceProperties {
 	labels := robot.GetLabels()
 
 	if user, hasUser := labels[internal.ROBOT_IMAGE_USER]; hasUser {
 		if repository, hasRepository := labels[internal.ROBOT_IMAGE_REPOSITORY]; hasRepository {
 			if tag, hasTag := labels[internal.ROBOT_IMAGE_TAG]; hasTag {
-				return ReadyRobotProperties{
+				return ReadyDevspaceProperties{
 					Enabled: true,
 					Image:   user + "/" + repository + ":" + tag,
 				}
@@ -64,22 +64,22 @@ func GetReadyRobotProperties(robot robotv1alpha1.Robot) ReadyRobotProperties {
 		}
 	}
 
-	return ReadyRobotProperties{
+	return ReadyDevspaceProperties{
 		Enabled: false,
 	}
 }
 
-func GetImage(node corev1.Node, robot robotv1alpha1.Robot) (string, error) {
+func GetImage(node corev1.Node, robot devv1alpha1.Devspace) (string, error) {
 
 	var imageBuilder strings.Builder
 	var tagBuilder strings.Builder
 
 	distributions := robot.Spec.Distributions
-	readyRobot := GetReadyRobotProperties(robot)
+	readyDevspace := GetReadyDevspaceProperties(robot)
 
-	if readyRobot.Enabled {
+	if readyDevspace.Enabled {
 
-		imageBuilder.WriteString(readyRobot.Image)
+		imageBuilder.WriteString(readyDevspace.Image)
 
 	} else {
 
@@ -115,7 +115,7 @@ func GetImage(node corev1.Node, robot robotv1alpha1.Robot) (string, error) {
 
 }
 
-func getDistroStr(distributions []robotv1alpha1.ROSDistro) string {
+func getDistroStr(distributions []devv1alpha1.ROSDistro) string {
 
 	if len(distributions) == 1 {
 		return string(distributions[0])
@@ -124,10 +124,10 @@ func getDistroStr(distributions []robotv1alpha1.ROSDistro) string {
 	return setPrecisionBetweenDistributions(distributions)
 }
 
-func setPrecisionBetweenDistributions(distributions []robotv1alpha1.ROSDistro) string {
+func setPrecisionBetweenDistributions(distributions []devv1alpha1.ROSDistro) string {
 
-	if distributions[0] == robotv1alpha1.ROSDistroFoxy || distributions[1] == robotv1alpha1.ROSDistroFoxy {
-		return string(robotv1alpha1.ROSDistroFoxy) + "-" + string(robotv1alpha1.ROSDistroGalactic)
+	if distributions[0] == devv1alpha1.ROSDistroFoxy || distributions[1] == devv1alpha1.ROSDistroFoxy {
+		return string(devv1alpha1.ROSDistroFoxy) + "-" + string(devv1alpha1.ROSDistroGalactic)
 	}
 	return ""
 }
@@ -158,7 +158,7 @@ func getImageProps(platformVersion string) (Images, error) {
 	var imageProps Images
 	for _, v := range platform.Versions {
 		if v.Version == platformVersion {
-			imageProps = v.RoboticsCloud.Kubernetes.Operators.RobotOperator.Images
+			imageProps = v.DevspaceicsCloud.Kubernetes.Operators.DevspaceOperator.Images
 		}
 	}
 

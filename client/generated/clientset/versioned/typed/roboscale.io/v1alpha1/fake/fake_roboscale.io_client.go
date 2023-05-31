@@ -27,8 +27,8 @@ type FakeRoboscaleV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeRoboscaleV1alpha1) Robots(namespace string) v1alpha1.RobotInterface {
-	return &FakeRobots{c, namespace}
+func (c *FakeRoboscaleV1alpha1) Devspaces(namespace string) v1alpha1.DevspaceInterface {
+	return &FakeDevspaces{c, namespace}
 }
 
 func (c *FakeRoboscaleV1alpha1) DevSuites(namespace string) v1alpha1.DevSuiteInterface {

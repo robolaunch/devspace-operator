@@ -5,12 +5,12 @@ import (
 
 	"github.com/robolaunch/devspace-operator/internal/label"
 	"github.com/robolaunch/devspace-operator/internal/resources"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-func (r *DevSpaceIDEReconciler) reconcileCreateService(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
+func (r *DevSpaceIDEReconciler) reconcileCreateService(ctx context.Context, instance *devv1alpha1.DevSpaceIDE) error {
 
 	ideService := resources.GetDevSpaceIDEService(instance, instance.GetDevSpaceIDEServiceMetadata())
 
@@ -31,14 +31,14 @@ func (r *DevSpaceIDEReconciler) reconcileCreateService(ctx context.Context, inst
 	return nil
 }
 
-func (r *DevSpaceIDEReconciler) reconcileCreatePod(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
+func (r *DevSpaceIDEReconciler) reconcileCreatePod(ctx context.Context, instance *devv1alpha1.DevSpaceIDE) error {
 
-	robot, err := r.reconcileGetTargetRobot(ctx, instance)
+	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
 	if err != nil {
 		return err
 	}
 
-	devSpaceVDI := &robotv1alpha1.DevSpaceVDI{}
+	devSpaceVDI := &devv1alpha1.DevSpaceVDI{}
 	if label.GetTargetDevSpaceVDI(instance) != "" {
 		devSpaceVDI, err = r.reconcileGetTargetDevSpaceVDI(ctx, instance)
 		if err != nil {
@@ -70,9 +70,9 @@ func (r *DevSpaceIDEReconciler) reconcileCreatePod(ctx context.Context, instance
 	return nil
 }
 
-func (r *DevSpaceIDEReconciler) reconcileCreateIngress(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) error {
+func (r *DevSpaceIDEReconciler) reconcileCreateIngress(ctx context.Context, instance *devv1alpha1.DevSpaceIDE) error {
 
-	robot, err := r.reconcileGetTargetRobot(ctx, instance)
+	robot, err := r.reconcileGetTargetDevspace(ctx, instance)
 	if err != nil {
 		return err
 	}

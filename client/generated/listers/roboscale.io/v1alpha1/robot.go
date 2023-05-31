@@ -24,69 +24,69 @@ import (
 	"k8s.io/client-go/tools/cache"
 )
 
-// RobotLister helps list Robots.
+// DevspaceLister helps list Devspaces.
 // All objects returned here must be treated as read-only.
-type RobotLister interface {
-	// List lists all Robots in the indexer.
+type DevspaceLister interface {
+	// List lists all Devspaces in the indexer.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1alpha1.Robot, err error)
-	// Robots returns an object that can list and get Robots.
-	Robots(namespace string) RobotNamespaceLister
-	RobotListerExpansion
+	List(selector labels.Selector) (ret []*v1alpha1.Devspace, err error)
+	// Devspaces returns an object that can list and get Devspaces.
+	Devspaces(namespace string) DevspaceNamespaceLister
+	DevspaceListerExpansion
 }
 
-// robotLister implements the RobotLister interface.
+// robotLister implements the DevspaceLister interface.
 type robotLister struct {
 	indexer cache.Indexer
 }
 
-// NewRobotLister returns a new RobotLister.
-func NewRobotLister(indexer cache.Indexer) RobotLister {
+// NewDevspaceLister returns a new DevspaceLister.
+func NewDevspaceLister(indexer cache.Indexer) DevspaceLister {
 	return &robotLister{indexer: indexer}
 }
 
-// List lists all Robots in the indexer.
-func (s *robotLister) List(selector labels.Selector) (ret []*v1alpha1.Robot, err error) {
+// List lists all Devspaces in the indexer.
+func (s *robotLister) List(selector labels.Selector) (ret []*v1alpha1.Devspace, err error) {
 	err = cache.ListAll(s.indexer, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1alpha1.Robot))
+		ret = append(ret, m.(*v1alpha1.Devspace))
 	})
 	return ret, err
 }
 
-// Robots returns an object that can list and get Robots.
-func (s *robotLister) Robots(namespace string) RobotNamespaceLister {
+// Devspaces returns an object that can list and get Devspaces.
+func (s *robotLister) Devspaces(namespace string) DevspaceNamespaceLister {
 	return robotNamespaceLister{indexer: s.indexer, namespace: namespace}
 }
 
-// RobotNamespaceLister helps list and get Robots.
+// DevspaceNamespaceLister helps list and get Devspaces.
 // All objects returned here must be treated as read-only.
-type RobotNamespaceLister interface {
-	// List lists all Robots in the indexer for a given namespace.
+type DevspaceNamespaceLister interface {
+	// List lists all Devspaces in the indexer for a given namespace.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1alpha1.Robot, err error)
-	// Get retrieves the Robot from the indexer for a given namespace and name.
+	List(selector labels.Selector) (ret []*v1alpha1.Devspace, err error)
+	// Get retrieves the Devspace from the indexer for a given namespace and name.
 	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1alpha1.Robot, error)
-	RobotNamespaceListerExpansion
+	Get(name string) (*v1alpha1.Devspace, error)
+	DevspaceNamespaceListerExpansion
 }
 
-// robotNamespaceLister implements the RobotNamespaceLister
+// robotNamespaceLister implements the DevspaceNamespaceLister
 // interface.
 type robotNamespaceLister struct {
 	indexer   cache.Indexer
 	namespace string
 }
 
-// List lists all Robots in the indexer for a given namespace.
-func (s robotNamespaceLister) List(selector labels.Selector) (ret []*v1alpha1.Robot, err error) {
+// List lists all Devspaces in the indexer for a given namespace.
+func (s robotNamespaceLister) List(selector labels.Selector) (ret []*v1alpha1.Devspace, err error) {
 	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1alpha1.Robot))
+		ret = append(ret, m.(*v1alpha1.Devspace))
 	})
 	return ret, err
 }
 
-// Get retrieves the Robot from the indexer for a given namespace and name.
-func (s robotNamespaceLister) Get(name string) (*v1alpha1.Robot, error) {
+// Get retrieves the Devspace from the indexer for a given namespace and name.
+func (s robotNamespaceLister) Get(name string) (*v1alpha1.Devspace, error) {
 	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
 	if err != nil {
 		return nil, err
@@ -94,5 +94,5 @@ func (s robotNamespaceLister) Get(name string) (*v1alpha1.Robot, error) {
 	if !exists {
 		return nil, errors.NewNotFound(v1alpha1.Resource("robot"), name)
 	}
-	return obj.(*v1alpha1.Robot), nil
+	return obj.(*v1alpha1.Devspace), nil
 }

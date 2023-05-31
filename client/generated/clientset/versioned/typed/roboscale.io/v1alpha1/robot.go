@@ -29,34 +29,34 @@ import (
 	rest "k8s.io/client-go/rest"
 )
 
-// RobotsGetter has a method to return a RobotInterface.
+// DevspacesGetter has a method to return a DevspaceInterface.
 // A group's client should implement this interface.
-type RobotsGetter interface {
-	Robots(namespace string) RobotInterface
+type DevspacesGetter interface {
+	Devspaces(namespace string) DevspaceInterface
 }
 
-// RobotInterface has methods to work with Robot resources.
-type RobotInterface interface {
-	Create(ctx context.Context, robot *v1alpha1.Robot, opts v1.CreateOptions) (*v1alpha1.Robot, error)
-	Update(ctx context.Context, robot *v1alpha1.Robot, opts v1.UpdateOptions) (*v1alpha1.Robot, error)
-	UpdateStatus(ctx context.Context, robot *v1alpha1.Robot, opts v1.UpdateOptions) (*v1alpha1.Robot, error)
+// DevspaceInterface has methods to work with Devspace resources.
+type DevspaceInterface interface {
+	Create(ctx context.Context, robot *v1alpha1.Devspace, opts v1.CreateOptions) (*v1alpha1.Devspace, error)
+	Update(ctx context.Context, robot *v1alpha1.Devspace, opts v1.UpdateOptions) (*v1alpha1.Devspace, error)
+	UpdateStatus(ctx context.Context, robot *v1alpha1.Devspace, opts v1.UpdateOptions) (*v1alpha1.Devspace, error)
 	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha1.Robot, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1alpha1.RobotList, error)
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha1.Devspace, error)
+	List(ctx context.Context, opts v1.ListOptions) (*v1alpha1.DevspaceList, error)
 	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.Robot, err error)
-	RobotExpansion
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.Devspace, err error)
+	DevspaceExpansion
 }
 
-// robots implements RobotInterface
+// robots implements DevspaceInterface
 type robots struct {
 	client rest.Interface
 	ns     string
 }
 
-// newRobots returns a Robots
-func newRobots(c *RoboscaleV1alpha1Client, namespace string) *robots {
+// newDevspaces returns a Devspaces
+func newDevspaces(c *RoboscaleV1alpha1Client, namespace string) *robots {
 	return &robots{
 		client: c.RESTClient(),
 		ns:     namespace,
@@ -64,8 +64,8 @@ func newRobots(c *RoboscaleV1alpha1Client, namespace string) *robots {
 }
 
 // Get takes name of the robot, and returns the corresponding robot object, and an error if there is any.
-func (c *robots) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Robot, err error) {
-	result = &v1alpha1.Robot{}
+func (c *robots) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Devspace, err error) {
+	result = &v1alpha1.Devspace{}
 	err = c.client.Get().
 		Namespace(c.ns).
 		Resource("robots").
@@ -76,13 +76,13 @@ func (c *robots) Get(ctx context.Context, name string, options v1.GetOptions) (r
 	return
 }
 
-// List takes label and field selectors, and returns the list of Robots that match those selectors.
-func (c *robots) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.RobotList, err error) {
+// List takes label and field selectors, and returns the list of Devspaces that match those selectors.
+func (c *robots) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.DevspaceList, err error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
 	}
-	result = &v1alpha1.RobotList{}
+	result = &v1alpha1.DevspaceList{}
 	err = c.client.Get().
 		Namespace(c.ns).
 		Resource("robots").
@@ -109,8 +109,8 @@ func (c *robots) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interfac
 }
 
 // Create takes the representation of a robot and creates it.  Returns the server's representation of the robot, and an error, if there is any.
-func (c *robots) Create(ctx context.Context, robot *v1alpha1.Robot, opts v1.CreateOptions) (result *v1alpha1.Robot, err error) {
-	result = &v1alpha1.Robot{}
+func (c *robots) Create(ctx context.Context, robot *v1alpha1.Devspace, opts v1.CreateOptions) (result *v1alpha1.Devspace, err error) {
+	result = &v1alpha1.Devspace{}
 	err = c.client.Post().
 		Namespace(c.ns).
 		Resource("robots").
@@ -122,8 +122,8 @@ func (c *robots) Create(ctx context.Context, robot *v1alpha1.Robot, opts v1.Crea
 }
 
 // Update takes the representation of a robot and updates it. Returns the server's representation of the robot, and an error, if there is any.
-func (c *robots) Update(ctx context.Context, robot *v1alpha1.Robot, opts v1.UpdateOptions) (result *v1alpha1.Robot, err error) {
-	result = &v1alpha1.Robot{}
+func (c *robots) Update(ctx context.Context, robot *v1alpha1.Devspace, opts v1.UpdateOptions) (result *v1alpha1.Devspace, err error) {
+	result = &v1alpha1.Devspace{}
 	err = c.client.Put().
 		Namespace(c.ns).
 		Resource("robots").
@@ -137,8 +137,8 @@ func (c *robots) Update(ctx context.Context, robot *v1alpha1.Robot, opts v1.Upda
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *robots) UpdateStatus(ctx context.Context, robot *v1alpha1.Robot, opts v1.UpdateOptions) (result *v1alpha1.Robot, err error) {
-	result = &v1alpha1.Robot{}
+func (c *robots) UpdateStatus(ctx context.Context, robot *v1alpha1.Devspace, opts v1.UpdateOptions) (result *v1alpha1.Devspace, err error) {
+	result = &v1alpha1.Devspace{}
 	err = c.client.Put().
 		Namespace(c.ns).
 		Resource("robots").
@@ -179,8 +179,8 @@ func (c *robots) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, li
 }
 
 // Patch applies the patch and returns the patched robot.
-func (c *robots) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.Robot, err error) {
-	result = &v1alpha1.Robot{}
+func (c *robots) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.Devspace, err error) {
+	result = &v1alpha1.Devspace{}
 	err = c.client.Patch(pt).
 		Namespace(c.ns).
 		Resource("robots").

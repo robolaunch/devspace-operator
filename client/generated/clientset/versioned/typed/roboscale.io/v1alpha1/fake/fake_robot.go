@@ -29,31 +29,31 @@ import (
 	testing "k8s.io/client-go/testing"
 )
 
-// FakeRobots implements RobotInterface
-type FakeRobots struct {
+// FakeDevspaces implements DevspaceInterface
+type FakeDevspaces struct {
 	Fake *FakeRoboscaleV1alpha1
 	ns   string
 }
 
 var robotsResource = schema.GroupVersionResource{Group: "roboscale.io", Version: "v1alpha1", Resource: "robots"}
 
-var robotsKind = schema.GroupVersionKind{Group: "roboscale.io", Version: "v1alpha1", Kind: "Robot"}
+var robotsKind = schema.GroupVersionKind{Group: "roboscale.io", Version: "v1alpha1", Kind: "Devspace"}
 
 // Get takes name of the robot, and returns the corresponding robot object, and an error if there is any.
-func (c *FakeRobots) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Robot, err error) {
+func (c *FakeDevspaces) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Devspace, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(robotsResource, c.ns, name), &v1alpha1.Robot{})
+		Invokes(testing.NewGetAction(robotsResource, c.ns, name), &v1alpha1.Devspace{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*v1alpha1.Robot), err
+	return obj.(*v1alpha1.Devspace), err
 }
 
-// List takes label and field selectors, and returns the list of Robots that match those selectors.
-func (c *FakeRobots) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.RobotList, err error) {
+// List takes label and field selectors, and returns the list of Devspaces that match those selectors.
+func (c *FakeDevspaces) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.DevspaceList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(robotsResource, robotsKind, c.ns, opts), &v1alpha1.RobotList{})
+		Invokes(testing.NewListAction(robotsResource, robotsKind, c.ns, opts), &v1alpha1.DevspaceList{})
 
 	if obj == nil {
 		return nil, err
@@ -63,8 +63,8 @@ func (c *FakeRobots) List(ctx context.Context, opts v1.ListOptions) (result *v1a
 	if label == nil {
 		label = labels.Everything()
 	}
-	list := &v1alpha1.RobotList{ListMeta: obj.(*v1alpha1.RobotList).ListMeta}
-	for _, item := range obj.(*v1alpha1.RobotList).Items {
+	list := &v1alpha1.DevspaceList{ListMeta: obj.(*v1alpha1.DevspaceList).ListMeta}
+	for _, item := range obj.(*v1alpha1.DevspaceList).Items {
 		if label.Matches(labels.Set(item.Labels)) {
 			list.Items = append(list.Items, item)
 		}
@@ -73,69 +73,69 @@ func (c *FakeRobots) List(ctx context.Context, opts v1.ListOptions) (result *v1a
 }
 
 // Watch returns a watch.Interface that watches the requested robots.
-func (c *FakeRobots) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeDevspaces) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewWatchAction(robotsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a robot and creates it.  Returns the server's representation of the robot, and an error, if there is any.
-func (c *FakeRobots) Create(ctx context.Context, robot *v1alpha1.Robot, opts v1.CreateOptions) (result *v1alpha1.Robot, err error) {
+func (c *FakeDevspaces) Create(ctx context.Context, robot *v1alpha1.Devspace, opts v1.CreateOptions) (result *v1alpha1.Devspace, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(robotsResource, c.ns, robot), &v1alpha1.Robot{})
+		Invokes(testing.NewCreateAction(robotsResource, c.ns, robot), &v1alpha1.Devspace{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*v1alpha1.Robot), err
+	return obj.(*v1alpha1.Devspace), err
 }
 
 // Update takes the representation of a robot and updates it. Returns the server's representation of the robot, and an error, if there is any.
-func (c *FakeRobots) Update(ctx context.Context, robot *v1alpha1.Robot, opts v1.UpdateOptions) (result *v1alpha1.Robot, err error) {
+func (c *FakeDevspaces) Update(ctx context.Context, robot *v1alpha1.Devspace, opts v1.UpdateOptions) (result *v1alpha1.Devspace, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(robotsResource, c.ns, robot), &v1alpha1.Robot{})
+		Invokes(testing.NewUpdateAction(robotsResource, c.ns, robot), &v1alpha1.Devspace{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*v1alpha1.Robot), err
+	return obj.(*v1alpha1.Devspace), err
 }
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeRobots) UpdateStatus(ctx context.Context, robot *v1alpha1.Robot, opts v1.UpdateOptions) (*v1alpha1.Robot, error) {
+func (c *FakeDevspaces) UpdateStatus(ctx context.Context, robot *v1alpha1.Devspace, opts v1.UpdateOptions) (*v1alpha1.Devspace, error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(robotsResource, "status", c.ns, robot), &v1alpha1.Robot{})
+		Invokes(testing.NewUpdateSubresourceAction(robotsResource, "status", c.ns, robot), &v1alpha1.Devspace{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*v1alpha1.Robot), err
+	return obj.(*v1alpha1.Devspace), err
 }
 
 // Delete takes name of the robot and deletes it. Returns an error if one occurs.
-func (c *FakeRobots) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *FakeDevspaces) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteActionWithOptions(robotsResource, c.ns, name, opts), &v1alpha1.Robot{})
+		Invokes(testing.NewDeleteActionWithOptions(robotsResource, c.ns, name, opts), &v1alpha1.Devspace{})
 
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeRobots) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (c *FakeDevspaces) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	action := testing.NewDeleteCollectionAction(robotsResource, c.ns, listOpts)
 
-	_, err := c.Fake.Invokes(action, &v1alpha1.RobotList{})
+	_, err := c.Fake.Invokes(action, &v1alpha1.DevspaceList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched robot.
-func (c *FakeRobots) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.Robot, err error) {
+func (c *FakeDevspaces) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.Devspace, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(robotsResource, c.ns, name, pt, data, subresources...), &v1alpha1.Robot{})
+		Invokes(testing.NewPatchSubresourceAction(robotsResource, c.ns, name, pt, data, subresources...), &v1alpha1.Devspace{})
 
 	if obj == nil {
 		return nil, err
 	}
-	return obj.(*v1alpha1.Robot), err
+	return obj.(*v1alpha1.Devspace), err
 }

@@ -1,21 +1,21 @@
-package robot_dev_suite
+package dev_suite
 
 import (
 	"context"
 	"reflect"
 
 	"github.com/robolaunch/devspace-operator/internal/reference"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 )
 
-func (r *DevSuiteReconciler) reconcileCheckDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
+func (r *DevSuiteReconciler) reconcileCheckDevSpaceVDI(ctx context.Context, instance *devv1alpha1.DevSuite) error {
 
-	devSpaceVDIQuery := &robotv1alpha1.DevSpaceVDI{}
+	devSpaceVDIQuery := &devv1alpha1.DevSpaceVDI{}
 	err := r.Get(ctx, *instance.GetDevSpaceVDIMetadata(), devSpaceVDIQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.DevSpaceVDIStatus = robotv1alpha1.OwnedRobotServiceStatus{}
+			instance.Status.DevSpaceVDIStatus = devv1alpha1.OwnedDevspaceServiceStatus{}
 		} else {
 			return err
 		}
@@ -50,13 +50,13 @@ func (r *DevSuiteReconciler) reconcileCheckDevSpaceVDI(ctx context.Context, inst
 	return nil
 }
 
-func (r *DevSuiteReconciler) reconcileCheckDevSpaceIDE(ctx context.Context, instance *robotv1alpha1.DevSuite) error {
+func (r *DevSuiteReconciler) reconcileCheckDevSpaceIDE(ctx context.Context, instance *devv1alpha1.DevSuite) error {
 
-	devSpaceIDEQuery := &robotv1alpha1.DevSpaceIDE{}
+	devSpaceIDEQuery := &devv1alpha1.DevSpaceIDE{}
 	err := r.Get(ctx, *instance.GetDevSpaceIDEMetadata(), devSpaceIDEQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.DevSpaceIDEStatus = robotv1alpha1.OwnedRobotServiceStatus{}
+			instance.Status.DevSpaceIDEStatus = devv1alpha1.OwnedDevspaceServiceStatus{}
 		} else {
 			return err
 		}

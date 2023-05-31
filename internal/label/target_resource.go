@@ -5,11 +5,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func GetTargetRobot(obj metav1.Object) string {
+func GetTargetDevspace(obj metav1.Object) string {
 	labels := obj.GetLabels()
 
-	if targetRobot, ok := labels[internal.TARGET_ROBOT_LABEL_KEY]; ok {
-		return targetRobot
+	if targetDevspace, ok := labels[internal.TARGET_ROBOT_LABEL_KEY]; ok {
+		return targetDevspace
 	}
 
 	return ""

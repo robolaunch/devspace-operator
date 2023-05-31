@@ -3,7 +3,7 @@ package robot
 import (
 	"context"
 
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -15,9 +15,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-func (r *RobotReconciler) reconcileCheckDeletion(ctx context.Context, instance *robotv1alpha1.Robot) error {
+func (r *DevspaceReconciler) reconcileCheckDeletion(ctx context.Context, instance *devv1alpha1.Devspace) error {
 
-	robotFinalizer := "robot.roboscale.io/finalizer"
+	robotFinalizer := "dev.roboscale.io/finalizer"
 
 	if instance.DeletionTimestamp.IsZero() {
 
@@ -77,9 +77,9 @@ func (r *RobotReconciler) reconcileCheckDeletion(ctx context.Context, instance *
 	return nil
 }
 
-func (r *RobotReconciler) waitForLoaderJobDeletion(ctx context.Context, instance *robotv1alpha1.Robot) error {
+func (r *DevspaceReconciler) waitForLoaderJobDeletion(ctx context.Context, instance *devv1alpha1.Devspace) error {
 
-	instance.Status.Phase = robotv1alpha1.RobotPhaseDeletingLoaderJob
+	instance.Status.Phase = devv1alpha1.DevspacePhaseDeletingLoaderJob
 	err := r.reconcileUpdateInstanceStatus(ctx, instance)
 	if err != nil {
 		return err
@@ -144,7 +144,7 @@ func (r *RobotReconciler) waitForLoaderJobDeletion(ctx context.Context, instance
 	return nil
 }
 
-func (r *RobotReconciler) waitForPersistentVolumeClaimDeletion(ctx context.Context, instance *robotv1alpha1.Robot, pvcNamespacedName *types.NamespacedName) error {
+func (r *DevspaceReconciler) waitForPersistentVolumeClaimDeletion(ctx context.Context, instance *devv1alpha1.Devspace, pvcNamespacedName *types.NamespacedName) error {
 
 	pvcQuery := &corev1.PersistentVolumeClaim{}
 	err := r.Get(ctx, *pvcNamespacedName, pvcQuery)
@@ -159,7 +159,7 @@ func (r *RobotReconciler) waitForPersistentVolumeClaimDeletion(ctx context.Conte
 			return err
 		}
 
-		instance.Status.Phase = robotv1alpha1.RobotPhaseDeletingVolumes
+		instance.Status.Phase = devv1alpha1.DevspacePhaseDeletingVolumes
 		err = r.reconcileUpdateInstanceStatus(ctx, instance)
 		if err != nil {
 			return err

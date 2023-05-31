@@ -56,7 +56,7 @@ const (
 	JOB_CLEANUP_POSTFIX = "-cleanup"
 )
 
-// RobotVDI owned resources' postfixes
+// DevSpaceVDI owned resources' postfixes
 const (
 	PVC_VDI_POSTFIX     = "-display"
 	SVC_TCP_VDI_POSTFIX = "-tcp"
@@ -74,7 +74,7 @@ const (
 
 // RobotDevSuite owned resources' postfixes
 const (
-	ROBOT_VDI_POSTFIX    = "-vdi"
+	DEVSPACE_VDI_POSTFIX = "-vdi"
 	DEVSPACE_IDE_POSTFIX = "-ide"
 )
 

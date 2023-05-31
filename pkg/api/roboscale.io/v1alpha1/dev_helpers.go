@@ -9,10 +9,10 @@ import (
 // RobotDevSuite helpers
 // ********************************
 
-func (robotDevSuite *RobotDevSuite) GetRobotVDIMetadata() *types.NamespacedName {
+func (robotDevSuite *RobotDevSuite) GetDevSpaceVDIMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
 		Namespace: robotDevSuite.Namespace,
-		Name:      robotDevSuite.Name + internal.ROBOT_VDI_POSTFIX,
+		Name:      robotDevSuite.Name + internal.DEVSPACE_VDI_POSTFIX,
 	}
 }
 
@@ -49,40 +49,40 @@ func (devspaceide *DevSpaceIDE) GetDevSpaceIDEIngressMetadata() *types.Namespace
 }
 
 // ********************************
-// RobotVDI helpers
+// DevSpaceVDI helpers
 // ********************************
 
-func (robotvdi *RobotVDI) GetRobotVDIPVCMetadata() *types.NamespacedName {
+func (devspacevdi *DevSpaceVDI) GetDevSpaceVDIPVCMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Namespace: robotvdi.Namespace,
-		Name:      robotvdi.Name + internal.PVC_VDI_POSTFIX,
+		Namespace: devspacevdi.Namespace,
+		Name:      devspacevdi.Name + internal.PVC_VDI_POSTFIX,
 	}
 }
 
-func (robotvdi *RobotVDI) GetRobotVDIPodMetadata() *types.NamespacedName {
+func (devspacevdi *DevSpaceVDI) GetDevSpaceVDIPodMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Namespace: robotvdi.Namespace,
-		Name:      robotvdi.Name + internal.POD_VDI_POSTFIX,
+		Namespace: devspacevdi.Namespace,
+		Name:      devspacevdi.Name + internal.POD_VDI_POSTFIX,
 	}
 }
 
-func (robotvdi *RobotVDI) GetRobotVDIServiceTCPMetadata() *types.NamespacedName {
+func (devspacevdi *DevSpaceVDI) GetDevSpaceVDIServiceTCPMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Namespace: robotvdi.Namespace,
-		Name:      robotvdi.Name + internal.SVC_TCP_VDI_POSTFIX,
+		Namespace: devspacevdi.Namespace,
+		Name:      devspacevdi.Name + internal.SVC_TCP_VDI_POSTFIX,
 	}
 }
 
-func (robotvdi *RobotVDI) GetRobotVDIServiceUDPMetadata() *types.NamespacedName {
+func (devspacevdi *DevSpaceVDI) GetDevSpaceVDIServiceUDPMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Namespace: robotvdi.Namespace,
-		Name:      robotvdi.Name + internal.SVC_UDP_VDI_POSTFIX,
+		Namespace: devspacevdi.Namespace,
+		Name:      devspacevdi.Name + internal.SVC_UDP_VDI_POSTFIX,
 	}
 }
 
-func (robotvdi *RobotVDI) GetRobotVDIIngressMetadata() *types.NamespacedName {
+func (devspacevdi *DevSpaceVDI) GetDevSpaceVDIIngressMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Namespace: robotvdi.Namespace,
-		Name:      robotvdi.Name + internal.INGRESS_VDI_POSTFIX,
+		Namespace: devspacevdi.Namespace,
+		Name:      devspacevdi.Name + internal.INGRESS_VDI_POSTFIX,
 	}
 }

@@ -7,18 +7,18 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 )
 
-func GetRobotVDI(robotDevSuite *robotv1alpha1.RobotDevSuite, robotVDINamespacedName *types.NamespacedName) *robotv1alpha1.RobotVDI {
+func GetDevSpaceVDI(robotDevSuite *robotv1alpha1.RobotDevSuite, devSpaceVDINamespacedName *types.NamespacedName) *robotv1alpha1.DevSpaceVDI {
 
-	robotVDI := robotv1alpha1.RobotVDI{
+	devSpaceVDI := robotv1alpha1.DevSpaceVDI{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      robotVDINamespacedName.Name,
-			Namespace: robotVDINamespacedName.Namespace,
+			Name:      devSpaceVDINamespacedName.Name,
+			Namespace: devSpaceVDINamespacedName.Namespace,
 			Labels:    robotDevSuite.Labels,
 		},
-		Spec: robotDevSuite.Spec.RobotVDITemplate,
+		Spec: robotDevSuite.Spec.DevSpaceVDITemplate,
 	}
 
-	return &robotVDI
+	return &devSpaceVDI
 }
 
 func GetDevSpaceIDE(robotDevSuite *robotv1alpha1.RobotDevSuite, devSpaceIDENamespacedName *types.NamespacedName) *robotv1alpha1.DevSpaceIDE {
@@ -33,7 +33,7 @@ func GetDevSpaceIDE(robotDevSuite *robotv1alpha1.RobotDevSuite, devSpaceIDENames
 	}
 
 	if robotDevSuite.Spec.VDIEnabled {
-		devSpaceIDE.Labels[internal.TARGET_VDI_LABEL_KEY] = robotDevSuite.GetRobotVDIMetadata().Name
+		devSpaceIDE.Labels[internal.TARGET_VDI_LABEL_KEY] = robotDevSuite.GetDevSpaceVDIMetadata().Name
 	}
 
 	return &devSpaceIDE

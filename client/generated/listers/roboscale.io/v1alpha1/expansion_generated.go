@@ -41,10 +41,10 @@ type DevSpaceIDEListerExpansion interface{}
 // DevSpaceIDENamespaceLister.
 type DevSpaceIDENamespaceListerExpansion interface{}
 
-// RobotVDIListerExpansion allows custom methods to be added to
-// RobotVDILister.
-type RobotVDIListerExpansion interface{}
+// DevSpaceVDIListerExpansion allows custom methods to be added to
+// DevSpaceVDILister.
+type DevSpaceVDIListerExpansion interface{}
 
-// RobotVDINamespaceListerExpansion allows custom methods to be added to
-// RobotVDINamespaceLister.
-type RobotVDINamespaceListerExpansion interface{}
+// DevSpaceVDINamespaceListerExpansion allows custom methods to be added to
+// DevSpaceVDINamespaceLister.
+type DevSpaceVDINamespaceListerExpansion interface{}

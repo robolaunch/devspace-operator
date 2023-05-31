@@ -38,9 +38,9 @@ func (r *DevSpaceIDEReconciler) reconcileCreatePod(ctx context.Context, instance
 		return err
 	}
 
-	robotVDI := &robotv1alpha1.RobotVDI{}
-	if label.GetTargetRobotVDI(instance) != "" {
-		robotVDI, err = r.reconcileGetTargetRobotVDI(ctx, instance)
+	devSpaceVDI := &robotv1alpha1.DevSpaceVDI{}
+	if label.GetTargetDevSpaceVDI(instance) != "" {
+		devSpaceVDI, err = r.reconcileGetTargetDevSpaceVDI(ctx, instance)
 		if err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ func (r *DevSpaceIDEReconciler) reconcileCreatePod(ctx context.Context, instance
 		return err
 	}
 
-	idePod := resources.GetDevSpaceIDEPod(instance, instance.GetDevSpaceIDEPodMetadata(), *robot, *robotVDI, *activeNode)
+	idePod := resources.GetDevSpaceIDEPod(instance, instance.GetDevSpaceIDEPodMetadata(), *robot, *devSpaceVDI, *activeNode)
 
 	err = ctrl.SetControllerReference(instance, idePod, r.Scheme)
 	if err != nil {

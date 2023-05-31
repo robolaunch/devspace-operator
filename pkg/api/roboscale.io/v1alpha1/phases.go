@@ -30,7 +30,7 @@ type RobotDevSuitePhase string
 
 const (
 	RobotDevSuitePhaseRobotNotFound       RobotDevSuitePhase = "RobotNotFound"
-	RobotDevSuitePhaseCreatingRobotVDI    RobotDevSuitePhase = "CreatingRobotVDI"
+	RobotDevSuitePhaseCreatingDevSpaceVDI RobotDevSuitePhase = "CreatingDevSpaceVDI"
 	RobotDevSuitePhaseCreatingDevSpaceIDE RobotDevSuitePhase = "CreatingDevspaceIDE"
 	RobotDevSuitePhaseRunning             RobotDevSuitePhase = "Running"
 	RobotDevSuitePhaseDeactivating        RobotDevSuitePhase = "Deactivating"
@@ -46,13 +46,13 @@ const (
 	DevSpaceIDEPhaseRunning         DevSpaceIDEPhase = "Running"
 )
 
-type RobotVDIPhase string
+type DevSpaceVDIPhase string
 
 const (
-	RobotVDIPhaseCreatingPVC        RobotVDIPhase = "CreatingPVC"
-	RobotVDIPhaseCreatingTCPService RobotVDIPhase = "CreatingTCPService"
-	RobotVDIPhaseCreatingUDPService RobotVDIPhase = "CreatingUDPService"
-	RobotVDIPhaseCreatingPod        RobotVDIPhase = "CreatingPod"
-	RobotVDIPhaseCreatingIngress    RobotVDIPhase = "CreatingIngress"
-	RobotVDIPhaseRunning            RobotVDIPhase = "Running"
+	DevSpaceVDIPhaseCreatingPVC        DevSpaceVDIPhase = "CreatingPVC"
+	DevSpaceVDIPhaseCreatingTCPService DevSpaceVDIPhase = "CreatingTCPService"
+	DevSpaceVDIPhaseCreatingUDPService DevSpaceVDIPhase = "CreatingUDPService"
+	DevSpaceVDIPhaseCreatingPod        DevSpaceVDIPhase = "CreatingPod"
+	DevSpaceVDIPhaseCreatingIngress    DevSpaceVDIPhase = "CreatingIngress"
+	DevSpaceVDIPhaseRunning            DevSpaceVDIPhase = "Running"
 )

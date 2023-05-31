@@ -1,4 +1,4 @@
-package robot_vdi
+package devspace_vdi
 
 import (
 	"context"
@@ -9,14 +9,14 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-func (r *RobotVDIReconciler) reconcileCreatePVC(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCreatePVC(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
 	robot, err := r.reconcileGetTargetRobot(ctx, instance)
 	if err != nil {
 		return err
 	}
 
-	vdiPVC := resources.GetRobotVDIPVC(instance, instance.GetRobotVDIPVCMetadata(), *robot)
+	vdiPVC := resources.GetDevSpaceVDIPVC(instance, instance.GetDevSpaceVDIPVCMetadata(), *robot)
 
 	err = ctrl.SetControllerReference(instance, vdiPVC, r.Scheme)
 	if err != nil {
@@ -35,9 +35,9 @@ func (r *RobotVDIReconciler) reconcileCreatePVC(ctx context.Context, instance *r
 	return nil
 }
 
-func (r *RobotVDIReconciler) reconcileCreateServiceTCP(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCreateServiceTCP(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
-	vdiService := resources.GetRobotVDIServiceTCP(instance, instance.GetRobotVDIServiceTCPMetadata())
+	vdiService := resources.GetDevSpaceVDIServiceTCP(instance, instance.GetDevSpaceVDIServiceTCPMetadata())
 
 	err := ctrl.SetControllerReference(instance, vdiService, r.Scheme)
 	if err != nil {
@@ -56,9 +56,9 @@ func (r *RobotVDIReconciler) reconcileCreateServiceTCP(ctx context.Context, inst
 	return nil
 }
 
-func (r *RobotVDIReconciler) reconcileCreateServiceUDP(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCreateServiceUDP(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
-	vdiService := resources.GetRobotVDIServiceUDP(instance, instance.GetRobotVDIServiceUDPMetadata())
+	vdiService := resources.GetDevSpaceVDIServiceUDP(instance, instance.GetDevSpaceVDIServiceUDPMetadata())
 
 	err := ctrl.SetControllerReference(instance, vdiService, r.Scheme)
 	if err != nil {
@@ -77,7 +77,7 @@ func (r *RobotVDIReconciler) reconcileCreateServiceUDP(ctx context.Context, inst
 	return nil
 }
 
-func (r *RobotVDIReconciler) reconcileCreatePod(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCreatePod(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
 	robot, err := r.reconcileGetTargetRobot(ctx, instance)
 	if err != nil {
@@ -89,7 +89,7 @@ func (r *RobotVDIReconciler) reconcileCreatePod(ctx context.Context, instance *r
 		return err
 	}
 
-	vdiPod := resources.GetRobotVDIPod(instance, instance.GetRobotVDIPodMetadata(), *robot, *activeNode)
+	vdiPod := resources.GetDevSpaceVDIPod(instance, instance.GetDevSpaceVDIPodMetadata(), *robot, *activeNode)
 
 	err = ctrl.SetControllerReference(instance, vdiPod, r.Scheme)
 	if err != nil {
@@ -108,14 +108,14 @@ func (r *RobotVDIReconciler) reconcileCreatePod(ctx context.Context, instance *r
 	return nil
 }
 
-func (r *RobotVDIReconciler) reconcileCreateIngress(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCreateIngress(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
 	robot, err := r.reconcileGetTargetRobot(ctx, instance)
 	if err != nil {
 		return err
 	}
 
-	vdiIngress := resources.GetRobotVDIIngress(instance, instance.GetRobotVDIPodMetadata(), *robot)
+	vdiIngress := resources.GetDevSpaceVDIIngress(instance, instance.GetDevSpaceVDIPodMetadata(), *robot)
 
 	err = ctrl.SetControllerReference(instance, vdiIngress, r.Scheme)
 	if err != nil {

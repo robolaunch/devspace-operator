@@ -9,23 +9,23 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-func (r *RobotDevSuiteReconciler) reconcileCreateRobotVDI(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *RobotDevSuiteReconciler) reconcileCreateDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
 
-	robotVDI := resources.GetRobotVDI(instance, instance.GetRobotVDIMetadata())
+	devSpaceVDI := resources.GetDevSpaceVDI(instance, instance.GetDevSpaceVDIMetadata())
 
-	err := ctrl.SetControllerReference(instance, robotVDI, r.Scheme)
+	err := ctrl.SetControllerReference(instance, devSpaceVDI, r.Scheme)
 	if err != nil {
 		return err
 	}
 
-	err = r.Create(ctx, robotVDI)
+	err = r.Create(ctx, devSpaceVDI)
 	if err != nil && errors.IsAlreadyExists(err) {
 		return nil
 	} else if err != nil {
 		return err
 	}
 
-	logger.Info("STATUS: Robot VDI is created.")
+	logger.Info("STATUS: DevSpace VDI is created.")
 
 	return nil
 }

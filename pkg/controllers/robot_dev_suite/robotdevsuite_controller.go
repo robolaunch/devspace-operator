@@ -103,11 +103,11 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 		switch instance.Spec.VDIEnabled {
 		case true:
 
-			switch instance.Status.RobotVDIStatus.Resource.Created {
+			switch instance.Status.DevSpaceVDIStatus.Resource.Created {
 			case true:
 
-				switch instance.Status.RobotVDIStatus.Resource.Phase {
-				case string(robotv1alpha1.RobotVDIPhaseRunning):
+				switch instance.Status.DevSpaceVDIStatus.Resource.Phase {
+				case string(robotv1alpha1.DevSpaceVDIPhaseRunning):
 
 					switch instance.Spec.IDEEnabled {
 					case true:
@@ -143,12 +143,12 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 			case false:
 
-				instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingRobotVDI
-				err := r.reconcileCreateRobotVDI(ctx, instance)
+				instance.Status.Phase = robotv1alpha1.RobotDevSuitePhaseCreatingDevSpaceVDI
+				err := r.reconcileCreateDevSpaceVDI(ctx, instance)
 				if err != nil {
 					return err
 				}
-				instance.Status.RobotVDIStatus.Resource.Created = true
+				instance.Status.DevSpaceVDIStatus.Resource.Created = true
 
 			}
 
@@ -195,7 +195,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 			return err
 		}
 
-		err = r.reconcileDeleteRobotVDI(ctx, instance)
+		err = r.reconcileDeleteDevSpaceVDI(ctx, instance)
 		if err != nil {
 			return err
 		}
@@ -209,7 +209,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckStatus(ctx context.Context, inst
 
 func (r *RobotDevSuiteReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
 
-	err := r.reconcileCheckRobotVDI(ctx, instance)
+	err := r.reconcileCheckDevSpaceVDI(ctx, instance)
 	if err != nil {
 		return err
 	}
@@ -226,7 +226,7 @@ func (r *RobotDevSuiteReconciler) reconcileCheckResources(ctx context.Context, i
 func (r *RobotDevSuiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&robotv1alpha1.RobotDevSuite{}).
-		Owns(&robotv1alpha1.RobotVDI{}).
+		Owns(&robotv1alpha1.DevSpaceVDI{}).
 		Owns(&robotv1alpha1.DevSpaceIDE{}).
 		Watches(
 			&source.Kind{Type: &robotv1alpha1.Robot{}},

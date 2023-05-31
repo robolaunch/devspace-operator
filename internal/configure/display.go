@@ -6,24 +6,24 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func InjectPodDisplayConfiguration(pod *corev1.Pod, robotVDI robotv1alpha1.RobotVDI) *corev1.Pod {
+func InjectPodDisplayConfiguration(pod *corev1.Pod, devSpaceVDI robotv1alpha1.DevSpaceVDI) *corev1.Pod {
 
-	configurePod(pod, robotVDI)
+	configurePod(pod, devSpaceVDI)
 	for k, container := range pod.Spec.Containers {
-		configureContainer(&container, robotVDI)
+		configureContainer(&container, devSpaceVDI)
 		pod.Spec.Containers[k] = container
 	}
 
 	return pod
 }
 
-func configurePod(pod *corev1.Pod, robotVDI robotv1alpha1.RobotVDI) {
-	volume := GetVolumeX11Unix(&robotVDI)
+func configurePod(pod *corev1.Pod, devSpaceVDI robotv1alpha1.DevSpaceVDI) {
+	volume := GetVolumeX11Unix(&devSpaceVDI)
 	pod.Spec.Volumes = append(pod.Spec.Volumes, volume)
 }
 
-func configureContainer(container *corev1.Container, robotVDI robotv1alpha1.RobotVDI) {
-	volume := GetVolumeX11Unix(&robotVDI)
+func configureContainer(container *corev1.Container, devSpaceVDI robotv1alpha1.DevSpaceVDI) {
+	volume := GetVolumeX11Unix(&devSpaceVDI)
 	volumeMount := GetVolumeMount(internal.X11_UNIX_PATH, volume)
 	environmentVariables := []corev1.EnvVar{
 		internal.Env("DISPLAY", ":0"),

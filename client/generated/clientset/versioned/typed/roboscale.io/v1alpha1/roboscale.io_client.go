@@ -30,7 +30,7 @@ type RoboscaleV1alpha1Interface interface {
 	RobotsGetter
 	RobotDevSuitesGetter
 	DevSpaceIDEsGetter
-	RobotVDIsGetter
+	DevSpaceVDIsGetter
 }
 
 // RoboscaleV1alpha1Client is used to interact with features provided by the roboscale.io group.
@@ -50,8 +50,8 @@ func (c *RoboscaleV1alpha1Client) DevSpaceIDEs(namespace string) DevSpaceIDEInte
 	return newDevSpaceIDEs(c, namespace)
 }
 
-func (c *RoboscaleV1alpha1Client) RobotVDIs(namespace string) RobotVDIInterface {
-	return newRobotVDIs(c, namespace)
+func (c *RoboscaleV1alpha1Client) DevSpaceVDIs(namespace string) DevSpaceVDIInterface {
+	return newDevSpaceVDIs(c, namespace)
 }
 
 // NewForConfig creates a new RoboscaleV1alpha1Client for the given config.

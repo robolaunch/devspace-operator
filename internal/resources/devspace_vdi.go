@@ -18,13 +18,13 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func getRobotVDISelector(robotVDI robotv1alpha1.RobotVDI) map[string]string {
+func getDevSpaceVDISelector(devSpaceVDI robotv1alpha1.DevSpaceVDI) map[string]string {
 	return map[string]string{
-		"robotVDI": robotVDI.Name,
+		"devSpaceVDI": devSpaceVDI.Name,
 	}
 }
 
-func GetRobotVDIPVC(robotVDI *robotv1alpha1.RobotVDI, pvcNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot) *corev1.PersistentVolumeClaim {
+func GetDevSpaceVDIPVC(devSpaceVDI *robotv1alpha1.DevSpaceVDI, pvcNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot) *corev1.PersistentVolumeClaim {
 
 	pvc := corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
@@ -50,7 +50,7 @@ func GetRobotVDIPVC(robotVDI *robotv1alpha1.RobotVDI, pvcNamespacedName *types.N
 	return &pvc
 }
 
-func GetRobotVDIPod(robotVDI *robotv1alpha1.RobotVDI, podNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot, node corev1.Node) *corev1.Pod {
+func GetDevSpaceVDIPod(devSpaceVDI *robotv1alpha1.DevSpaceVDI, podNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot, node corev1.Node) *corev1.Pod {
 
 	// add tcp port
 	ports := []corev1.ContainerPort{
@@ -62,7 +62,7 @@ func GetRobotVDIPod(robotVDI *robotv1alpha1.RobotVDI, podNamespacedName *types.N
 	}
 
 	// add udp ports
-	rangeLimits := strings.Split(robotVDI.Spec.WebRTCPortRange, "-")
+	rangeLimits := strings.Split(devSpaceVDI.Spec.WebRTCPortRange, "-")
 	rangeStart, _ := strconv.Atoi(rangeLimits[0])
 	rangeEnd, _ := strconv.Atoi(rangeLimits[1])
 
@@ -77,7 +77,7 @@ func GetRobotVDIPod(robotVDI *robotv1alpha1.RobotVDI, podNamespacedName *types.N
 	}
 
 	icelite := "true"
-	if robotVDI.Spec.NAT1TO1 != "" {
+	if devSpaceVDI.Spec.NAT1TO1 != "" {
 		icelite = "false"
 	}
 
@@ -85,8 +85,8 @@ func GetRobotVDIPod(robotVDI *robotv1alpha1.RobotVDI, podNamespacedName *types.N
 	cmdBuilder.WriteString(filepath.Join("/etc", "vdi", "generate-xorg.sh") + " && ")
 	cmdBuilder.WriteString("supervisord -c " + filepath.Join("/etc", "vdi", "supervisord.conf"))
 
-	labels := getRobotVDISelector(*robotVDI)
-	for k, v := range robotVDI.Labels {
+	labels := getDevSpaceVDISelector(*devSpaceVDI)
+	for k, v := range devSpaceVDI.Labels {
 		labels[k] = v
 	}
 
@@ -105,10 +105,10 @@ func GetRobotVDIPod(robotVDI *robotv1alpha1.RobotVDI, podNamespacedName *types.N
 					Env: []corev1.EnvVar{
 						internal.Env("VIDEO_PORT", "DFP"),
 						internal.Env("NEKO_BIND", ":8055"),
-						internal.Env("NEKO_EPR", robotVDI.Spec.WebRTCPortRange),
+						internal.Env("NEKO_EPR", devSpaceVDI.Spec.WebRTCPortRange),
 						internal.Env("NEKO_ICELITE", icelite),
-						internal.Env("NEKO_NAT1TO1", robotVDI.Spec.NAT1TO1),
-						internal.Env("RESOLUTION", robotVDI.Spec.Resolution),
+						internal.Env("NEKO_NAT1TO1", devSpaceVDI.Spec.NAT1TO1),
+						internal.Env("RESOLUTION", devSpaceVDI.Spec.Resolution),
 					},
 					Stdin: true,
 					TTY:   true,
@@ -123,12 +123,12 @@ func GetRobotVDIPod(robotVDI *robotv1alpha1.RobotVDI, podNamespacedName *types.N
 						configure.GetVolumeMount("/cache", configure.GetVolumeXglCache()),
 					},
 					Resources: corev1.ResourceRequirements{
-						Limits: getResourceLimits(robotVDI.Spec.Resources),
+						Limits: getResourceLimits(devSpaceVDI.Spec.Resources),
 					},
 					ImagePullPolicy:          corev1.PullAlways,
 					TerminationMessagePolicy: corev1.TerminationMessageReadFile,
 					SecurityContext: &corev1.SecurityContext{
-						Privileged: &robotVDI.Spec.Privileged,
+						Privileged: &devSpaceVDI.Spec.Privileged,
 					},
 				},
 			},
@@ -145,15 +145,15 @@ func GetRobotVDIPod(robotVDI *robotv1alpha1.RobotVDI, podNamespacedName *types.N
 		},
 	}
 
-	configure.SchedulePod(vdiPod, label.GetTenancyMap(robotVDI))
+	configure.SchedulePod(vdiPod, label.GetTenancyMap(devSpaceVDI))
 	configure.InjectGenericEnvironmentVariables(vdiPod, robot)
-	configure.InjectPodDisplayConfiguration(vdiPod, *robotVDI)
+	configure.InjectPodDisplayConfiguration(vdiPod, *devSpaceVDI)
 	configure.InjectRuntimeClass(vdiPod, robot, node)
 
 	return vdiPod
 }
 
-func GetRobotVDIServiceTCP(robotVDI *robotv1alpha1.RobotVDI, svcNamespacedName *types.NamespacedName) *corev1.Service {
+func GetDevSpaceVDIServiceTCP(devSpaceVDI *robotv1alpha1.DevSpaceVDI, svcNamespacedName *types.NamespacedName) *corev1.Service {
 
 	ports := []corev1.ServicePort{
 		{
@@ -167,8 +167,8 @@ func GetRobotVDIServiceTCP(robotVDI *robotv1alpha1.RobotVDI, svcNamespacedName *
 	}
 
 	serviceSpec := corev1.ServiceSpec{
-		Type:     robotVDI.Spec.ServiceType,
-		Selector: getRobotVDISelector(*robotVDI),
+		Type:     devSpaceVDI.Spec.ServiceType,
+		Selector: getDevSpaceVDISelector(*devSpaceVDI),
 		Ports:    ports,
 	}
 
@@ -183,12 +183,12 @@ func GetRobotVDIServiceTCP(robotVDI *robotv1alpha1.RobotVDI, svcNamespacedName *
 	return &service
 }
 
-func GetRobotVDIServiceUDP(robotVDI *robotv1alpha1.RobotVDI, svcNamespacedName *types.NamespacedName) *corev1.Service {
+func GetDevSpaceVDIServiceUDP(devSpaceVDI *robotv1alpha1.DevSpaceVDI, svcNamespacedName *types.NamespacedName) *corev1.Service {
 
 	ports := []corev1.ServicePort{}
 
 	// add udp ports
-	rangeLimits := strings.Split(robotVDI.Spec.WebRTCPortRange, "-")
+	rangeLimits := strings.Split(devSpaceVDI.Spec.WebRTCPortRange, "-")
 	rangeStart, _ := strconv.Atoi(rangeLimits[0])
 	rangeEnd, _ := strconv.Atoi(rangeLimits[1])
 
@@ -209,7 +209,7 @@ func GetRobotVDIServiceUDP(robotVDI *robotv1alpha1.RobotVDI, svcNamespacedName *
 	serviceSpec := corev1.ServiceSpec{
 		Type:                  corev1.ServiceTypeNodePort,
 		ExternalTrafficPolicy: corev1.ServiceExternalTrafficPolicyTypeLocal,
-		Selector:              getRobotVDISelector(*robotVDI),
+		Selector:              getDevSpaceVDISelector(*devSpaceVDI),
 		Ports:                 ports,
 	}
 
@@ -224,7 +224,7 @@ func GetRobotVDIServiceUDP(robotVDI *robotv1alpha1.RobotVDI, svcNamespacedName *
 	return &service
 }
 
-func GetRobotVDIIngress(robotVDI *robotv1alpha1.RobotVDI, ingressNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot) *networkingv1.Ingress {
+func GetDevSpaceVDIIngress(devSpaceVDI *robotv1alpha1.DevSpaceVDI, ingressNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot) *networkingv1.Ingress {
 
 	tenancy := label.GetTenancy(&robot)
 
@@ -265,7 +265,7 @@ func GetRobotVDIIngress(robotVDI *robotv1alpha1.RobotVDI, ingressNamespacedName 
 								PathType: &pathTypePrefix,
 								Backend: networkingv1.IngressBackend{
 									Service: &networkingv1.IngressServiceBackend{
-										Name: robotVDI.GetRobotVDIServiceTCPMetadata().Name,
+										Name: devSpaceVDI.GetDevSpaceVDIServiceTCPMetadata().Name,
 										Port: networkingv1.ServiceBackendPort{
 											Number: int32(8055),
 										},

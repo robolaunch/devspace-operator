@@ -9,13 +9,13 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 )
 
-func (r *RobotDevSuiteReconciler) reconcileCheckRobotVDI(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *RobotDevSuiteReconciler) reconcileCheckDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
 
-	robotVDIQuery := &robotv1alpha1.RobotVDI{}
-	err := r.Get(ctx, *instance.GetRobotVDIMetadata(), robotVDIQuery)
+	devSpaceVDIQuery := &robotv1alpha1.DevSpaceVDI{}
+	err := r.Get(ctx, *instance.GetDevSpaceVDIMetadata(), devSpaceVDIQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.RobotVDIStatus = robotv1alpha1.OwnedRobotServiceStatus{}
+			instance.Status.DevSpaceVDIStatus = robotv1alpha1.OwnedRobotServiceStatus{}
 		} else {
 			return err
 		}
@@ -23,22 +23,22 @@ func (r *RobotDevSuiteReconciler) reconcileCheckRobotVDI(ctx context.Context, in
 
 		if instance.Spec.VDIEnabled {
 
-			if !reflect.DeepEqual(instance.Spec.RobotVDITemplate, robotVDIQuery.Spec) {
-				robotVDIQuery.Spec = instance.Spec.RobotVDITemplate
-				err = r.Update(ctx, robotVDIQuery)
+			if !reflect.DeepEqual(instance.Spec.DevSpaceVDITemplate, devSpaceVDIQuery.Spec) {
+				devSpaceVDIQuery.Spec = instance.Spec.DevSpaceVDITemplate
+				err = r.Update(ctx, devSpaceVDIQuery)
 				if err != nil {
 					return err
 				}
 			}
 
-			instance.Status.RobotVDIStatus.Resource.Created = true
-			reference.SetReference(&instance.Status.RobotVDIStatus.Resource.Reference, robotVDIQuery.TypeMeta, robotVDIQuery.ObjectMeta)
-			instance.Status.RobotVDIStatus.Resource.Phase = string(robotVDIQuery.Status.Phase)
-			instance.Status.RobotVDIStatus.Connection = robotVDIQuery.Status.ServiceTCPStatus.URL
+			instance.Status.DevSpaceVDIStatus.Resource.Created = true
+			reference.SetReference(&instance.Status.DevSpaceVDIStatus.Resource.Reference, devSpaceVDIQuery.TypeMeta, devSpaceVDIQuery.ObjectMeta)
+			instance.Status.DevSpaceVDIStatus.Resource.Phase = string(devSpaceVDIQuery.Status.Phase)
+			instance.Status.DevSpaceVDIStatus.Connection = devSpaceVDIQuery.Status.ServiceTCPStatus.URL
 
 		} else {
 
-			err := r.Delete(ctx, robotVDIQuery)
+			err := r.Delete(ctx, devSpaceVDIQuery)
 			if err != nil {
 				return err
 			}

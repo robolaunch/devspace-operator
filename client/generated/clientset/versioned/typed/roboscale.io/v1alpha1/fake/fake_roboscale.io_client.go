@@ -39,8 +39,8 @@ func (c *FakeRoboscaleV1alpha1) DevSpaceIDEs(namespace string) v1alpha1.DevSpace
 	return &FakeDevSpaceIDEs{c, namespace}
 }
 
-func (c *FakeRoboscaleV1alpha1) RobotVDIs(namespace string) v1alpha1.RobotVDIInterface {
-	return &FakeRobotVDIs{c, namespace}
+func (c *FakeRoboscaleV1alpha1) DevSpaceVDIs(namespace string) v1alpha1.DevSpaceVDIInterface {
+	return &FakeDevSpaceVDIs{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

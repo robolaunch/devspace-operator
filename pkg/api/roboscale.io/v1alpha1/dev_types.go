@@ -24,7 +24,7 @@ import (
 func init() {
 	SchemeBuilder.Register(&RobotDevSuite{}, &RobotDevSuiteList{})
 	SchemeBuilder.Register(&DevSpaceIDE{}, &DevSpaceIDEList{})
-	SchemeBuilder.Register(&RobotVDI{}, &RobotVDIList{})
+	SchemeBuilder.Register(&DevSpaceVDI{}, &DevSpaceVDIList{})
 }
 
 //+genclient
@@ -80,24 +80,24 @@ type DevSpaceIDEList struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// RobotVDI creates and manages Cloud VDI resources and workloads.
-type RobotVDI struct {
+// DevSpaceVDI creates and manages Cloud VDI resources and workloads.
+type DevSpaceVDI struct {
 	metav1.TypeMeta `json:",inline"`
 	// Standard object's metadata.
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// Specification of the desired behavior of the RobotVDI.
-	Spec RobotVDISpec `json:"spec,omitempty"`
-	// Most recently observed status of the RobotVDI.
-	Status RobotVDIStatus `json:"status,omitempty"`
+	// Specification of the desired behavior of the DevSpaceVDI.
+	Spec DevSpaceVDISpec `json:"spec,omitempty"`
+	// Most recently observed status of the DevSpaceVDI.
+	Status DevSpaceVDIStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// RobotVDIList contains a list of RobotVDI.
-type RobotVDIList struct {
+// DevSpaceVDIList contains a list of DevSpaceVDI.
+type DevSpaceVDIList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []RobotVDI `json:"items"`
+	Items           []DevSpaceVDI `json:"items"`
 }
 
 // ********************************
@@ -108,8 +108,8 @@ type RobotVDIList struct {
 type RobotDevSuiteSpec struct {
 	// If `true`, a Cloud VDI will be provisioned inside development suite.
 	VDIEnabled bool `json:"vdiEnabled,omitempty"`
-	// Configurational parameters of RobotVDI. Applied if `.spec.vdiEnabled` is set to `true`.
-	RobotVDITemplate RobotVDISpec `json:"robotVDITemplate,omitempty"`
+	// Configurational parameters of DevSpaceVDI. Applied if `.spec.vdiEnabled` is set to `true`.
+	DevSpaceVDITemplate DevSpaceVDISpec `json:"devSpaceVDITemplate,omitempty"`
 	// If `true`, a Cloud IDE will be provisioned inside development suite.
 	IDEEnabled bool `json:"ideEnabled,omitempty"`
 	// Configurational parameters of DevSpaceIDE. Applied if `.spec.ideEnabled` is set to `true`.
@@ -120,8 +120,8 @@ type RobotDevSuiteSpec struct {
 type RobotDevSuiteStatus struct {
 	// Phase of RobotDevSuite.
 	Phase RobotDevSuitePhase `json:"phase,omitempty"`
-	// Status of RobotVDI.
-	RobotVDIStatus OwnedRobotServiceStatus `json:"robotVDIStatus,omitempty"`
+	// Status of DevSpaceVDI.
+	DevSpaceVDIStatus OwnedRobotServiceStatus `json:"devSpaceVDIStatus,omitempty"`
 	// Status of DevSpaceIDE.
 	DevSpaceIDEStatus OwnedRobotServiceStatus `json:"devSpaceIDEStatus,omitempty"`
 	// [*alpha*] Indicates if RobotDevSuite is attached to a Robot and actively provisioned it's resources.
@@ -145,7 +145,7 @@ type DevSpaceIDESpec struct {
 	// I/O devices on the host machine.
 	// Not recommended to activate this field on cloud instances.
 	Privileged bool `json:"privileged,omitempty"`
-	// Cloud IDE connects an X11 socket if it's set to `true` and a target RobotVDI resource is set in labels with key `robolaunch.io/target-vdi`.
+	// Cloud IDE connects an X11 socket if it's set to `true` and a target DevSpaceVDI resource is set in labels with key `robolaunch.io/target-vdi`.
 	// Applications that requires GUI can be executed such as rViz.
 	Display bool `json:"display,omitempty"`
 	// [*alpha*] DevSpaceIDE will create an Ingress resource if `true`.
@@ -165,7 +165,7 @@ type DevSpaceIDEStatus struct {
 }
 
 // ********************************
-// RobotVDI types
+// DevSpaceVDI types
 // ********************************
 
 // VDI resource limits.
@@ -180,8 +180,8 @@ type Resources struct {
 	Memory string `json:"memory,omitempty"`
 }
 
-// RobotVDISpec defines the desired state of RobotVDI.
-type RobotVDISpec struct {
+// DevSpaceVDISpec defines the desired state of DevSpaceVDI.
+type DevSpaceVDISpec struct {
 	// Resource limitations of Cloud IDE.
 	Resources Resources `json:"resources,omitempty"`
 	// Service type of Cloud IDE. `ClusterIP` and `NodePort` is supported.
@@ -207,10 +207,10 @@ type RobotVDISpec struct {
 	Ingress bool `json:"ingress,omitempty"`
 }
 
-// RobotVDIStatus defines the observed state of RobotVDI.
-type RobotVDIStatus struct {
-	// Phase of RobotVDI.
-	Phase RobotVDIPhase `json:"phase,omitempty"`
+// DevSpaceVDIStatus defines the observed state of DevSpaceVDI.
+type DevSpaceVDIStatus struct {
+	// Phase of DevSpaceVDI.
+	Phase DevSpaceVDIPhase `json:"phase,omitempty"`
 	// Status of Cloud VDI pod.
 	PodStatus OwnedPodStatus `json:"podStatus,omitempty"`
 	// Status of Cloud VDI TCP service.
@@ -221,7 +221,7 @@ type RobotVDIStatus struct {
 	IngressStatus OwnedResourceStatus `json:"ingressStatus,omitempty"`
 	// Status of Cloud VDI persistent volume claim.
 	// This PVC dynamically provisions a volume that is a shared
-	// between RobotVDI workloads and other workloads that requests
+	// between DevSpaceVDI workloads and other workloads that requests
 	// display.
 	PVCStatus OwnedResourceStatus `json:"pvcStatus,omitempty"`
 }

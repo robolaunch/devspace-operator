@@ -1,4 +1,4 @@
-package robot_vdi
+package devspace_vdi
 
 import (
 	"context"
@@ -14,19 +14,19 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func (r *RobotVDIReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*robotv1alpha1.RobotVDI, error) {
-	instance := &robotv1alpha1.RobotVDI{}
+func (r *DevSpaceVDIReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*robotv1alpha1.DevSpaceVDI, error) {
+	instance := &robotv1alpha1.DevSpaceVDI{}
 	err := r.Get(ctx, meta, instance)
 	if err != nil {
-		return &robotv1alpha1.RobotVDI{}, err
+		return &robotv1alpha1.DevSpaceVDI{}, err
 	}
 
 	return instance, nil
 }
 
-func (r *RobotVDIReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 	return retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		instanceLV := &robotv1alpha1.RobotVDI{}
+		instanceLV := &robotv1alpha1.DevSpaceVDI{}
 		err := r.Get(ctx, types.NamespacedName{
 			Name:      instance.Name,
 			Namespace: instance.Namespace,
@@ -41,7 +41,7 @@ func (r *RobotVDIReconciler) reconcileUpdateInstanceStatus(ctx context.Context, 
 	})
 }
 
-func (r *RobotVDIReconciler) reconcileGetTargetRobot(ctx context.Context, instance *robotv1alpha1.RobotVDI) (*robotv1alpha1.Robot, error) {
+func (r *DevSpaceVDIReconciler) reconcileGetTargetRobot(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) (*robotv1alpha1.Robot, error) {
 	robot := &robotv1alpha1.Robot{}
 	err := r.Get(ctx, types.NamespacedName{
 		Namespace: instance.Namespace,
@@ -54,7 +54,7 @@ func (r *RobotVDIReconciler) reconcileGetTargetRobot(ctx context.Context, instan
 	return robot, nil
 }
 
-func (r *RobotVDIReconciler) reconcileCheckNode(ctx context.Context, instance *robotv1alpha1.Robot) (*corev1.Node, error) {
+func (r *DevSpaceVDIReconciler) reconcileCheckNode(ctx context.Context, instance *robotv1alpha1.Robot) (*corev1.Node, error) {
 
 	tenancyMap := label.GetTenancyMap(instance)
 

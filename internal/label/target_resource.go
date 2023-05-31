@@ -15,11 +15,11 @@ func GetTargetRobot(obj metav1.Object) string {
 	return ""
 }
 
-func GetTargetRobotVDI(obj metav1.Object) string {
+func GetTargetDevSpaceVDI(obj metav1.Object) string {
 	labels := obj.GetLabels()
 
-	if targetRobotVDI, ok := labels[internal.TARGET_VDI_LABEL_KEY]; ok {
-		return targetRobotVDI
+	if targetDevSpaceVDI, ok := labels[internal.TARGET_VDI_LABEL_KEY]; ok {
+		return targetDevSpaceVDI
 	}
 
 	return ""

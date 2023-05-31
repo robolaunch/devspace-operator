@@ -1,31 +1,27 @@
-# permissions for end users to edit robotvdis.
+# permissions for end users to view devspacevdis.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/instance: robotvdi-editor-role
+    app.kubernetes.io/instance: devspacevdi-viewer-role
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: robot-operator
     app.kubernetes.io/part-of: robot-operator
     app.kubernetes.io/managed-by: kustomize
-  name: robotvdi-editor-role
+  name: devspacevdi-viewer-role
 rules:
 - apiGroups:
   - robot.roboscale.io
   resources:
-  - robotvdis
+  - devspacevdis
   verbs:
-  - create
-  - delete
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - robot.roboscale.io
   resources:
-  - robotvdis/status
+  - devspacevdis/status
   verbs:
   - get

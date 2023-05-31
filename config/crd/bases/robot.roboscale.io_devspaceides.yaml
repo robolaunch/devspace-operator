@@ -37,7 +37,7 @@ spec:
             properties:
               display:
                 description: Cloud IDE connects an X11 socket if it's set to `true`
-                  and a target RobotVDI resource is set in labels with key `robolaunch.io/target-vdi`.
+                  and a target DevSpaceVDI resource is set in labels with key `robolaunch.io/target-vdi`.
                   Applications that requires GUI can be executed such as rViz.
                 type: boolean
               ingress:

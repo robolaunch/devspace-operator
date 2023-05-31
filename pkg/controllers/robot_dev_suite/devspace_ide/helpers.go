@@ -54,17 +54,17 @@ func (r *DevSpaceIDEReconciler) reconcileGetTargetRobot(ctx context.Context, ins
 	return robot, nil
 }
 
-func (r *DevSpaceIDEReconciler) reconcileGetTargetRobotVDI(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) (*robotv1alpha1.RobotVDI, error) {
-	robotVDI := &robotv1alpha1.RobotVDI{}
+func (r *DevSpaceIDEReconciler) reconcileGetTargetDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.DevSpaceIDE) (*robotv1alpha1.DevSpaceVDI, error) {
+	devSpaceVDI := &robotv1alpha1.DevSpaceVDI{}
 	err := r.Get(ctx, types.NamespacedName{
 		Namespace: instance.Namespace,
-		Name:      label.GetTargetRobotVDI(instance),
-	}, robotVDI)
+		Name:      label.GetTargetDevSpaceVDI(instance),
+	}, devSpaceVDI)
 	if err != nil {
 		return nil, err
 	}
 
-	return robotVDI, nil
+	return devSpaceVDI, nil
 }
 
 func (r *DevSpaceIDEReconciler) reconcileCheckNode(ctx context.Context, instance *robotv1alpha1.Robot) (*corev1.Node, error) {

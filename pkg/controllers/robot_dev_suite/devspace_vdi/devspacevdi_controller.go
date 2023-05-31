@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package robot_vdi
+package devspace_vdi
 
 import (
 	"context"
@@ -32,16 +32,16 @@ import (
 	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
-// RobotVDIReconciler reconciles a RobotVDI object
-type RobotVDIReconciler struct {
+// DevSpaceVDIReconciler reconciles a DevSpaceVDI object
+type DevSpaceVDIReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	DynamicClient dynamic.Interface
 }
 
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=robotvdis,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=robotvdis/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=robotvdis/finalizers,verbs=update
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspacevdis,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspacevdis/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=robot.roboscale.io,resources=devspacevdis/finalizers,verbs=update
 
 //+kubebuilder:rbac:groups=core,resources=persistentvolumeclaims,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch;create;update;patch;delete
@@ -50,7 +50,7 @@ type RobotVDIReconciler struct {
 
 var logger logr.Logger
 
-func (r *RobotVDIReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *DevSpaceVDIReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger = log.FromContext(ctx)
 
 	instance, err := r.reconcileGetInstance(ctx, req.NamespacedName)
@@ -88,7 +88,7 @@ func (r *RobotVDIReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	return ctrl.Result{}, nil
 }
 
-func (r *RobotVDIReconciler) reconcileCheckStatus(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCheckStatus(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
 	switch instance.Status.PVCStatus.Created {
 	case true:
@@ -111,11 +111,11 @@ func (r *RobotVDIReconciler) reconcileCheckStatus(ctx context.Context, instance 
 							switch instance.Status.IngressStatus.Created {
 							case true:
 
-								instance.Status.Phase = robotv1alpha1.RobotVDIPhaseRunning
+								instance.Status.Phase = robotv1alpha1.DevSpaceVDIPhaseRunning
 
 							case false:
 
-								instance.Status.Phase = robotv1alpha1.RobotVDIPhaseCreatingIngress
+								instance.Status.Phase = robotv1alpha1.DevSpaceVDIPhaseCreatingIngress
 								err := r.reconcileCreateIngress(ctx, instance)
 								if err != nil {
 									return err
@@ -126,7 +126,7 @@ func (r *RobotVDIReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 						case false:
 
-							instance.Status.Phase = robotv1alpha1.RobotVDIPhaseRunning
+							instance.Status.Phase = robotv1alpha1.DevSpaceVDIPhaseRunning
 
 						}
 
@@ -134,7 +134,7 @@ func (r *RobotVDIReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 				case false:
 
-					instance.Status.Phase = robotv1alpha1.RobotVDIPhaseCreatingPod
+					instance.Status.Phase = robotv1alpha1.DevSpaceVDIPhaseCreatingPod
 					err := r.reconcileCreatePod(ctx, instance)
 					if err != nil {
 						return err
@@ -145,7 +145,7 @@ func (r *RobotVDIReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 			case false:
 
-				instance.Status.Phase = robotv1alpha1.RobotVDIPhaseCreatingUDPService
+				instance.Status.Phase = robotv1alpha1.DevSpaceVDIPhaseCreatingUDPService
 				err := r.reconcileCreateServiceUDP(ctx, instance)
 				if err != nil {
 					return err
@@ -156,7 +156,7 @@ func (r *RobotVDIReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 		case false:
 
-			instance.Status.Phase = robotv1alpha1.RobotVDIPhaseCreatingTCPService
+			instance.Status.Phase = robotv1alpha1.DevSpaceVDIPhaseCreatingTCPService
 			err := r.reconcileCreateServiceTCP(ctx, instance)
 			if err != nil {
 				return err
@@ -167,7 +167,7 @@ func (r *RobotVDIReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 	case false:
 
-		instance.Status.Phase = robotv1alpha1.RobotVDIPhaseCreatingPVC
+		instance.Status.Phase = robotv1alpha1.DevSpaceVDIPhaseCreatingPVC
 		err := r.reconcileCreatePVC(ctx, instance)
 		if err != nil {
 			return err
@@ -179,7 +179,7 @@ func (r *RobotVDIReconciler) reconcileCheckStatus(ctx context.Context, instance 
 	return nil
 }
 
-func (r *RobotVDIReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
 	err := r.reconcileCheckPVC(ctx, instance)
 	if err != nil {
@@ -205,9 +205,9 @@ func (r *RobotVDIReconciler) reconcileCheckResources(ctx context.Context, instan
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *RobotVDIReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *DevSpaceVDIReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&robotv1alpha1.RobotVDI{}).
+		For(&robotv1alpha1.DevSpaceVDI{}).
 		Owns(&corev1.PersistentVolumeClaim{}).
 		Owns(&corev1.Service{}).
 		Owns(&corev1.Pod{}).

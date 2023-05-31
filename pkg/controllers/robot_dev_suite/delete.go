@@ -10,20 +10,20 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func (r *RobotDevSuiteReconciler) reconcileDeleteRobotVDI(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
+func (r *RobotDevSuiteReconciler) reconcileDeleteDevSpaceVDI(ctx context.Context, instance *robotv1alpha1.RobotDevSuite) error {
 
-	robotVDIQuery := &robotv1alpha1.RobotVDI{}
-	err := r.Get(ctx, *instance.GetRobotVDIMetadata(), robotVDIQuery)
+	devSpaceVDIQuery := &robotv1alpha1.DevSpaceVDI{}
+	err := r.Get(ctx, *instance.GetDevSpaceVDIMetadata(), devSpaceVDIQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			instance.Status.RobotVDIStatus = robotv1alpha1.OwnedRobotServiceStatus{}
+			instance.Status.DevSpaceVDIStatus = robotv1alpha1.OwnedRobotServiceStatus{}
 		} else {
 			return err
 		}
 	} else {
 
 		propagationPolicy := v1.DeletePropagationForeground
-		err := r.Delete(ctx, robotVDIQuery, &client.DeleteOptions{
+		err := r.Delete(ctx, devSpaceVDIQuery, &client.DeleteOptions{
 			PropagationPolicy: &propagationPolicy,
 		})
 		if err != nil {
@@ -33,15 +33,15 @@ func (r *RobotDevSuiteReconciler) reconcileDeleteRobotVDI(ctx context.Context, i
 		// watch until it's deleted
 		deleted := false
 		for !deleted {
-			robotVDIQuery := &robotv1alpha1.RobotVDI{}
-			err := r.Get(ctx, *instance.GetRobotVDIMetadata(), robotVDIQuery)
+			devSpaceVDIQuery := &robotv1alpha1.DevSpaceVDI{}
+			err := r.Get(ctx, *instance.GetDevSpaceVDIMetadata(), devSpaceVDIQuery)
 			if err != nil && errors.IsNotFound(err) {
 				deleted = true
 			}
 			time.Sleep(time.Second * 1)
 		}
 
-		instance.Status.RobotVDIStatus = robotv1alpha1.OwnedRobotServiceStatus{}
+		instance.Status.DevSpaceVDIStatus = robotv1alpha1.OwnedRobotServiceStatus{}
 	}
 
 	return nil

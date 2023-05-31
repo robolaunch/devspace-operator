@@ -21,7 +21,7 @@ func getDevSpaceIDESelector(devSpaceIDE robotv1alpha1.DevSpaceIDE) map[string]st
 	}
 }
 
-func GetDevSpaceIDEPod(devSpaceIDE *robotv1alpha1.DevSpaceIDE, podNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot, robotVDI robotv1alpha1.RobotVDI, node corev1.Node) *corev1.Pod {
+func GetDevSpaceIDEPod(devSpaceIDE *robotv1alpha1.DevSpaceIDE, podNamespacedName *types.NamespacedName, robot robotv1alpha1.Robot, devSpaceVDI robotv1alpha1.DevSpaceVDI, node corev1.Node) *corev1.Pod {
 
 	// discovery server
 
@@ -86,9 +86,9 @@ func GetDevSpaceIDEPod(devSpaceIDE *robotv1alpha1.DevSpaceIDE, podNamespacedName
 	configure.SchedulePod(&pod, label.GetTenancyMap(devSpaceIDE))
 	configure.InjectGenericEnvironmentVariables(&pod, robot)
 	configure.InjectRuntimeClass(&pod, robot, node)
-	if devSpaceIDE.Spec.Display && label.GetTargetRobotVDI(devSpaceIDE) != "" {
-		// TODO: Add control for validating robot VDI
-		configure.InjectPodDisplayConfiguration(&pod, robotVDI)
+	if devSpaceIDE.Spec.Display && label.GetTargetDevSpaceVDI(devSpaceIDE) != "" {
+		// TODO: Add control for validating DevSpace VDI
+		configure.InjectPodDisplayConfiguration(&pod, devSpaceVDI)
 	}
 
 	return &pod

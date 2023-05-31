@@ -1,4 +1,4 @@
-package robot_vdi
+package devspace_vdi
 
 import (
 	"context"
@@ -11,10 +11,10 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 )
 
-func (r *RobotVDIReconciler) reconcileCheckPVC(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCheckPVC(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
 	pvcQuery := &corev1.PersistentVolumeClaim{}
-	err := r.Get(ctx, *instance.GetRobotVDIPVCMetadata(), pvcQuery)
+	err := r.Get(ctx, *instance.GetDevSpaceVDIPVCMetadata(), pvcQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			instance.Status.PVCStatus = robotv1alpha1.OwnedResourceStatus{}
@@ -29,10 +29,10 @@ func (r *RobotVDIReconciler) reconcileCheckPVC(ctx context.Context, instance *ro
 	return nil
 }
 
-func (r *RobotVDIReconciler) reconcileCheckServices(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCheckServices(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
 	serviceTCPQuery := &corev1.Service{}
-	err := r.Get(ctx, *instance.GetRobotVDIServiceTCPMetadata(), serviceTCPQuery)
+	err := r.Get(ctx, *instance.GetDevSpaceVDIServiceTCPMetadata(), serviceTCPQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			instance.Status.ServiceTCPStatus = robotv1alpha1.OwnedServiceStatus{}
@@ -56,7 +56,7 @@ func (r *RobotVDIReconciler) reconcileCheckServices(ctx context.Context, instanc
 	}
 
 	serviceUDPQuery := &corev1.Service{}
-	err = r.Get(ctx, *instance.GetRobotVDIServiceUDPMetadata(), serviceUDPQuery)
+	err = r.Get(ctx, *instance.GetDevSpaceVDIServiceUDPMetadata(), serviceUDPQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			instance.Status.ServiceUDPStatus = robotv1alpha1.OwnedResourceStatus{}
@@ -71,10 +71,10 @@ func (r *RobotVDIReconciler) reconcileCheckServices(ctx context.Context, instanc
 	return nil
 }
 
-func (r *RobotVDIReconciler) reconcileCheckPod(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCheckPod(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
 	vdiPodQuery := &corev1.Pod{}
-	err := r.Get(ctx, *instance.GetRobotVDIPodMetadata(), vdiPodQuery)
+	err := r.Get(ctx, *instance.GetDevSpaceVDIPodMetadata(), vdiPodQuery)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			instance.Status.PodStatus = robotv1alpha1.OwnedPodStatus{}
@@ -97,11 +97,11 @@ func (r *RobotVDIReconciler) reconcileCheckPod(ctx context.Context, instance *ro
 	return nil
 }
 
-func (r *RobotVDIReconciler) reconcileCheckIngress(ctx context.Context, instance *robotv1alpha1.RobotVDI) error {
+func (r *DevSpaceVDIReconciler) reconcileCheckIngress(ctx context.Context, instance *robotv1alpha1.DevSpaceVDI) error {
 
 	if instance.Spec.Ingress {
 		ingressQuery := &networkingv1.Ingress{}
-		err := r.Get(ctx, *instance.GetRobotVDIIngressMetadata(), ingressQuery)
+		err := r.Get(ctx, *instance.GetDevSpaceVDIIngressMetadata(), ingressQuery)
 		if err != nil {
 			if errors.IsNotFound(err) {
 				instance.Status.IngressStatus = robotv1alpha1.OwnedResourceStatus{}

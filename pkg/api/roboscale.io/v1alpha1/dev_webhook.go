@@ -45,7 +45,7 @@ func (r *DevSpaceIDE) ValidateCreate() error {
 		return err
 	}
 
-	err = r.checkTargetRobotVDILabel()
+	err = r.checkTargetDevSpaceVDILabel()
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (r *DevSpaceIDE) ValidateUpdate(old runtime.Object) error {
 		return err
 	}
 
-	err = r.checkTargetRobotVDILabel()
+	err = r.checkTargetDevSpaceVDILabel()
 	if err != nil {
 		return err
 	}
@@ -86,12 +86,12 @@ func (r *DevSpaceIDE) checkTargetRobotLabel() error {
 	return nil
 }
 
-func (r *DevSpaceIDE) checkTargetRobotVDILabel() error {
+func (r *DevSpaceIDE) checkTargetDevSpaceVDILabel() error {
 	labels := r.GetLabels()
 
 	if r.Spec.Display {
 		if _, ok := labels[internal.TARGET_VDI_LABEL_KEY]; !ok {
-			return errors.New("target robot vdi label should be added with key " + internal.TARGET_VDI_LABEL_KEY)
+			return errors.New("target devspace vdi label should be added with key " + internal.TARGET_VDI_LABEL_KEY)
 		}
 	}
 
@@ -99,34 +99,34 @@ func (r *DevSpaceIDE) checkTargetRobotVDILabel() error {
 }
 
 // ********************************
-// RobotVDI webhooks
+// DevSpaceVDI webhooks
 // ********************************
 
 // log is for logging in this package.
-var robotvdilog = logf.Log.WithName("robotvdi-resource")
+var devspacevdilog = logf.Log.WithName("devspacevdi-resource")
 
-func (r *RobotVDI) SetupWebhookWithManager(mgr ctrl.Manager) error {
+func (r *DevSpaceVDI) SetupWebhookWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewWebhookManagedBy(mgr).
 		For(r).
 		Complete()
 }
 
-//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-robotvdi,mutating=true,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=robotvdis,verbs=create;update,versions=v1alpha1,name=mrobotvdi.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-devspacevdi,mutating=true,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=devspacevdis,verbs=create;update,versions=v1alpha1,name=mdevspacevdi.kb.io,admissionReviewVersions=v1
 
-var _ webhook.Defaulter = &RobotVDI{}
+var _ webhook.Defaulter = &DevSpaceVDI{}
 
 // Default implements webhook.Defaulter so a webhook will be registered for the type
-func (r *RobotVDI) Default() {
-	robotvdilog.Info("default", "name", r.Name)
+func (r *DevSpaceVDI) Default() {
+	devspacevdilog.Info("default", "name", r.Name)
 }
 
-//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-robotvdi,mutating=false,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=robotvdis,verbs=create;update,versions=v1alpha1,name=vrobotvdi.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-devspacevdi,mutating=false,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=devspacevdis,verbs=create;update,versions=v1alpha1,name=vdevspacevdi.kb.io,admissionReviewVersions=v1
 
-var _ webhook.Validator = &RobotVDI{}
+var _ webhook.Validator = &DevSpaceVDI{}
 
 // ValidateCreate implements webhook.Validator so a webhook will be registered for the type
-func (r *RobotVDI) ValidateCreate() error {
-	robotvdilog.Info("validate create", "name", r.Name)
+func (r *DevSpaceVDI) ValidateCreate() error {
+	devspacevdilog.Info("validate create", "name", r.Name)
 
 	err := r.checkTargetRobotLabel()
 	if err != nil {
@@ -137,8 +137,8 @@ func (r *RobotVDI) ValidateCreate() error {
 }
 
 // ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
-func (r *RobotVDI) ValidateUpdate(old runtime.Object) error {
-	robotvdilog.Info("validate update", "name", r.Name)
+func (r *DevSpaceVDI) ValidateUpdate(old runtime.Object) error {
+	devspacevdilog.Info("validate update", "name", r.Name)
 
 	err := r.checkTargetRobotLabel()
 	if err != nil {
@@ -149,12 +149,12 @@ func (r *RobotVDI) ValidateUpdate(old runtime.Object) error {
 }
 
 // ValidateDelete implements webhook.Validator so a webhook will be registered for the type
-func (r *RobotVDI) ValidateDelete() error {
-	robotvdilog.Info("validate delete", "name", r.Name)
+func (r *DevSpaceVDI) ValidateDelete() error {
+	devspacevdilog.Info("validate delete", "name", r.Name)
 	return nil
 }
 
-func (r *RobotVDI) checkTargetRobotLabel() error {
+func (r *DevSpaceVDI) checkTargetRobotLabel() error {
 	labels := r.GetLabels()
 
 	if _, ok := labels[internal.TARGET_ROBOT_LABEL_KEY]; !ok {

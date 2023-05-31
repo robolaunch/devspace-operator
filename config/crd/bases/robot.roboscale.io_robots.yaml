@@ -73,7 +73,7 @@ spec:
                     properties:
                       display:
                         description: Cloud IDE connects an X11 socket if it's set
-                          to `true` and a target RobotVDI resource is set in labels
+                          to `true` and a target DevSpaceVDI resource is set in labels
                           with key `robolaunch.io/target-vdi`. Applications that requires
                           GUI can be executed such as rViz.
                         type: boolean
@@ -111,13 +111,9 @@ spec:
                         - NodePort
                         type: string
                     type: object
-                  ideEnabled:
-                    description: If `true`, a Cloud IDE will be provisioned inside
-                      development suite.
-                    type: boolean
-                  robotVDITemplate:
-                    description: Configurational parameters of RobotVDI. Applied if
-                      `.spec.vdiEnabled` is set to `true`.
+                  devSpaceVDITemplate:
+                    description: Configurational parameters of DevSpaceVDI. Applied
+                      if `.spec.vdiEnabled` is set to `true`.
                     properties:
                       ingress:
                         description: '[*alpha*] DevSpaceIDE will create an Ingress
@@ -168,6 +164,10 @@ spec:
                         pattern: ^([0-9])+-([0-9])+$
                         type: string
                     type: object
+                  ideEnabled:
+                    description: If `true`, a Cloud IDE will be provisioned inside
+                      development suite.
+                    type: boolean
                   vdiEnabled:
                     description: If `true`, a Cloud VDI will be provisioned inside
                       development suite.
@@ -410,11 +410,8 @@ spec:
                               - created
                               type: object
                           type: object
-                        phase:
-                          description: Phase of RobotDevSuite.
-                          type: string
-                        robotVDIStatus:
-                          description: Status of RobotVDI.
+                        devSpaceVDIStatus:
+                          description: Status of DevSpaceVDI.
                           properties:
                             connection:
                               description: Address of the robot service that can be
@@ -479,6 +476,9 @@ spec:
                               - created
                               type: object
                           type: object
+                        phase:
+                          description: Phase of RobotDevSuite.
+                          type: string
                       type: object
                   type: object
                 type: array
@@ -666,11 +666,8 @@ spec:
                             - created
                             type: object
                         type: object
-                      phase:
-                        description: Phase of RobotDevSuite.
-                        type: string
-                      robotVDIStatus:
-                        description: Status of RobotVDI.
+                      devSpaceVDIStatus:
+                        description: Status of DevSpaceVDI.
                         properties:
                           connection:
                             description: Address of the robot service that can be
@@ -734,6 +731,9 @@ spec:
                             - created
                             type: object
                         type: object
+                      phase:
+                        description: Phase of RobotDevSuite.
+                        type: string
                     type: object
                 type: object
               volumeStatuses:

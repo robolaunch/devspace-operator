@@ -31,9 +31,9 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /mutate-robot-roboscale-io-v1alpha1-robotvdi
+      path: /mutate-robot-roboscale-io-v1alpha1-devspacevdi
   failurePolicy: Fail
-  name: mrobotvdi.kb.io
+  name: mdevspacevdi.kb.io
   rules:
   - apiGroups:
     - robot.roboscale.io
@@ -43,7 +43,7 @@ webhooks:
     - CREATE
     - UPDATE
     resources:
-    - robotvdis
+    - devspacevdis
   sideEffects: None
 - admissionReviewVersions:
   - v1
@@ -118,9 +118,9 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /validate-robot-roboscale-io-v1alpha1-robotvdi
+      path: /validate-robot-roboscale-io-v1alpha1-devspacevdi
   failurePolicy: Fail
-  name: vrobotvdi.kb.io
+  name: vdevspacevdi.kb.io
   rules:
   - apiGroups:
     - robot.roboscale.io
@@ -130,7 +130,7 @@ webhooks:
     - CREATE
     - UPDATE
     resources:
-    - robotvdis
+    - devspacevdis
   sideEffects: None
 - admissionReviewVersions:
   - v1

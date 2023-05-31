@@ -29,8 +29,8 @@ type Interface interface {
 	RobotDevSuites() RobotDevSuiteInformer
 	// DevSpaceIDEs returns a DevSpaceIDEInformer.
 	DevSpaceIDEs() DevSpaceIDEInformer
-	// RobotVDIs returns a RobotVDIInformer.
-	RobotVDIs() RobotVDIInformer
+	// DevSpaceVDIs returns a DevSpaceVDIInformer.
+	DevSpaceVDIs() DevSpaceVDIInformer
 }
 
 type version struct {
@@ -59,7 +59,7 @@ func (v *version) DevSpaceIDEs() DevSpaceIDEInformer {
 	return &devSpaceIDEInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// RobotVDIs returns a RobotVDIInformer.
-func (v *version) RobotVDIs() RobotVDIInformer {
-	return &robotVDIInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// DevSpaceVDIs returns a DevSpaceVDIInformer.
+func (v *version) DevSpaceVDIs() DevSpaceVDIInformer {
+	return &devSpaceVDIInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }

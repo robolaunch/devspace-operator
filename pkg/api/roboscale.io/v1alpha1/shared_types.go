@@ -1,7 +1,7 @@
 package v1alpha1
 
 import (
-	"github.com/robolaunch/robot-operator/internal/label"
+	"github.com/robolaunch/devspace-operator/internal/label"
 	corev1 "k8s.io/api/core/v1"
 )
 

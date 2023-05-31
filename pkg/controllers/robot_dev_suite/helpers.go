@@ -3,8 +3,8 @@ package robot_dev_suite
 import (
 	"context"
 
-	"github.com/robolaunch/robot-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	"github.com/robolaunch/devspace-operator/internal/label"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/retry"
 )

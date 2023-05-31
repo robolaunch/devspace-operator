@@ -1,7 +1,7 @@
 package node
 
 import (
-	"github.com/robolaunch/robot-operator/internal"
+	"github.com/robolaunch/devspace-operator/internal"
 	corev1 "k8s.io/api/core/v1"
 )
 

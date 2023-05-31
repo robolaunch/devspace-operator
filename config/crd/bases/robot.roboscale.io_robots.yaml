@@ -67,10 +67,6 @@ spec:
               robotDevSuiteTemplate:
                 description: Robot development suite template
                 properties:
-                  ideEnabled:
-                    description: If `true`, a Cloud IDE will be provisioned inside
-                      development suite.
-                    type: boolean
                   devSpaceIDETemplate:
                     description: Configurational parameters of DevSpaceIDE. Applied
                       if `.spec.ideEnabled` is set to `true`.
@@ -115,6 +111,10 @@ spec:
                         - NodePort
                         type: string
                     type: object
+                  ideEnabled:
+                    description: If `true`, a Cloud IDE will be provisioned inside
+                      development suite.
+                    type: boolean
                   robotVDITemplate:
                     description: Configurational parameters of RobotVDI. Applied if
                       `.spec.vdiEnabled` is set to `true`.
@@ -344,9 +344,6 @@ spec:
                           description: '[*alpha*] Indicates if RobotDevSuite is attached
                             to a Robot and actively provisioned it''s resources.'
                           type: boolean
-                        phase:
-                          description: Phase of RobotDevSuite.
-                          type: string
                         devSpaceIDEStatus:
                           description: Status of DevSpaceIDE.
                           properties:
@@ -413,6 +410,9 @@ spec:
                               - created
                               type: object
                           type: object
+                        phase:
+                          description: Phase of RobotDevSuite.
+                          type: string
                         robotVDIStatus:
                           description: Status of RobotVDI.
                           properties:
@@ -601,9 +601,6 @@ spec:
                         description: '[*alpha*] Indicates if RobotDevSuite is attached
                           to a Robot and actively provisioned it''s resources.'
                         type: boolean
-                      phase:
-                        description: Phase of RobotDevSuite.
-                        type: string
                       devSpaceIDEStatus:
                         description: Status of DevSpaceIDE.
                         properties:
@@ -669,6 +666,9 @@ spec:
                             - created
                             type: object
                         type: object
+                      phase:
+                        description: Phase of RobotDevSuite.
+                        type: string
                       robotVDIStatus:
                         description: Status of RobotVDI.
                         properties:

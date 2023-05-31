@@ -1,9 +1,9 @@
 package configure
 
 import (
-	"github.com/robolaunch/robot-operator/internal/label"
-	"github.com/robolaunch/robot-operator/internal/node"
-	"github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	"github.com/robolaunch/devspace-operator/internal/label"
+	"github.com/robolaunch/devspace-operator/internal/node"
+	"github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 )
 

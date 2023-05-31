@@ -11,10 +11,10 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/robolaunch/robot-operator/internal"
-	"github.com/robolaunch/robot-operator/internal/configure"
-	"github.com/robolaunch/robot-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	"github.com/robolaunch/devspace-operator/internal"
+	"github.com/robolaunch/devspace-operator/internal/configure"
+	"github.com/robolaunch/devspace-operator/internal/label"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
 func GetPersistentVolumeClaim(robot *robotv1alpha1.Robot, pvcNamespacedName *types.NamespacedName) *corev1.PersistentVolumeClaim {

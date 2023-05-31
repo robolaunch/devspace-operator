@@ -1,7 +1,7 @@
 package v1alpha1
 
 import (
-	"github.com/robolaunch/robot-operator/internal"
+	"github.com/robolaunch/devspace-operator/internal"
 	"k8s.io/apimachinery/pkg/types"
 )
 

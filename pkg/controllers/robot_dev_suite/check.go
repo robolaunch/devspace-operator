@@ -4,8 +4,8 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/robolaunch/robot-operator/internal/reference"
-	robotv1alpha1 "github.com/robolaunch/robot-operator/pkg/api/roboscale.io/v1alpha1"
+	"github.com/robolaunch/devspace-operator/internal/reference"
+	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 )
 

@@ -126,3 +126,12 @@ func GetCleanupJob(workspaceManager *devv1alpha1.WorkspaceManager, jobNamespaced
 
 	return &job
 }
+
+func GetCloneCommand(workspaces []devv1alpha1.Workspace, wsKey int) string {
+
+	var cmdBuilder strings.Builder
+	for key, repo := range workspaces[wsKey].Repositories {
+		cmdBuilder.WriteString("git clone " + repo.URL + " -b " + repo.Branch + " " + key + " &&")
+	}
+	return cmdBuilder.String()
+}

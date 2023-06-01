@@ -118,6 +118,18 @@ func (r *DevSpaceReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 							instance.Status.Phase = devv1alpha1.DevSpacePhaseEnvironmentReady
 
+							switch instance.Status.WorkspaceManagerStatus.Resource.Created {
+							case false:
+
+								instance.Status.Phase = devv1alpha1.DevSpacePhaseConfiguringWorkspaces
+								err := r.createWorkspaceManager(ctx, instance, instance.GetWorkspaceManagerMetadata())
+								if err != nil {
+									return err
+								}
+								instance.Status.WorkspaceManagerStatus.Resource.Created = true
+
+							}
+
 						}
 
 					case false:

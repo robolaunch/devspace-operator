@@ -39,21 +39,15 @@ type DevSpaceList struct {
 // DevSpace types
 // ********************************
 
-// ROS 2 distribution selection. Currently supported distributions are Humble, Foxy, Galactic.
-// +kubebuilder:validation:Enum=foxy;galactic;humble
-type ROSDistro string
+// Ubuntu distribution selection. Currently supported distributions are Focal and Jammy.
+// +kubebuilder:validation:Enum=focal;jammy
+type UbuntuDistro string
 
 const (
-	// ROS Melodic Morenia
-	ROSDistroMelodic ROSDistro = "melodic"
-	// ROS Noetic Ninjemys
-	ROSDistroNoetic ROSDistro = "noetic"
-	// ROS 2 Foxy Fitzroy
-	ROSDistroFoxy ROSDistro = "foxy"
-	// ROS 2 Galactic Geochelone
-	ROSDistroGalactic ROSDistro = "galactic"
-	// ROS 2 Humble Hawksbill
-	ROSDistroHumble ROSDistro = "humble"
+	// Ubuntu 20.04 Focal Fossa
+	UbuntuDistroFocal UbuntuDistro = "focal"
+	// Ubuntu 22.04 Jammy Jellyfish
+	UbuntuDistroJammy UbuntuDistro = "jammy"
 )
 
 // Storage class configuration for a volume type.
@@ -90,12 +84,9 @@ type RootDNSConfig struct {
 
 // DevSpaceSpec defines the desired state of DevSpace.
 type DevSpaceSpec struct {
-	// ROS 2 distributions to be used. You can select multiple distributions if they are supported in the same underlying OS.
-	// (eg. `foxy` and `galactic` are supported in Ubuntu Focal, so they can be used together but both cannot be used with `humble`)
+	// Ubuntu distribution to be used. `focal` and `jammy` is supported.
 	// +kubebuilder:validation:Required
-	// +kubebuilder:validation:MinItems=1
-	// +kubebuilder:validation:MaxItems=2
-	Distributions []ROSDistro `json:"distributions"`
+	UbuntuDistro UbuntuDistro `json:"ubuntuDistro"`
 	// Total storage amount to persist via DevSpace. Unit of measurement is MB. (eg. `10240` corresponds 10 GB)
 	// This amount is being shared between different components.
 	Storage Storage `json:"storage,omitempty"`

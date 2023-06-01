@@ -56,16 +56,6 @@ func (r *DevSpace) ValidateCreate() error {
 		return err
 	}
 
-	err = r.checkDistributions()
-	if err != nil {
-		return err
-	}
-
-	err = r.checkWorkspaces()
-	if err != nil {
-		return err
-	}
-
 	err = r.checkDevSuite()
 	if err != nil {
 		return err
@@ -79,16 +69,6 @@ func (r *DevSpace) ValidateUpdate(old runtime.Object) error {
 	devspacelog.Info("validate update", "name", r.Name)
 
 	err := r.checkTenancyLabels()
-	if err != nil {
-		return err
-	}
-
-	err = r.checkDistributions()
-	if err != nil {
-		return err
-	}
-
-	err = r.checkWorkspaces()
 	if err != nil {
 		return err
 	}
@@ -129,35 +109,6 @@ func (r *DevSpace) checkTenancyLabels() error {
 	if _, ok := labels[internal.CLOUD_INSTANCE_ALIAS_LABEL_KEY]; !ok {
 		return errors.New("cloud instance alias label should be added with key " + internal.CLOUD_INSTANCE_ALIAS_LABEL_KEY)
 	}
-	return nil
-}
-
-func (r *DevSpace) checkDistributions() error {
-
-	if len(r.Spec.Distributions) == 2 && (r.Spec.Distributions[0] == ROSDistroHumble || r.Spec.Distributions[1] == ROSDistroHumble) {
-		return errors.New("humble cannot be used in a multidistro environment")
-	}
-
-	return nil
-}
-
-func (r *DevSpace) checkWorkspaces() error {
-
-	for _, ws := range r.Spec.WorkspaceManagerTemplate.Workspaces {
-
-		distroExists := false
-		for _, distro := range r.Spec.Distributions {
-			if ws.Distro == distro {
-				distroExists = true
-				break
-			}
-		}
-
-		if !distroExists {
-			return errors.New("workspace " + ws.Name + " has unsupported distro defined in `spec.distributions`")
-		}
-	}
-
 	return nil
 }
 

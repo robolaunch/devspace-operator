@@ -157,22 +157,6 @@ spec:
               development:
                 description: '[*alpha*] Switch to development mode if `true`.'
                 type: boolean
-              distributions:
-                description: ROS 2 distributions to be used. You can select multiple
-                  distributions if they are supported in the same underlying OS. (eg.
-                  `foxy` and `galactic` are supported in Ubuntu Focal, so they can
-                  be used together but both cannot be used with `humble`)
-                items:
-                  description: ROS 2 distribution selection. Currently supported distributions
-                    are Humble, Foxy, Galactic.
-                  enum:
-                  - foxy
-                  - galactic
-                  - humble
-                  type: string
-                maxItems: 2
-                minItems: 1
-                type: array
               rootDNSConfig:
                 description: '[*alpha*] Root DNS configuration.'
                 properties:
@@ -218,6 +202,13 @@ spec:
                 - name
                 - namespace
                 type: object
+              ubuntuDistro:
+                description: Ubuntu distribution to be used. `focal` and `jammy` is
+                  supported.
+                enum:
+                - focal
+                - jammy
+                type: string
               workspaceManagerTemplate:
                 description: Workspace manager template to configure ROS 2 workspaces.
                 properties:
@@ -235,14 +226,6 @@ spec:
                         at least one workspace. A workspace should contain at least
                         one repository in it.
                       properties:
-                        distro:
-                          description: ROS 2 distribution selection. Currently supported
-                            distributions are Humble, Foxy, Galactic.
-                          enum:
-                          - foxy
-                          - galactic
-                          - humble
-                          type: string
                         name:
                           description: Name of workspace. If a workspace's name is
                             `my_ws`, it's absolute path is `/home/workspaces/my_ws`.
@@ -278,7 +261,6 @@ spec:
                             directory.
                           type: object
                       required:
-                      - distro
                       - name
                       - repositories
                       type: object
@@ -290,7 +272,7 @@ spec:
                     type: string
                 type: object
             required:
-            - distributions
+            - ubuntuDistro
             type: object
           status:
             description: Most recently observed status of the DevSpace.

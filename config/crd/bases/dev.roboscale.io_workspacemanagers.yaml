@@ -49,14 +49,6 @@ spec:
                     at least one workspace. A workspace should contain at least one
                     repository in it.
                   properties:
-                    distro:
-                      description: ROS 2 distribution selection. Currently supported
-                        distributions are Humble, Foxy, Galactic.
-                      enum:
-                      - foxy
-                      - galactic
-                      - humble
-                      type: string
                     name:
                       description: Name of workspace. If a workspace's name is `my_ws`,
                         it's absolute path is `/home/workspaces/my_ws`.
@@ -92,7 +84,6 @@ spec:
                         directory.
                       type: object
                   required:
-                  - distro
                   - name
                   - repositories
                   type: object

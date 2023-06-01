@@ -11,6 +11,46 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
+      path: /mutate-dev-roboscale-io-v1alpha1-devspace
+  failurePolicy: Fail
+  name: mdevspace.kb.io
+  rules:
+  - apiGroups:
+    - dev.roboscale.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - devspaces
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
+      path: /mutate-dev-roboscale-io-v1alpha1-workspacemanager
+  failurePolicy: Fail
+  name: mworkspacemanager.kb.io
+  rules:
+  - apiGroups:
+    - dev.roboscale.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - workspacemanagers
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
       path: /mutate-dev-roboscale-io-v1alpha1-devspaceide
   failurePolicy: Fail
   name: mdevspaceide.kb.io
@@ -45,35 +85,22 @@ webhooks:
     resources:
     - devspacevdis
   sideEffects: None
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: validating-webhook-configuration
+webhooks:
 - admissionReviewVersions:
   - v1
   clientConfig:
     service:
       name: webhook-service
       namespace: system
-      path: /mutate-dev-roboscale-io-v1alpha1-workspacemanager
+      path: /validate-dev-roboscale-io-v1alpha1-devspace
   failurePolicy: Fail
-  name: mworkspacemanager.kb.io
-  rules:
-  - apiGroups:
-    - dev.roboscale.io
-    apiVersions:
-    - v1alpha1
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - workspacemanagers
-  sideEffects: None
-- admissionReviewVersions:
-  - v1
-  clientConfig:
-    service:
-      name: webhook-service
-      namespace: system
-      path: /mutate-dev-roboscale-io-v1alpha1-devspace
-  failurePolicy: Fail
-  name: mdevspace.kb.io
+  name: vdevspace.kb.io
   rules:
   - apiGroups:
     - dev.roboscale.io
@@ -85,13 +112,26 @@ webhooks:
     resources:
     - devspaces
   sideEffects: None
----
-apiVersion: admissionregistration.k8s.io/v1
-kind: ValidatingWebhookConfiguration
-metadata:
-  creationTimestamp: null
-  name: validating-webhook-configuration
-webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
+      path: /validate-dev-roboscale-io-v1alpha1-workspacemanager
+  failurePolicy: Fail
+  name: vworkspacemanager.kb.io
+  rules:
+  - apiGroups:
+    - dev.roboscale.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - workspacemanagers
+  sideEffects: None
 - admissionReviewVersions:
   - v1
   clientConfig:
@@ -131,44 +171,4 @@ webhooks:
     - UPDATE
     resources:
     - devspacevdis
-  sideEffects: None
-- admissionReviewVersions:
-  - v1
-  clientConfig:
-    service:
-      name: webhook-service
-      namespace: system
-      path: /validate-dev-roboscale-io-v1alpha1-workspacemanager
-  failurePolicy: Fail
-  name: vworkspacemanager.kb.io
-  rules:
-  - apiGroups:
-    - dev.roboscale.io
-    apiVersions:
-    - v1alpha1
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - workspacemanagers
-  sideEffects: None
-- admissionReviewVersions:
-  - v1
-  clientConfig:
-    service:
-      name: webhook-service
-      namespace: system
-      path: /validate-dev-roboscale-io-v1alpha1-devspace
-  failurePolicy: Fail
-  name: vdevspace.kb.io
-  rules:
-  - apiGroups:
-    - dev.roboscale.io
-    apiVersions:
-    - v1alpha1
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - devspaces
   sideEffects: None

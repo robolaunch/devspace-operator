@@ -75,7 +75,10 @@ func GetLoaderJob(devspace *devv1alpha1.DevSpace, jobNamespacedName *types.Names
 	copierCmdBuilder.WriteString(" echo \"DONE\"")
 
 	var preparerCmdBuilder strings.Builder
-	preparerCmdBuilder.WriteString("apt-get update")
+	preparerCmdBuilder.WriteString("mv " + filepath.Join("/etc", "apt", "sources.list") + " temp")
+	preparerCmdBuilder.WriteString(" && apt-get update")
+	preparerCmdBuilder.WriteString(" && mv temp " + filepath.Join("/etc", "apt", "sources.list"))
+	preparerCmdBuilder.WriteString(" && apt-get update")
 	preparerCmdBuilder.WriteString(" && apt-get dist-upgrade -y")
 	preparerCmdBuilder.WriteString(" && apt-get update")
 

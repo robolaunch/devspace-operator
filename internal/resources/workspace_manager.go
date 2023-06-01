@@ -8,14 +8,14 @@ import (
 	"github.com/robolaunch/devspace-operator/internal"
 	"github.com/robolaunch/devspace-operator/internal/configure"
 	"github.com/robolaunch/devspace-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
 
-func GetClonerJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespacedName *types.NamespacedName, robot *robotv1alpha1.Robot) *batchv1.Job {
+func GetClonerJob(workspaceManager *devv1alpha1.WorkspaceManager, jobNamespacedName *types.NamespacedName, devspace *devv1alpha1.DevSpace) *batchv1.Job {
 
 	var clonerCmdBuilder strings.Builder
 	for wsKey, ws := range workspaceManager.Spec.Workspaces {
@@ -35,11 +35,11 @@ func GetClonerJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespace
 		Image:   "ubuntu:focal",
 		Command: internal.Bash(clonerCmdBuilder.String()),
 		VolumeMounts: []corev1.VolumeMount{
-			configure.GetVolumeMount("", configure.GetVolumeVar(robot)),
-			configure.GetVolumeMount("", configure.GetVolumeUsr(robot)),
-			configure.GetVolumeMount("", configure.GetVolumeOpt(robot)),
-			configure.GetVolumeMount("", configure.GetVolumeEtc(robot)),
-			configure.GetVolumeMount(workspaceManager.Spec.WorkspacesPath, configure.GetVolumeWorkspace(robot)),
+			configure.GetVolumeMount("", configure.GetVolumeVar(devspace)),
+			configure.GetVolumeMount("", configure.GetVolumeUsr(devspace)),
+			configure.GetVolumeMount("", configure.GetVolumeOpt(devspace)),
+			configure.GetVolumeMount("", configure.GetVolumeEtc(devspace)),
+			configure.GetVolumeMount(workspaceManager.Spec.WorkspacesPath, configure.GetVolumeWorkspace(devspace)),
 		},
 	}
 
@@ -48,16 +48,16 @@ func GetClonerJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespace
 			clonerContainer,
 		},
 		Volumes: []corev1.Volume{
-			configure.GetVolumeVar(robot),
-			configure.GetVolumeUsr(robot),
-			configure.GetVolumeOpt(robot),
-			configure.GetVolumeEtc(robot),
-			configure.GetVolumeWorkspace(robot),
+			configure.GetVolumeVar(devspace),
+			configure.GetVolumeUsr(devspace),
+			configure.GetVolumeOpt(devspace),
+			configure.GetVolumeEtc(devspace),
+			configure.GetVolumeWorkspace(devspace),
 		},
 	}
 
 	podSpec.RestartPolicy = corev1.RestartPolicyNever
-	podSpec.NodeSelector = label.GetTenancyMap(robot)
+	podSpec.NodeSelector = label.GetTenancyMap(devspace)
 
 	job := batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
@@ -74,7 +74,7 @@ func GetClonerJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespace
 	return &job
 }
 
-func GetCleanupJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespacedName *types.NamespacedName, robot *robotv1alpha1.Robot) *batchv1.Job {
+func GetCleanupJob(workspaceManager *devv1alpha1.WorkspaceManager, jobNamespacedName *types.NamespacedName, devspace *devv1alpha1.DevSpace) *batchv1.Job {
 
 	var cmdBuilder strings.Builder
 	cmdBuilder.WriteString("cd " + workspaceManager.Spec.WorkspacesPath + " && ")
@@ -88,11 +88,11 @@ func GetCleanupJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespac
 		Image:   "ubuntu:focal",
 		Command: internal.Bash(cmdBuilder.String()),
 		VolumeMounts: []corev1.VolumeMount{
-			configure.GetVolumeMount("", configure.GetVolumeVar(robot)),
-			configure.GetVolumeMount("", configure.GetVolumeUsr(robot)),
-			configure.GetVolumeMount("", configure.GetVolumeOpt(robot)),
-			configure.GetVolumeMount("", configure.GetVolumeEtc(robot)),
-			configure.GetVolumeMount(workspaceManager.Spec.WorkspacesPath, configure.GetVolumeWorkspace(robot)),
+			configure.GetVolumeMount("", configure.GetVolumeVar(devspace)),
+			configure.GetVolumeMount("", configure.GetVolumeUsr(devspace)),
+			configure.GetVolumeMount("", configure.GetVolumeOpt(devspace)),
+			configure.GetVolumeMount("", configure.GetVolumeEtc(devspace)),
+			configure.GetVolumeMount(workspaceManager.Spec.WorkspacesPath, configure.GetVolumeWorkspace(devspace)),
 		},
 	}
 
@@ -101,16 +101,16 @@ func GetCleanupJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespac
 			cleanupContainer,
 		},
 		Volumes: []corev1.Volume{
-			configure.GetVolumeVar(robot),
-			configure.GetVolumeUsr(robot),
-			configure.GetVolumeOpt(robot),
-			configure.GetVolumeEtc(robot),
-			configure.GetVolumeWorkspace(robot),
+			configure.GetVolumeVar(devspace),
+			configure.GetVolumeUsr(devspace),
+			configure.GetVolumeOpt(devspace),
+			configure.GetVolumeEtc(devspace),
+			configure.GetVolumeWorkspace(devspace),
 		},
 	}
 
 	podSpec.RestartPolicy = corev1.RestartPolicyNever
-	podSpec.NodeSelector = label.GetTenancyMap(robot)
+	podSpec.NodeSelector = label.GetTenancyMap(devspace)
 
 	job := batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
@@ -125,4 +125,13 @@ func GetCleanupJob(workspaceManager *robotv1alpha1.WorkspaceManager, jobNamespac
 	}
 
 	return &job
+}
+
+func GetCloneCommand(workspaces []devv1alpha1.Workspace, wsKey int) string {
+
+	var cmdBuilder strings.Builder
+	for key, repo := range workspaces[wsKey].Repositories {
+		cmdBuilder.WriteString("git clone " + repo.URL + " -b " + repo.Branch + " " + key + " &&")
+	}
+	return cmdBuilder.String()
 }

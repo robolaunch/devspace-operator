@@ -7,9 +7,9 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func InjectRuntimeClass(pod *corev1.Pod, robot v1alpha1.Robot, currentNode corev1.Node) *corev1.Pod {
+func InjectRuntimeClass(pod *corev1.Pod, devspace v1alpha1.DevSpace, currentNode corev1.Node) *corev1.Pod {
 
-	if label.GetInstanceType(&robot) == label.InstanceTypeCloudInstance && node.IsK3s(currentNode) {
+	if label.GetInstanceType(&devspace) == label.InstanceTypeCloudInstance && node.IsK3s(currentNode) {
 		nvidiaRuntimeClass := "nvidia"
 		pod.Spec.RuntimeClassName = &nvidiaRuntimeClass
 	}

@@ -5,21 +5,21 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func GetTargetRobot(obj metav1.Object) string {
+func GetTargetDevSpace(obj metav1.Object) string {
 	labels := obj.GetLabels()
 
-	if targetRobot, ok := labels[internal.TARGET_ROBOT_LABEL_KEY]; ok {
-		return targetRobot
+	if targetDevSpace, ok := labels[internal.TARGET_DEVSPACE_LABEL_KEY]; ok {
+		return targetDevSpace
 	}
 
 	return ""
 }
 
-func GetTargetRobotVDI(obj metav1.Object) string {
+func GetTargetDevSpaceVDI(obj metav1.Object) string {
 	labels := obj.GetLabels()
 
-	if targetRobotVDI, ok := labels[internal.TARGET_VDI_LABEL_KEY]; ok {
-		return targetRobotVDI
+	if targetDevSpaceVDI, ok := labels[internal.TARGET_VDI_LABEL_KEY]; ok {
+		return targetDevSpaceVDI
 	}
 
 	return ""
@@ -28,7 +28,7 @@ func GetTargetRobotVDI(obj metav1.Object) string {
 func GetDevSuiteOwned(obj metav1.Object) string {
 	labels := obj.GetLabels()
 
-	if devSuiteOwned, ok := labels[internal.ROBOT_DEV_SUITE_OWNED]; ok {
+	if devSuiteOwned, ok := labels[internal.DEVSPACE_DEV_SUITE_OWNED]; ok {
 		return devSuiteOwned
 	}
 

@@ -15,10 +15,10 @@ type OwnedResourceStatus struct {
 	Phase string `json:"phase,omitempty"`
 }
 
-type OwnedRobotServiceStatus struct {
+type OwnedDevSpaceServiceStatus struct {
 	// Generic status for any owned resource.
 	Resource OwnedResourceStatus `json:"resource,omitempty"`
-	// Address of the robot service that can be reached from outside.
+	// Address of the devspace service that can be reached from outside.
 	Connection string `json:"connection,omitempty"`
 }
 
@@ -36,11 +36,11 @@ type OwnedPodStatus struct {
 	IP string `json:"ip,omitempty"`
 }
 
-type RobotDevSuiteInstanceStatus struct {
+type DevSuiteInstanceStatus struct {
 	// Generic status for any owned resource.
 	Resource OwnedResourceStatus `json:"resource,omitempty"`
-	// Status of the RobotDevSuite instance.
-	Status RobotDevSuiteStatus `json:"status,omitempty"`
+	// Status of the DevSuite instance.
+	Status DevSuiteStatus `json:"status,omitempty"`
 }
 
 type WorkspaceManagerInstanceStatus struct {
@@ -50,9 +50,9 @@ type WorkspaceManagerInstanceStatus struct {
 	Status WorkspaceManagerStatus `json:"status,omitempty"`
 }
 
-func GetRobotServiceDNS(robot Robot, prefix, postfix string) string {
-	tenancy := label.GetTenancy(&robot)
-	connectionStr := tenancy.Organization + "." + robot.Spec.RootDNSConfig.Host + GetRobotServicePath(robot, postfix)
+func GetDevSpaceServiceDNS(devspace DevSpace, prefix, postfix string) string {
+	tenancy := label.GetTenancy(&devspace)
+	connectionStr := tenancy.Organization + "." + devspace.Spec.RootDNSConfig.Host + GetDevSpaceServicePath(devspace, postfix)
 
 	if prefix != "" {
 		connectionStr = prefix + connectionStr
@@ -61,13 +61,13 @@ func GetRobotServiceDNS(robot Robot, prefix, postfix string) string {
 	return connectionStr
 }
 
-func GetRobotServicePath(robot Robot, postfix string) string {
-	tenancy := label.GetTenancy(&robot)
+func GetDevSpaceServicePath(devspace DevSpace, postfix string) string {
+	tenancy := label.GetTenancy(&devspace)
 	connectionStr := "/" + tenancy.Team +
 		"/" + tenancy.Region +
 		"/" + tenancy.CloudInstance +
-		"/" + robot.Namespace +
-		"/" + robot.Name
+		"/" + devspace.Namespace +
+		"/" + devspace.Name
 
 	if postfix != "" {
 		connectionStr = connectionStr + postfix

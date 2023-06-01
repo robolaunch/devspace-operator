@@ -27,20 +27,20 @@ type FakeRoboscaleV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeRoboscaleV1alpha1) Robots(namespace string) v1alpha1.RobotInterface {
-	return &FakeRobots{c, namespace}
+func (c *FakeRoboscaleV1alpha1) DevSpaces(namespace string) v1alpha1.DevSpaceInterface {
+	return &FakeDevSpaces{c, namespace}
 }
 
-func (c *FakeRoboscaleV1alpha1) RobotDevSuites(namespace string) v1alpha1.RobotDevSuiteInterface {
-	return &FakeRobotDevSuites{c, namespace}
+func (c *FakeRoboscaleV1alpha1) DevSuites(namespace string) v1alpha1.DevSuiteInterface {
+	return &FakeDevSuites{c, namespace}
 }
 
 func (c *FakeRoboscaleV1alpha1) DevSpaceIDEs(namespace string) v1alpha1.DevSpaceIDEInterface {
 	return &FakeDevSpaceIDEs{c, namespace}
 }
 
-func (c *FakeRoboscaleV1alpha1) RobotVDIs(namespace string) v1alpha1.RobotVDIInterface {
-	return &FakeRobotVDIs{c, namespace}
+func (c *FakeRoboscaleV1alpha1) DevSpaceVDIs(namespace string) v1alpha1.DevSpaceVDIInterface {
+	return &FakeDevSpaceVDIs{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

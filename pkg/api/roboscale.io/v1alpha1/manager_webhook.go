@@ -43,7 +43,7 @@ func (r *WorkspaceManager) SetupWebhookWithManager(mgr ctrl.Manager) error {
 		Complete()
 }
 
-//+kubebuilder:webhook:path=/mutate-robot-roboscale-io-v1alpha1-workspacemanager,mutating=true,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=workspacemanagers,verbs=create;update,versions=v1alpha1,name=mworkspacemanager.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/mutate-dev-roboscale-io-v1alpha1-workspacemanager,mutating=true,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=workspacemanagers,verbs=create;update,versions=v1alpha1,name=mworkspacemanager.kb.io,admissionReviewVersions=v1
 
 var _ webhook.Defaulter = &WorkspaceManager{}
 
@@ -53,7 +53,7 @@ func (r *WorkspaceManager) Default() {
 	// _ = r.setRepositoryInfo()
 }
 
-//+kubebuilder:webhook:path=/validate-robot-roboscale-io-v1alpha1-workspacemanager,mutating=false,failurePolicy=fail,sideEffects=None,groups=robot.roboscale.io,resources=workspacemanagers,verbs=create;update,versions=v1alpha1,name=vworkspacemanager.kb.io,admissionReviewVersions=v1
+//+kubebuilder:webhook:path=/validate-dev-roboscale-io-v1alpha1-workspacemanager,mutating=false,failurePolicy=fail,sideEffects=None,groups=dev.roboscale.io,resources=workspacemanagers,verbs=create;update,versions=v1alpha1,name=vworkspacemanager.kb.io,admissionReviewVersions=v1
 
 var _ webhook.Validator = &WorkspaceManager{}
 
@@ -61,7 +61,7 @@ var _ webhook.Validator = &WorkspaceManager{}
 func (r *WorkspaceManager) ValidateCreate() error {
 	workspacemanagerlog.Info("validate create", "name", r.Name)
 
-	err := r.checkTargetRobotLabel()
+	err := r.checkTargetDevSpaceLabel()
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func (r *WorkspaceManager) ValidateCreate() error {
 func (r *WorkspaceManager) ValidateUpdate(old runtime.Object) error {
 	workspacemanagerlog.Info("validate update", "name", r.Name)
 
-	err := r.checkTargetRobotLabel()
+	err := r.checkTargetDevSpaceLabel()
 	if err != nil {
 		return err
 	}
@@ -87,11 +87,11 @@ func (r *WorkspaceManager) ValidateDelete() error {
 	return nil
 }
 
-func (r *WorkspaceManager) checkTargetRobotLabel() error {
+func (r *WorkspaceManager) checkTargetDevSpaceLabel() error {
 	labels := r.GetLabels()
 
-	if _, ok := labels[internal.TARGET_ROBOT_LABEL_KEY]; !ok {
-		return errors.New("target robot label should be added with key " + internal.TARGET_ROBOT_LABEL_KEY)
+	if _, ok := labels[internal.TARGET_DEVSPACE_LABEL_KEY]; !ok {
+		return errors.New("target devspace label should be added with key " + internal.TARGET_DEVSPACE_LABEL_KEY)
 	}
 
 	return nil

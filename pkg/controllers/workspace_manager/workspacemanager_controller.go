@@ -21,7 +21,7 @@ import (
 	goErr "errors"
 	"time"
 
-	robotErr "github.com/robolaunch/devspace-operator/internal/error"
+	devspaceErr "github.com/robolaunch/devspace-operator/internal/error"
 	batchv1 "k8s.io/api/batch/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -30,7 +30,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	"github.com/go-logr/logr"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 )
 
 // WorkspaceManagerReconciler reconciles a WorkspaceManager object
@@ -39,9 +39,9 @@ type WorkspaceManagerReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=workspacemanagers,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=workspacemanagers/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=robot.roboscale.io,resources=workspacemanagers/finalizers,verbs=update
+//+kubebuilder:rbac:groups=dev.roboscale.io,resources=workspacemanagers,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=dev.roboscale.io,resources=workspacemanagers/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=dev.roboscale.io,resources=workspacemanagers/finalizers,verbs=update
 
 //+kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
 
@@ -63,10 +63,10 @@ func (r *WorkspaceManagerReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		return ctrl.Result{}, err
 	}
 
-	// Check target robot's other attached objects to see if robot's resources are released
+	// Check target devspace's other attached objects to see if devspace's resources are released
 	err = r.reconcileCheckOtherAttachedResources(ctx, instance)
 	if err != nil {
-		var e *robotErr.RobotResourcesHasNotBeenReleasedError
+		var e *devspaceErr.DevSpaceResourcesHasNotBeenReleasedError
 		if goErr.As(err, &e) {
 			return ctrl.Result{
 				Requeue:      true,
@@ -99,29 +99,29 @@ func (r *WorkspaceManagerReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	return ctrl.Result{}, nil
 }
 
-func (r *WorkspaceManagerReconciler) reconcileCheckStatus(ctx context.Context, instance *robotv1alpha1.WorkspaceManager) error {
+func (r *WorkspaceManagerReconciler) reconcileCheckStatus(ctx context.Context, instance *devv1alpha1.WorkspaceManager) error {
 
 	switch instance.Status.ClonerJobStatus.Created {
 	case true:
 
 		switch instance.Status.ClonerJobStatus.Phase {
-		case string(robotv1alpha1.JobSucceeded):
+		case string(devv1alpha1.JobSucceeded):
 
-			instance.Status.Phase = robotv1alpha1.WorkspaceManagerPhaseReady
+			instance.Status.Phase = devv1alpha1.WorkspaceManagerPhaseReady
 
-		case string(robotv1alpha1.JobActive):
+		case string(devv1alpha1.JobActive):
 
-			instance.Status.Phase = robotv1alpha1.WorkspaceManagerPhaseConfiguringWorkspaces
+			instance.Status.Phase = devv1alpha1.WorkspaceManagerPhaseConfiguringWorkspaces
 
-		case string(robotv1alpha1.JobFailed):
+		case string(devv1alpha1.JobFailed):
 
-			instance.Status.Phase = robotv1alpha1.WorkspaceManagerPhaseFailed
+			instance.Status.Phase = devv1alpha1.WorkspaceManagerPhaseFailed
 
 		}
 
 	case false:
 
-		instance.Status.Phase = robotv1alpha1.WorkspaceManagerPhaseConfiguringWorkspaces
+		instance.Status.Phase = devv1alpha1.WorkspaceManagerPhaseConfiguringWorkspaces
 		err := r.createClonerJob(ctx, instance, instance.GetClonerJobMetadata())
 		if err != nil {
 			return err
@@ -133,7 +133,7 @@ func (r *WorkspaceManagerReconciler) reconcileCheckStatus(ctx context.Context, i
 	return nil
 }
 
-func (r *WorkspaceManagerReconciler) reconcileCheckResources(ctx context.Context, instance *robotv1alpha1.WorkspaceManager) error {
+func (r *WorkspaceManagerReconciler) reconcileCheckResources(ctx context.Context, instance *devv1alpha1.WorkspaceManager) error {
 
 	err := r.reconcileCheckClonerJob(ctx, instance)
 	if err != nil {
@@ -146,7 +146,7 @@ func (r *WorkspaceManagerReconciler) reconcileCheckResources(ctx context.Context
 // SetupWithManager sets up the controller with the Manager.
 func (r *WorkspaceManagerReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&robotv1alpha1.WorkspaceManager{}).
+		For(&devv1alpha1.WorkspaceManager{}).
 		Owns(&batchv1.Job{}).
 		Complete(r)
 }

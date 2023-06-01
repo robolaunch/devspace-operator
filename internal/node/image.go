@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/robolaunch/devspace-operator/internal"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
 )
@@ -17,12 +17,12 @@ type Platform struct {
 }
 
 type Version struct {
-	Date          string        `yaml:"date"`
-	Version       string        `yaml:"version"`
-	RoboticsCloud RoboticsCloud `yaml:"roboticsCloud"`
+	Date     string   `yaml:"date"`
+	Version  string   `yaml:"version"`
+	DevCloud DevCloud `yaml:"devCloud"`
 }
 
-type RoboticsCloud struct {
+type DevCloud struct {
 	Kubernetes Kubernetes `yaml:"kubernetes"`
 }
 
@@ -31,10 +31,10 @@ type Kubernetes struct {
 }
 
 type Operators struct {
-	RobotOperator RobotOperator `yaml:"robot"`
+	DevSpaceOperator DevSpaceOperator `yaml:"devspace"`
 }
 
-type RobotOperator struct {
+type DevSpaceOperator struct {
 	Images Images `yaml:"images"`
 }
 
@@ -44,19 +44,19 @@ type Images struct {
 	Tags         []string `yaml:"tags"`
 }
 
-// Not used in robot manifest, needed for internal use.
-type ReadyRobotProperties struct {
+// Not used in devspace manifest, needed for internal use.
+type ReadyDevSpaceProperties struct {
 	Enabled bool
 	Image   string
 }
 
-func GetReadyRobotProperties(robot robotv1alpha1.Robot) ReadyRobotProperties {
-	labels := robot.GetLabels()
+func GetReadyDevSpaceProperties(devspace devv1alpha1.DevSpace) ReadyDevSpaceProperties {
+	labels := devspace.GetLabels()
 
-	if user, hasUser := labels[internal.ROBOT_IMAGE_USER]; hasUser {
-		if repository, hasRepository := labels[internal.ROBOT_IMAGE_REPOSITORY]; hasRepository {
-			if tag, hasTag := labels[internal.ROBOT_IMAGE_TAG]; hasTag {
-				return ReadyRobotProperties{
+	if user, hasUser := labels[internal.DEVSPACE_IMAGE_USER]; hasUser {
+		if repository, hasRepository := labels[internal.DEVSPACE_IMAGE_REPOSITORY]; hasRepository {
+			if tag, hasTag := labels[internal.DEVSPACE_IMAGE_TAG]; hasTag {
+				return ReadyDevSpaceProperties{
 					Enabled: true,
 					Image:   user + "/" + repository + ":" + tag,
 				}
@@ -64,22 +64,21 @@ func GetReadyRobotProperties(robot robotv1alpha1.Robot) ReadyRobotProperties {
 		}
 	}
 
-	return ReadyRobotProperties{
+	return ReadyDevSpaceProperties{
 		Enabled: false,
 	}
 }
 
-func GetImage(node corev1.Node, robot robotv1alpha1.Robot) (string, error) {
+func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 
 	var imageBuilder strings.Builder
 	var tagBuilder strings.Builder
 
-	distributions := robot.Spec.Distributions
-	readyRobot := GetReadyRobotProperties(robot)
+	readyDevSpace := GetReadyDevSpaceProperties(devspace)
 
-	if readyRobot.Enabled {
+	if readyDevSpace.Enabled {
 
-		imageBuilder.WriteString(readyRobot.Image)
+		imageBuilder.WriteString(readyDevSpace.Image)
 
 	} else {
 
@@ -92,7 +91,7 @@ func GetImage(node corev1.Node, robot robotv1alpha1.Robot) (string, error) {
 		organization := imageProps.Organization
 		repository := imageProps.Repository
 
-		tagBuilder.WriteString(getDistroStr(distributions))
+		tagBuilder.WriteString(string(devspace.Spec.UbuntuDistro))
 
 		hasGPU := HasGPU(node)
 
@@ -113,23 +112,6 @@ func GetImage(node corev1.Node, robot robotv1alpha1.Robot) (string, error) {
 
 	return imageBuilder.String(), nil
 
-}
-
-func getDistroStr(distributions []robotv1alpha1.ROSDistro) string {
-
-	if len(distributions) == 1 {
-		return string(distributions[0])
-	}
-
-	return setPrecisionBetweenDistributions(distributions)
-}
-
-func setPrecisionBetweenDistributions(distributions []robotv1alpha1.ROSDistro) string {
-
-	if distributions[0] == robotv1alpha1.ROSDistroFoxy || distributions[1] == robotv1alpha1.ROSDistroFoxy {
-		return string(robotv1alpha1.ROSDistroFoxy) + "-" + string(robotv1alpha1.ROSDistroGalactic)
-	}
-	return ""
 }
 
 func getImageProps(platformVersion string) (Images, error) {
@@ -158,7 +140,7 @@ func getImageProps(platformVersion string) (Images, error) {
 	var imageProps Images
 	for _, v := range platform.Versions {
 		if v.Version == platformVersion {
-			imageProps = v.RoboticsCloud.Kubernetes.Operators.RobotOperator.Images
+			imageProps = v.DevCloud.Kubernetes.Operators.DevSpaceOperator.Images
 		}
 	}
 

@@ -1,21 +1,21 @@
 package v1alpha1
 
-type RobotPhase string
+type DevSpacePhase string
 
 const (
-	RobotPhaseCreatingEnvironment      RobotPhase = "CreatingEnvironment"
-	RobotPhaseConfiguringEnvironment   RobotPhase = "ConfiguringEnvironment"
-	RobotPhaseCreatingDevelopmentSuite RobotPhase = "CreatingDevelopmentSuite"
-	RobotPhaseConfiguringWorkspaces    RobotPhase = "ConfiguringWorkspaces"
-	RobotPhaseEnvironmentReady         RobotPhase = "EnvironmentReady"
-	RobotPhaseBuilding                 RobotPhase = "Building"
-	RobotPhaseBuilt                    RobotPhase = "Built"
-	RobotPhaseLaunching                RobotPhase = "Launching"
-	RobotPhaseRunning                  RobotPhase = "Running"
-	RobotPhaseDeletingLoaderJob        RobotPhase = "DeletingLoaderJob"
-	RobotPhaseDeletingVolumes          RobotPhase = "DeletingVolumes"
+	DevSpacePhaseCreatingEnvironment      DevSpacePhase = "CreatingEnvironment"
+	DevSpacePhaseConfiguringEnvironment   DevSpacePhase = "ConfiguringEnvironment"
+	DevSpacePhaseCreatingDevelopmentSuite DevSpacePhase = "CreatingDevelopmentSuite"
+	DevSpacePhaseConfiguringWorkspaces    DevSpacePhase = "ConfiguringWorkspaces"
+	DevSpacePhaseEnvironmentReady         DevSpacePhase = "EnvironmentReady"
+	DevSpacePhaseBuilding                 DevSpacePhase = "Building"
+	DevSpacePhaseBuilt                    DevSpacePhase = "Built"
+	DevSpacePhaseLaunching                DevSpacePhase = "Launching"
+	DevSpacePhaseRunning                  DevSpacePhase = "Running"
+	DevSpacePhaseDeletingLoaderJob        DevSpacePhase = "DeletingLoaderJob"
+	DevSpacePhaseDeletingVolumes          DevSpacePhase = "DeletingVolumes"
 
-	RobotPhaseFailed RobotPhase = "Failed"
+	DevSpacePhaseFailed DevSpacePhase = "Failed"
 )
 
 type WorkspaceManagerPhase string
@@ -26,15 +26,15 @@ const (
 	WorkspaceManagerPhaseFailed                WorkspaceManagerPhase = "Failed"
 )
 
-type RobotDevSuitePhase string
+type DevSuitePhase string
 
 const (
-	RobotDevSuitePhaseRobotNotFound       RobotDevSuitePhase = "RobotNotFound"
-	RobotDevSuitePhaseCreatingRobotVDI    RobotDevSuitePhase = "CreatingRobotVDI"
-	RobotDevSuitePhaseCreatingDevSpaceIDE RobotDevSuitePhase = "CreatingDevspaceIDE"
-	RobotDevSuitePhaseRunning             RobotDevSuitePhase = "Running"
-	RobotDevSuitePhaseDeactivating        RobotDevSuitePhase = "Deactivating"
-	RobotDevSuitePhaseInactive            RobotDevSuitePhase = "Inactive"
+	DevSuitePhaseDevSpaceNotFound    DevSuitePhase = "DevSpaceNotFound"
+	DevSuitePhaseCreatingDevSpaceVDI DevSuitePhase = "CreatingDevSpaceVDI"
+	DevSuitePhaseCreatingDevSpaceIDE DevSuitePhase = "CreatingDevSpaceIDE"
+	DevSuitePhaseRunning             DevSuitePhase = "Running"
+	DevSuitePhaseDeactivating        DevSuitePhase = "Deactivating"
+	DevSuitePhaseInactive            DevSuitePhase = "Inactive"
 )
 
 type DevSpaceIDEPhase string
@@ -46,13 +46,13 @@ const (
 	DevSpaceIDEPhaseRunning         DevSpaceIDEPhase = "Running"
 )
 
-type RobotVDIPhase string
+type DevSpaceVDIPhase string
 
 const (
-	RobotVDIPhaseCreatingPVC        RobotVDIPhase = "CreatingPVC"
-	RobotVDIPhaseCreatingTCPService RobotVDIPhase = "CreatingTCPService"
-	RobotVDIPhaseCreatingUDPService RobotVDIPhase = "CreatingUDPService"
-	RobotVDIPhaseCreatingPod        RobotVDIPhase = "CreatingPod"
-	RobotVDIPhaseCreatingIngress    RobotVDIPhase = "CreatingIngress"
-	RobotVDIPhaseRunning            RobotVDIPhase = "Running"
+	DevSpaceVDIPhaseCreatingPVC        DevSpaceVDIPhase = "CreatingPVC"
+	DevSpaceVDIPhaseCreatingTCPService DevSpaceVDIPhase = "CreatingTCPService"
+	DevSpaceVDIPhaseCreatingUDPService DevSpaceVDIPhase = "CreatingUDPService"
+	DevSpaceVDIPhaseCreatingPod        DevSpaceVDIPhase = "CreatingPod"
+	DevSpaceVDIPhaseCreatingIngress    DevSpaceVDIPhase = "CreatingIngress"
+	DevSpaceVDIPhaseRunning            DevSpaceVDIPhase = "Running"
 )

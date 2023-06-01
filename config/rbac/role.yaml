@@ -66,19 +66,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - networking.k8s.io
-  resources:
-  - ingresses
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
   - devspaceides
   verbs:
@@ -90,13 +78,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
   - devspaceides/finalizers
   verbs:
   - update
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
   - devspaceides/status
   verbs:
@@ -104,9 +92,9 @@ rules:
   - patch
   - update
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
-  - robotdevsuites
+  - devspaces
   verbs:
   - create
   - delete
@@ -116,23 +104,23 @@ rules:
   - update
   - watch
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
-  - robotdevsuites/finalizers
+  - devspaces/finalizers
   verbs:
   - update
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
-  - robotdevsuites/status
+  - devspaces/status
   verbs:
   - get
   - patch
   - update
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
-  - robots
+  - devspacevdis
   verbs:
   - create
   - delete
@@ -142,23 +130,23 @@ rules:
   - update
   - watch
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
-  - robots/finalizers
+  - devspacevdis/finalizers
   verbs:
   - update
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
-  - robots/status
+  - devspacevdis/status
   verbs:
   - get
   - patch
   - update
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
-  - robotvdis
+  - devsuites
   verbs:
   - create
   - delete
@@ -168,21 +156,21 @@ rules:
   - update
   - watch
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
-  - robotvdis/finalizers
+  - devsuites/finalizers
   verbs:
   - update
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
-  - robotvdis/status
+  - devsuites/status
   verbs:
   - get
   - patch
   - update
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
   - workspacemanagers
   verbs:
@@ -194,16 +182,28 @@ rules:
   - update
   - watch
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
   - workspacemanagers/finalizers
   verbs:
   - update
 - apiGroups:
-  - robot.roboscale.io
+  - dev.roboscale.io
   resources:
   - workspacemanagers/status
   verbs:
   - get
   - patch
   - update
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch

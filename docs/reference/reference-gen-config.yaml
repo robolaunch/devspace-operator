@@ -2,10 +2,10 @@ processor:
   ignoreTypes:
     - "List$"
   sortKinds:
-    - "Robot"
+    - "DevSpace"
     - "WorkspaceManager"
-    - "RobotDevSuite"
-    - "RobotVDI"
+    - "DevSuite"
+    - "DevSpaceVDI"
     - "DevSpaceIDE"
   ignoreFields:
     - "TypeMeta$"

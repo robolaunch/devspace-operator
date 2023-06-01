@@ -4,24 +4,24 @@ import (
 	"context"
 
 	"github.com/robolaunch/devspace-operator/internal/label"
-	robotv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
+	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/retry"
 )
 
-func (r *WorkspaceManagerReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*robotv1alpha1.WorkspaceManager, error) {
-	instance := &robotv1alpha1.WorkspaceManager{}
+func (r *WorkspaceManagerReconciler) reconcileGetInstance(ctx context.Context, meta types.NamespacedName) (*devv1alpha1.WorkspaceManager, error) {
+	instance := &devv1alpha1.WorkspaceManager{}
 	err := r.Get(ctx, meta, instance)
 	if err != nil {
-		return &robotv1alpha1.WorkspaceManager{}, err
+		return &devv1alpha1.WorkspaceManager{}, err
 	}
 
 	return instance, nil
 }
 
-func (r *WorkspaceManagerReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *robotv1alpha1.WorkspaceManager) error {
+func (r *WorkspaceManagerReconciler) reconcileUpdateInstanceStatus(ctx context.Context, instance *devv1alpha1.WorkspaceManager) error {
 	return retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		instanceLV := &robotv1alpha1.WorkspaceManager{}
+		instanceLV := &devv1alpha1.WorkspaceManager{}
 		err := r.Get(ctx, types.NamespacedName{
 			Name:      instance.Name,
 			Namespace: instance.Namespace,
@@ -36,20 +36,20 @@ func (r *WorkspaceManagerReconciler) reconcileUpdateInstanceStatus(ctx context.C
 	})
 }
 
-func (r *WorkspaceManagerReconciler) reconcileGetTargetRobot(ctx context.Context, instance *robotv1alpha1.WorkspaceManager) (*robotv1alpha1.Robot, error) {
-	robot := &robotv1alpha1.Robot{}
+func (r *WorkspaceManagerReconciler) reconcileGetTargetDevSpace(ctx context.Context, instance *devv1alpha1.WorkspaceManager) (*devv1alpha1.DevSpace, error) {
+	devspace := &devv1alpha1.DevSpace{}
 	err := r.Get(ctx, types.NamespacedName{
 		Namespace: instance.Namespace,
-		Name:      label.GetTargetRobot(instance),
-	}, robot)
+		Name:      label.GetTargetDevSpace(instance),
+	}, devspace)
 	if err != nil {
 		return nil, err
 	}
 
-	return robot, nil
+	return devspace, nil
 }
 
-func (r *WorkspaceManagerReconciler) reconcileCleanup(ctx context.Context, instance *robotv1alpha1.WorkspaceManager) error {
+func (r *WorkspaceManagerReconciler) reconcileCleanup(ctx context.Context, instance *devv1alpha1.WorkspaceManager) error {
 
 	err := r.reconcileDeleteClonerJob(ctx, instance)
 	if err != nil {

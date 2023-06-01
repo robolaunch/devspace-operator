@@ -17,5 +17,5 @@ jobs:
     - name: Run Tests
       run: make test
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/robot-controller-manager-dev:GITHUB_SHA
+      run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/devspace-controller-manager-dev:GITHUB_SHA
 

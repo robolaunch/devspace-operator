@@ -126,11 +126,11 @@ deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in
 .PHONY: extract
 extract: manifests kustomize ## Extract controller YAMLs, not deploy
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default > $(LOCAL_MANIFEST_LOCATION)/robot_operator.yaml
+	$(KUSTOMIZE) build config/default > $(LOCAL_MANIFEST_LOCATION)/devspace_operator.yaml
 
 .PHONY: select-node
 select-node: 
-	yq -i e '(select(.kind == "Deployment") | .spec.template.spec.nodeSelector."${LABEL_KEY}") = "${LABEL_VAL}"' $(LOCAL_MANIFEST_LOCATION)/robot_operator.yaml
+	yq -i e '(select(.kind == "Deployment") | .spec.template.spec.nodeSelector."${LABEL_KEY}") = "${LABEL_VAL}"' $(LOCAL_MANIFEST_LOCATION)/devspace_operator.yaml
 	yq -i e '(select(.kind == "Deployment") | .spec.template.spec.nodeSelector."${LABEL_KEY}") = "${LABEL_VAL}"' $(LOCAL_MANIFEST_LOCATION)/cert_manager_1.8.0.yaml
 
 .PHONY: get-cert-manager
@@ -139,18 +139,18 @@ get-cert-manager:
 
 .PHONY: apply
 apply: 
-	kubectl apply -f $(LOCAL_MANIFEST_LOCATION)/robot_operator.yaml
+	kubectl apply -f $(LOCAL_MANIFEST_LOCATION)/devspace_operator.yaml
 
 # Production
 
 .PHONY: gh-extract
 gh-extract: manifests kustomize ## Extract controller YAMLs, not deploy
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default > $(MANIFEST_LOCATION)/robot_operator.yaml
+	$(KUSTOMIZE) build config/default > $(MANIFEST_LOCATION)/devspace_operator.yaml
 
 .PHONY: gh-select-node
 gh-select-node: 
-	yq -i e '(select(.kind == "Deployment") | .spec.template.spec.nodeSelector."${LABEL_KEY}") = "${LABEL_VAL}"' $(MANIFEST_LOCATION)/robot_operator.yaml
+	yq -i e '(select(.kind == "Deployment") | .spec.template.spec.nodeSelector."${LABEL_KEY}") = "${LABEL_VAL}"' $(MANIFEST_LOCATION)/devspace_operator.yaml
 	yq -i e '(select(.kind == "Deployment") | .spec.template.spec.nodeSelector."${LABEL_KEY}") = "${LABEL_VAL}"' $(MANIFEST_LOCATION)/cert_manager_1.8.0.yaml
 
 .PHONY: gh-get-cert-manager
@@ -159,7 +159,7 @@ gh-get-cert-manager:
 
 .PHONY: gh-apply
 gh-apply: 
-	kubectl apply -f $(MANIFEST_LOCATION)/robot_operator.yaml
+	kubectl apply -f $(MANIFEST_LOCATION)/devspace_operator.yaml
 
 .PHONY: undeploy
 undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
@@ -210,16 +210,16 @@ $(GIT_CHGLOG): $(LOCALBIN)
 	test -s $(LOCALBIN)/git-chglog || GOBIN=$(LOCALBIN) go install github.com/git-chglog/git-chglog/cmd/git-chglog@latest
 
 helm: manifests kustomize helmify
-	rm -rf hack/deploy.local/chart/robot-operator
-	$(KUSTOMIZE) build config/default | $(HELMIFY) hack/deploy.local/chart/robot-operator
-	yq e -i '.appVersion = "v${RELEASE}"' hack/deploy.local/chart/robot-operator/Chart.yaml
-	yq e -i '.version = "${RELEASE}"' hack/deploy.local/chart/robot-operator/Chart.yaml
+	rm -rf hack/deploy.local/chart/devspace-operator
+	$(KUSTOMIZE) build config/default | $(HELMIFY) hack/deploy.local/chart/devspace-operator
+	yq e -i '.appVersion = "v${RELEASE}"' hack/deploy.local/chart/devspace-operator/Chart.yaml
+	yq e -i '.version = "${RELEASE}"' hack/deploy.local/chart/devspace-operator/Chart.yaml
   
 gh-helm: manifests kustomize helmify
-	rm -rf hack/deploy/chart/robot-operator
-	$(KUSTOMIZE) build config/default | $(HELMIFY) hack/deploy/chart/robot-operator
-	yq e -i '.appVersion = "v${RELEASE}"' hack/deploy/chart/robot-operator/Chart.yaml
-	yq e -i '.version = "${RELEASE}"' hack/deploy/chart/robot-operator/Chart.yaml
+	rm -rf hack/deploy/chart/devspace-operator
+	$(KUSTOMIZE) build config/default | $(HELMIFY) hack/deploy/chart/devspace-operator
+	yq e -i '.appVersion = "v${RELEASE}"' hack/deploy/chart/devspace-operator/Chart.yaml
+	yq e -i '.version = "${RELEASE}"' hack/deploy/chart/devspace-operator/Chart.yaml
 
 changelog: git-chglog
 	$(GIT_CHGLOG) --config ${GIT_CHGLOG_CONFIG_PATH} -o CHANGELOG.md

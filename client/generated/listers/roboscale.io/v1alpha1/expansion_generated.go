@@ -17,21 +17,21 @@ limitations under the License.
 
 package v1alpha1
 
-// RobotListerExpansion allows custom methods to be added to
-// RobotLister.
-type RobotListerExpansion interface{}
+// DevSpaceListerExpansion allows custom methods to be added to
+// DevSpaceLister.
+type DevSpaceListerExpansion interface{}
 
-// RobotNamespaceListerExpansion allows custom methods to be added to
-// RobotNamespaceLister.
-type RobotNamespaceListerExpansion interface{}
+// DevSpaceNamespaceListerExpansion allows custom methods to be added to
+// DevSpaceNamespaceLister.
+type DevSpaceNamespaceListerExpansion interface{}
 
-// RobotDevSuiteListerExpansion allows custom methods to be added to
-// RobotDevSuiteLister.
-type RobotDevSuiteListerExpansion interface{}
+// DevSuiteListerExpansion allows custom methods to be added to
+// DevSuiteLister.
+type DevSuiteListerExpansion interface{}
 
-// RobotDevSuiteNamespaceListerExpansion allows custom methods to be added to
-// RobotDevSuiteNamespaceLister.
-type RobotDevSuiteNamespaceListerExpansion interface{}
+// DevSuiteNamespaceListerExpansion allows custom methods to be added to
+// DevSuiteNamespaceLister.
+type DevSuiteNamespaceListerExpansion interface{}
 
 // DevSpaceIDEListerExpansion allows custom methods to be added to
 // DevSpaceIDELister.
@@ -41,10 +41,10 @@ type DevSpaceIDEListerExpansion interface{}
 // DevSpaceIDENamespaceLister.
 type DevSpaceIDENamespaceListerExpansion interface{}
 
-// RobotVDIListerExpansion allows custom methods to be added to
-// RobotVDILister.
-type RobotVDIListerExpansion interface{}
+// DevSpaceVDIListerExpansion allows custom methods to be added to
+// DevSpaceVDILister.
+type DevSpaceVDIListerExpansion interface{}
 
-// RobotVDINamespaceListerExpansion allows custom methods to be added to
-// RobotVDINamespaceLister.
-type RobotVDINamespaceListerExpansion interface{}
+// DevSpaceVDINamespaceListerExpansion allows custom methods to be added to
+// DevSpaceVDINamespaceLister.
+type DevSpaceVDINamespaceListerExpansion interface{}

@@ -17,10 +17,10 @@ limitations under the License.
 
 package v1alpha1
 
-type RobotExpansion interface{}
+type DevSpaceExpansion interface{}
 
-type RobotDevSuiteExpansion interface{}
+type DevSuiteExpansion interface{}
 
 type DevSpaceIDEExpansion interface{}
 
-type RobotVDIExpansion interface{}
+type DevSpaceVDIExpansion interface{}

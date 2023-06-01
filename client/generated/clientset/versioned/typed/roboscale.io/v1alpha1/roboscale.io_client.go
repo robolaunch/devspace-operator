@@ -27,10 +27,10 @@ import (
 
 type RoboscaleV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	RobotsGetter
-	RobotDevSuitesGetter
+	DevSpacesGetter
+	DevSuitesGetter
 	DevSpaceIDEsGetter
-	RobotVDIsGetter
+	DevSpaceVDIsGetter
 }
 
 // RoboscaleV1alpha1Client is used to interact with features provided by the roboscale.io group.
@@ -38,20 +38,20 @@ type RoboscaleV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *RoboscaleV1alpha1Client) Robots(namespace string) RobotInterface {
-	return newRobots(c, namespace)
+func (c *RoboscaleV1alpha1Client) DevSpaces(namespace string) DevSpaceInterface {
+	return newDevSpaces(c, namespace)
 }
 
-func (c *RoboscaleV1alpha1Client) RobotDevSuites(namespace string) RobotDevSuiteInterface {
-	return newRobotDevSuites(c, namespace)
+func (c *RoboscaleV1alpha1Client) DevSuites(namespace string) DevSuiteInterface {
+	return newDevSuites(c, namespace)
 }
 
 func (c *RoboscaleV1alpha1Client) DevSpaceIDEs(namespace string) DevSpaceIDEInterface {
 	return newDevSpaceIDEs(c, namespace)
 }
 
-func (c *RoboscaleV1alpha1Client) RobotVDIs(namespace string) RobotVDIInterface {
-	return newRobotVDIs(c, namespace)
+func (c *RoboscaleV1alpha1Client) DevSpaceVDIs(namespace string) DevSpaceVDIInterface {
+	return newDevSpaceVDIs(c, namespace)
 }
 
 // NewForConfig creates a new RoboscaleV1alpha1Client for the given config.

@@ -23,14 +23,14 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// Robots returns a RobotInformer.
-	Robots() RobotInformer
-	// RobotDevSuites returns a RobotDevSuiteInformer.
-	RobotDevSuites() RobotDevSuiteInformer
+	// DevSpaces returns a DevSpaceInformer.
+	DevSpaces() DevSpaceInformer
+	// DevSuites returns a DevSuiteInformer.
+	DevSuites() DevSuiteInformer
 	// DevSpaceIDEs returns a DevSpaceIDEInformer.
 	DevSpaceIDEs() DevSpaceIDEInformer
-	// RobotVDIs returns a RobotVDIInformer.
-	RobotVDIs() RobotVDIInformer
+	// DevSpaceVDIs returns a DevSpaceVDIInformer.
+	DevSpaceVDIs() DevSpaceVDIInformer
 }
 
 type version struct {
@@ -44,14 +44,14 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// Robots returns a RobotInformer.
-func (v *version) Robots() RobotInformer {
-	return &robotInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// DevSpaces returns a DevSpaceInformer.
+func (v *version) DevSpaces() DevSpaceInformer {
+	return &devspaceInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// RobotDevSuites returns a RobotDevSuiteInformer.
-func (v *version) RobotDevSuites() RobotDevSuiteInformer {
-	return &robotDevSuiteInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// DevSuites returns a DevSuiteInformer.
+func (v *version) DevSuites() DevSuiteInformer {
+	return &devSuiteInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // DevSpaceIDEs returns a DevSpaceIDEInformer.
@@ -59,7 +59,7 @@ func (v *version) DevSpaceIDEs() DevSpaceIDEInformer {
 	return &devSpaceIDEInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
-// RobotVDIs returns a RobotVDIInformer.
-func (v *version) RobotVDIs() RobotVDIInformer {
-	return &robotVDIInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// DevSpaceVDIs returns a DevSpaceVDIInformer.
+func (v *version) DevSpaceVDIs() DevSpaceVDIInformer {
+	return &devSpaceVDIInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }

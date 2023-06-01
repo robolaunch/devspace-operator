@@ -17,12 +17,12 @@ type Platform struct {
 }
 
 type Version struct {
-	Date          string        `yaml:"date"`
-	Version       string        `yaml:"version"`
-	RoboticsCloud RoboticsCloud `yaml:"roboticsCloud"`
+	Date     string   `yaml:"date"`
+	Version  string   `yaml:"version"`
+	DevCloud DevCloud `yaml:"devCloud"`
 }
 
-type RoboticsCloud struct {
+type DevCloud struct {
 	Kubernetes Kubernetes `yaml:"kubernetes"`
 }
 
@@ -74,7 +74,6 @@ func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 	var imageBuilder strings.Builder
 	var tagBuilder strings.Builder
 
-	distributions := devspace.Spec.Distributions
 	readyDevSpace := GetReadyDevSpaceProperties(devspace)
 
 	if readyDevSpace.Enabled {
@@ -92,7 +91,7 @@ func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 		organization := imageProps.Organization
 		repository := imageProps.Repository
 
-		tagBuilder.WriteString(getDistroStr(distributions))
+		tagBuilder.WriteString(string(devspace.Spec.UbuntuDistro))
 
 		hasGPU := HasGPU(node)
 
@@ -113,23 +112,6 @@ func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 
 	return imageBuilder.String(), nil
 
-}
-
-func getDistroStr(distributions []devv1alpha1.ROSDistro) string {
-
-	if len(distributions) == 1 {
-		return string(distributions[0])
-	}
-
-	return setPrecisionBetweenDistributions(distributions)
-}
-
-func setPrecisionBetweenDistributions(distributions []devv1alpha1.ROSDistro) string {
-
-	if distributions[0] == devv1alpha1.ROSDistroFoxy || distributions[1] == devv1alpha1.ROSDistroFoxy {
-		return string(devv1alpha1.ROSDistroFoxy) + "-" + string(devv1alpha1.ROSDistroGalactic)
-	}
-	return ""
 }
 
 func getImageProps(platformVersion string) (Images, error) {
@@ -158,7 +140,7 @@ func getImageProps(platformVersion string) (Images, error) {
 	var imageProps Images
 	for _, v := range platform.Versions {
 		if v.Version == platformVersion {
-			imageProps = v.RoboticsCloud.Kubernetes.Operators.DevSpaceOperator.Images
+			imageProps = v.DevCloud.Kubernetes.Operators.DevSpaceOperator.Images
 		}
 	}
 

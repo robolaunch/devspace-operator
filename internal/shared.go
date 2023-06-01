@@ -135,6 +135,18 @@ func Bash(command string) []string {
 	}
 }
 
+func BashWithUser(command, user string) []string {
+	return []string{
+		"sudo",
+		"-H",
+		"-u",
+		user,
+		"bash",
+		"-c",
+		command,
+	}
+}
+
 func Env(key string, value string) corev1.EnvVar {
 	return corev1.EnvVar{
 		Name:  key,

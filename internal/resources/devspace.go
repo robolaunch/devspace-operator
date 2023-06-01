@@ -81,6 +81,8 @@ func GetLoaderJob(devspace *devv1alpha1.DevSpace, jobNamespacedName *types.Names
 	preparerCmdBuilder.WriteString(" && apt-get update")
 	preparerCmdBuilder.WriteString(" && apt-get dist-upgrade -y")
 	preparerCmdBuilder.WriteString(" && apt-get update")
+	preparerCmdBuilder.WriteString(" && chown root:root /usr/bin/sudo")
+	preparerCmdBuilder.WriteString(" && chmod 4755 /usr/bin/sudo")
 
 	copierContainer := corev1.Container{
 		Name:            "copier",
@@ -204,13 +206,4 @@ func GetWorkspaceManager(devspace *devv1alpha1.DevSpace, wsmNamespacedName *type
 
 	return &workspaceManager
 
-}
-
-func GetCloneCommand(workspaces []devv1alpha1.Workspace, wsKey int) string {
-
-	var cmdBuilder strings.Builder
-	for key, repo := range workspaces[wsKey].Repositories {
-		cmdBuilder.WriteString("git clone " + repo.URL + " -b " + repo.Branch + " " + key + " &&")
-	}
-	return cmdBuilder.String()
 }

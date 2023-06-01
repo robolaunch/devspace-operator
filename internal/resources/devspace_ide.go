@@ -2,6 +2,7 @@ package resources
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/robolaunch/devspace-operator/internal"
@@ -21,12 +22,14 @@ func getDevSpaceIDESelector(devSpaceIDE devv1alpha1.DevSpaceIDE) map[string]stri
 	}
 }
 
+var devspaceIDEContainerPort int = 9000
+
 func GetDevSpaceIDEPod(devSpaceIDE *devv1alpha1.DevSpaceIDE, podNamespacedName *types.NamespacedName, devspace devv1alpha1.DevSpace, devSpaceVDI devv1alpha1.DevSpaceVDI, node corev1.Node) *corev1.Pod {
 
 	// discovery server
 
 	var cmdBuilder strings.Builder
-	cmdBuilder.WriteString("code-server " + devspace.Spec.WorkspaceManagerTemplate.WorkspacesPath + " --bind-addr 0.0.0.0:$CODE_SERVER_PORT --auth none")
+	cmdBuilder.WriteString("code-server " + devspace.Spec.WorkspaceManagerTemplate.WorkspacesPath + " --bind-addr 0.0.0.0:" + strconv.Itoa(devspaceIDEContainerPort) + " --auth none")
 
 	labels := getDevSpaceIDESelector(*devSpaceIDE)
 	for k, v := range devSpaceIDE.Labels {
@@ -44,9 +47,8 @@ func GetDevSpaceIDEPod(devSpaceIDE *devv1alpha1.DevSpaceIDE, podNamespacedName *
 				{
 					Name:    "code-server",
 					Image:   devspace.Status.Image,
-					Command: internal.Bash(cmdBuilder.String()),
+					Command: internal.BashWithUser(cmdBuilder.String(), "robolaunch"),
 					Env: []corev1.EnvVar{
-						internal.Env("CODE_SERVER_PORT", "9000"),
 						internal.Env("DEVSPACE_NAMESPACE", devspace.Namespace),
 						internal.Env("DEVSPACE_NAME", devspace.Name),
 						internal.Env("TERM", "xterm-256color"),
@@ -61,7 +63,7 @@ func GetDevSpaceIDEPod(devSpaceIDE *devv1alpha1.DevSpaceIDE, podNamespacedName *
 					Ports: []corev1.ContainerPort{
 						{
 							Name:          "code-server",
-							ContainerPort: 9000,
+							ContainerPort: int32(devspaceIDEContainerPort),
 						},
 					},
 					Resources: corev1.ResourceRequirements{
@@ -101,9 +103,9 @@ func GetDevSpaceIDEService(devSpaceIDE *devv1alpha1.DevSpaceIDE, svcNamespacedNa
 		Selector: getDevSpaceIDESelector(*devSpaceIDE),
 		Ports: []corev1.ServicePort{
 			{
-				Port: 9000,
+				Port: int32(devspaceIDEContainerPort),
 				TargetPort: intstr.IntOrString{
-					IntVal: 9000,
+					IntVal: int32(devspaceIDEContainerPort),
 				},
 				Protocol: corev1.ProtocolTCP,
 				Name:     "cloud-ide",
@@ -164,7 +166,7 @@ func GetDevSpaceIDEIngress(devSpaceIDE *devv1alpha1.DevSpaceIDE, ingressNamespac
 									Service: &networkingv1.IngressServiceBackend{
 										Name: devSpaceIDE.GetDevSpaceIDEServiceMetadata().Name,
 										Port: networkingv1.ServiceBackendPort{
-											Number: 9000,
+											Number: int32(devspaceIDEContainerPort),
 										},
 									},
 								},

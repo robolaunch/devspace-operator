@@ -7,8 +7,6 @@ resources:
 - bases/dev.roboscale.io_devspacevdis.yaml
 - bases/dev.roboscale.io_devspaceides.yaml
 - bases/dev.roboscale.io_workspacemanagers.yaml
-- bases/multicluster.x-k8s.io_serviceexports.yaml
-- bases/multicluster.x-k8s.io_serviceimports.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:

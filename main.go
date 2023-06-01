@@ -32,8 +32,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	mcsv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/external/apis/mcsv1alpha1/v1alpha1"
-
 	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	devSuite "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite"
 	devSpaceIDE "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite/devspace_ide"
@@ -53,7 +51,6 @@ func init() {
 
 	utilruntime.Must(devv1alpha1.AddToScheme(scheme))
 
-	utilruntime.Must(mcsv1alpha1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 

@@ -5,7 +5,7 @@
 [style]: STYLEGUIDE
 [code-of-conduct]: CODE_OF_CONDUCT.md
 
-First of all, thank you for considering to contribute this project! We would be thrilled if you decide to contribute on any level. A collaborative work is essential for keeping it great, and improve the term cloud robotics.
+First of all, thank you for considering to contribute this project!
 
 Please note that this project is released with a [Contributor Code of Conduct][code-of-conduct]. By participating in this project you agree to abide by its terms.
 

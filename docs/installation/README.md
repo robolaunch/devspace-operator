@@ -16,7 +16,7 @@ Select an active node from your cluster and add these labels:
 
 ```bash
 kubectl label <NODE> robolaunch.io/organization=robolaunch
-kubectl label <NODE> robolaunch.io/team=robotics
+kubectl label <NODE> robolaunch.io/team=development
 kubectl label <NODE> robolaunch.io/region=europe-east
 kubectl label <NODE> robolaunch.io/cloud-instance=cluster
 kubectl label <NODE> robolaunch.io/cloud-instance-alias=cluster-alias
@@ -36,8 +36,8 @@ helm repo update
 Install latest version of DevSpace Operator (remove `--devel` for getting latest stable version):
 
 ```bash
-helm upgrade -i robot-operator robolaunch/robot-operator  \
---namespace robot-system \
+helm upgrade -i devspace-operator robolaunch/devspace-operator  \
+--namespace devspace-system \
 --create-namespace \
 --devel
 ```
@@ -46,8 +46,8 @@ Or you can specify a version (remove the `v` letter at the beginning of the rele
 
 ```bash
 VERSION="0.2.5-alpha.6"
-helm upgrade -i robot-operator robolaunch/robot-operator  \
---namespace robot-system \
+helm upgrade -i devspace-operator robolaunch/devspace-operator  \
+--namespace devspace-system \
 --create-namespace \
 --version $VERSION
 ```
@@ -58,8 +58,8 @@ Deploy DevSpace Operator one-file YAML using the command below:
 
 ```bash
 # select a tag
-TAG="v0.2.5-alpha.6"
-kubectl apply -f https://raw.githubusercontent.com/robolaunch/robot-operator/$TAG/hack/deploy/manifests/robot_operator.yaml
+TAG="v0.1.0-alpha.1"
+kubectl apply -f https://raw.githubusercontent.com/robolaunch/devspace-operator/$TAG/hack/deploy/manifests/devspace_operator.yaml
 ```
 
 ## Uninstalling DevSpace Operator
@@ -67,13 +67,13 @@ kubectl apply -f https://raw.githubusercontent.com/robolaunch/robot-operator/$TA
 To uninstall DevSpace Operator installed with Helm, run the following commands:
 
 ```bash
-helm delete robot-operator -n robot-system
-kubectl delete ns robot-system
+helm delete devspace-operator -n devspace-system
+kubectl delete ns devspace-system
 ```
 
 To uninstall DevSpace Operator installed with one-file YAML, run the following commands:
 ```bash
 # find the tag you installed
 TAG="v0.2.5-alpha.6"
-kubectl delete -f https://raw.githubusercontent.com/robolaunch/robot-operator/$TAG/hack/deploy/manifests/robot_operator.yaml
+kubectl delete -f https://raw.githubusercontent.com/robolaunch/devspace-operator/$TAG/hack/deploy/manifests/devspace_operator.yaml
 ```

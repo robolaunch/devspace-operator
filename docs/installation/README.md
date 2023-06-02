@@ -74,6 +74,6 @@ kubectl delete ns devspace-system
 To uninstall DevSpace Operator installed with one-file YAML, run the following commands:
 ```bash
 # find the tag you installed
-TAG="v0.2.5-alpha.6"
+TAG="v0.1.0-alpha.1"
 kubectl delete -f https://raw.githubusercontent.com/robolaunch/devspace-operator/$TAG/hack/deploy/manifests/devspace_operator.yaml
 ```

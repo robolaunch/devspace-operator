@@ -45,7 +45,7 @@ helm upgrade -i devspace-operator robolaunch/devspace-operator  \
 Or you can specify a version (remove the `v` letter at the beginning of the release or tag name):
 
 ```bash
-VERSION="0.2.5-alpha.6"
+VERSION="0.1.0-alpha.1"
 helm upgrade -i devspace-operator robolaunch/devspace-operator  \
 --namespace devspace-system \
 --create-namespace \

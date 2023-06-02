@@ -1,0 +1,2637 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/component: manager
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: system
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: namespace
+    app.kubernetes.io/part-of: devspace-operator
+    control-plane: controller-manager
+  name: devspace-system
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.2
+  creationTimestamp: null
+  name: devspaceides.dev.roboscale.io
+spec:
+  group: dev.roboscale.io
+  names:
+    kind: DevSpaceIDE
+    listKind: DevSpaceIDEList
+    plural: devspaceides
+    singular: devspaceide
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          description: DevSpaceIDE creates and manages Cloud IDE resources and workloads.
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: Specification of the desired behavior of the DevSpaceIDE.
+              properties:
+                display:
+                  description: Cloud IDE connects an X11 socket if it's set to `true` and a target DevSpaceVDI resource is set in labels with key `robolaunch.io/target-vdi`. Applications that requires GUI can be executed such as rViz.
+                  type: boolean
+                ingress:
+                  description: '[*alpha*] DevSpaceIDE will create an Ingress resource if `true`.'
+                  type: boolean
+                privileged:
+                  description: If `true`, containers of DevSpaceIDE will be privileged containers. It can be used in physical instances where it's necessary to access I/O devices on the host machine. Not recommended to activate this field on cloud instances.
+                  type: boolean
+                resources:
+                  description: Resource limitations of Cloud IDE.
+                  properties:
+                    cpu:
+                      description: CPU resource limit.
+                      pattern: ^([0-9])+(m)$
+                      type: string
+                    gpuCore:
+                      description: GPU core number that will be allocated.
+                      type: integer
+                    memory:
+                      description: Memory resource limit.
+                      pattern: ^([0-9])+(Mi|Gi)$
+                      type: string
+                  type: object
+                serviceType:
+                  default: NodePort
+                  description: Service type of Cloud IDE. `ClusterIP` and `NodePort` is supported.
+                  enum:
+                    - ClusterIP
+                    - NodePort
+                  type: string
+              type: object
+            status:
+              description: Most recently observed status of the DevSpaceIDE.
+              properties:
+                ingressStatus:
+                  description: Status of Cloud IDE Ingress.
+                  properties:
+                    created:
+                      description: Shows if the owned resource is created.
+                      type: boolean
+                    phase:
+                      description: Phase of the owned resource.
+                      type: string
+                    reference:
+                      description: Reference to the owned resource.
+                      properties:
+                        apiVersion:
+                          description: API version of the referent.
+                          type: string
+                        fieldPath:
+                          description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                          type: string
+                        kind:
+                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                          type: string
+                        namespace:
+                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                          type: string
+                        resourceVersion:
+                          description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                          type: string
+                        uid:
+                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                          type: string
+                      type: object
+                      x-kubernetes-map-type: atomic
+                  required:
+                    - created
+                  type: object
+                phase:
+                  description: Phase of DevSpaceIDE.
+                  type: string
+                podStatus:
+                  description: Status of Cloud IDE pod.
+                  properties:
+                    ip:
+                      description: IP of the pod.
+                      type: string
+                    resource:
+                      description: Generic status for any owned resource.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                  type: object
+                serviceStatus:
+                  description: Status of Cloud IDE service.
+                  properties:
+                    resource:
+                      description: Generic status for any owned resource.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                    url:
+                      description: Connection URL.
+                      type: string
+                  type: object
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: devspace-system/devspace-serving-cert
+    controller-gen.kubebuilder.io/version: v0.9.2
+  name: devspaces.dev.roboscale.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: devspace-webhook-service
+          namespace: devspace-system
+          path: /convert
+      conversionReviewVersions:
+        - v1
+  group: dev.roboscale.io
+  names:
+    kind: DevSpace
+    listKind: DevSpaceList
+    plural: devspaces
+    singular: devspace
+  scope: Namespaced
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: .spec.environment.domain
+          name: Domain
+          type: string
+        - jsonPath: .spec.environment.application.name
+          name: App
+          type: string
+        - jsonPath: .spec.environment.application.version
+          name: Version
+          type: string
+        - jsonPath: .spec.environment.devspace.ubuntuDistro
+          name: Ubuntu
+          type: string
+        - jsonPath: .spec.environment.devspace.desktop
+          name: Desktop
+          type: string
+        - jsonPath: .spec.environment.devspace.version
+          name: DevSpace
+          type: string
+        - jsonPath: .status.phase
+          name: Phase
+          type: string
+      name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          description: DevSpace is the custom resource that contains ROS 2 components (Workloads, Cloud VDI, Cloud IDE, ROS Bridge, Configurational Resources), robolaunch DevSpace instances can be decomposed and distributed to both cloud instances and physical instances using federation.
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: Specification of the desired behavior of the DevSpace.
+              properties:
+                devSuiteTemplate:
+                  description: DevSpace development suite template
+                  properties:
+                    devSpaceIDETemplate:
+                      description: Configurational parameters of DevSpaceIDE. Applied if `.spec.ideEnabled` is set to `true`.
+                      properties:
+                        display:
+                          description: Cloud IDE connects an X11 socket if it's set to `true` and a target DevSpaceVDI resource is set in labels with key `robolaunch.io/target-vdi`. Applications that requires GUI can be executed such as rViz.
+                          type: boolean
+                        ingress:
+                          description: '[*alpha*] DevSpaceIDE will create an Ingress resource if `true`.'
+                          type: boolean
+                        privileged:
+                          description: If `true`, containers of DevSpaceIDE will be privileged containers. It can be used in physical instances where it's necessary to access I/O devices on the host machine. Not recommended to activate this field on cloud instances.
+                          type: boolean
+                        resources:
+                          description: Resource limitations of Cloud IDE.
+                          properties:
+                            cpu:
+                              description: CPU resource limit.
+                              pattern: ^([0-9])+(m)$
+                              type: string
+                            gpuCore:
+                              description: GPU core number that will be allocated.
+                              type: integer
+                            memory:
+                              description: Memory resource limit.
+                              pattern: ^([0-9])+(Mi|Gi)$
+                              type: string
+                          type: object
+                        serviceType:
+                          default: NodePort
+                          description: Service type of Cloud IDE. `ClusterIP` and `NodePort` is supported.
+                          enum:
+                            - ClusterIP
+                            - NodePort
+                          type: string
+                      type: object
+                    devSpaceVDITemplate:
+                      description: Configurational parameters of DevSpaceVDI. Applied if `.spec.vdiEnabled` is set to `true`.
+                      properties:
+                        ingress:
+                          description: '[*alpha*] DevSpaceIDE will create an Ingress resource if `true`.'
+                          type: boolean
+                        nat1to1:
+                          description: NAT1TO1 option for Cloud VDI.
+                          type: string
+                        privileged:
+                          description: If `true`, containers of DevSpaceIDE will be privileged containers. It can be used in physical instances where it's necessary to access I/O devices on the host machine. Not recommended to activate this field on cloud instances.
+                          type: boolean
+                        resolution:
+                          default: 2048x1152
+                          description: VDI screen resolution options. Default is `2048x1152`.
+                          enum:
+                            - 2048x1152
+                            - 1920x1080
+                            - 1600x1200
+                          type: string
+                        resources:
+                          description: Resource limitations of Cloud IDE.
+                          properties:
+                            cpu:
+                              description: CPU resource limit.
+                              pattern: ^([0-9])+(m)$
+                              type: string
+                            gpuCore:
+                              description: GPU core number that will be allocated.
+                              type: integer
+                            memory:
+                              description: Memory resource limit.
+                              pattern: ^([0-9])+(Mi|Gi)$
+                              type: string
+                          type: object
+                        serviceType:
+                          default: NodePort
+                          description: Service type of Cloud IDE. `ClusterIP` and `NodePort` is supported.
+                          enum:
+                            - ClusterIP
+                            - NodePort
+                          type: string
+                        webrtcPortRange:
+                          description: UDP port range to used in WebRTC connections.
+                          pattern: ^([0-9])+-([0-9])+$
+                          type: string
+                      type: object
+                    ideEnabled:
+                      description: If `true`, a Cloud IDE will be provisioned inside development suite.
+                      type: boolean
+                    vdiEnabled:
+                      description: If `true`, a Cloud VDI will be provisioned inside development suite.
+                      type: boolean
+                  type: object
+                development:
+                  description: '[*alpha*] Switch to development mode if `true`.'
+                  type: boolean
+                environment:
+                  description: Environment properties. Supported options are listed in [robolaunch Platform Versioning Map](https://github.com/robolaunch/robolaunch/blob/main/platform.yaml).
+                  properties:
+                    application:
+                      description: Application properties.
+                      properties:
+                        name:
+                          description: Application name.
+                          type: string
+                        version:
+                          description: Version of the application.
+                          type: string
+                      required:
+                        - name
+                        - version
+                      type: object
+                    devspace:
+                      description: DevSpace image properties.
+                      properties:
+                        desktop:
+                          description: Ubuntu desktop.
+                          type: string
+                        ubuntuDistro:
+                          description: Ubuntu distribution of the environment.
+                          type: string
+                        version:
+                          description: DevSpace image version.
+                          type: string
+                      required:
+                        - desktop
+                        - ubuntuDistro
+                        - version
+                      type: object
+                    domain:
+                      description: Domain of the environment.
+                      type: string
+                  required:
+                    - application
+                    - devspace
+                    - domain
+                  type: object
+                rootDNSConfig:
+                  description: '[*alpha*] Root DNS configuration.'
+                  properties:
+                    host:
+                      description: '[*alpha*] Root DNS name..'
+                      type: string
+                  required:
+                    - host
+                  type: object
+                storage:
+                  description: Total storage amount to persist via DevSpace. Unit of measurement is MB. (eg. `10240` corresponds 10 GB) This amount is being shared between different components.
+                  properties:
+                    amount:
+                      default: 10000
+                      description: Specifies how much storage will be allocated in total. Use MB as a unit of measurement. (eg. `10240` is equal to 10 GB)
+                      type: integer
+                    storageClassConfig:
+                      description: Storage class selection for devspace's volumes.
+                      properties:
+                        accessMode:
+                          description: PVC access modes. Currently, only `ReadWriteOnce` is supported.
+                          type: string
+                        name:
+                          description: Storage class name.
+                          type: string
+                      type: object
+                  type: object
+                tlsSecretRef:
+                  description: '[*alpha*] TLS secret reference.'
+                  properties:
+                    name:
+                      description: '[*alpha*] TLS secret object name.'
+                      type: string
+                    namespace:
+                      description: '[*alpha*] TLS secret object namespace.'
+                      type: string
+                  required:
+                    - name
+                    - namespace
+                  type: object
+                workspaceManagerTemplate:
+                  description: Workspace manager template to configure ROS 2 workspaces.
+                  properties:
+                    updateNeeded:
+                      description: WorkspaceManager is triggered if this field is set to `true`. Then the workspaces are being configured again while backing up the old configurations. This field is often used by operator.
+                      type: boolean
+                    workspaces:
+                      description: Workspace definitions of devspace. Multiple ROS 2 workspaces can be configured over this field.
+                      items:
+                        description: Workspace description. Each devspace should contain at least one workspace. A workspace should contain at least one repository in it.
+                        properties:
+                          name:
+                            description: Name of workspace. If a workspace's name is `my_ws`, it's absolute path is `/home/workspaces/my_ws`.
+                            type: string
+                          repositories:
+                            additionalProperties:
+                              description: Repository description.
+                              properties:
+                                branch:
+                                  description: Branch of the repository to clone.
+                                  type: string
+                                hash:
+                                  description: '[*Autofilled*] Hash of last commit'
+                                  type: string
+                                owner:
+                                  description: '[*Autofilled*] User or organization, maintainer of repository'
+                                  type: string
+                                path:
+                                  description: '[*Autofilled*] Absolute path of repository'
+                                  type: string
+                                repo:
+                                  description: '[*Autofilled*] Repository name'
+                                  type: string
+                                url:
+                                  description: Base URL of the repository.
+                                  type: string
+                              required:
+                                - branch
+                                - url
+                              type: object
+                            description: Repositories to clone inside workspace's `src` directory.
+                            type: object
+                        required:
+                          - name
+                          - repositories
+                        type: object
+                      minItems: 1
+                      type: array
+                    workspacesPath:
+                      description: Global path of workspaces. It's fixed to `/root/workspaces` path.
+                      type: string
+                  type: object
+              required:
+                - environment
+              type: object
+            status:
+              description: Most recently observed status of the DevSpace.
+              properties:
+                attachedDevObjects:
+                  description: '[*alpha*] Attached dev object information.'
+                  items:
+                    properties:
+                      reference:
+                        description: Reference to the DevSuite instance.
+                        properties:
+                          apiVersion:
+                            description: API version of the referent.
+                            type: string
+                          fieldPath:
+                            description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                            type: string
+                          kind:
+                            description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                            type: string
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                            type: string
+                          namespace:
+                            description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                            type: string
+                          resourceVersion:
+                            description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                            type: string
+                          uid:
+                            description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                            type: string
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      status:
+                        description: Status of attached DevSuite.
+                        properties:
+                          active:
+                            description: '[*alpha*] Indicates if DevSuite is attached to a DevSpace and actively provisioned it''s resources.'
+                            type: boolean
+                          devSpaceIDEStatus:
+                            description: Status of DevSpaceIDE.
+                            properties:
+                              connection:
+                                description: Address of the devspace service that can be reached from outside.
+                                type: string
+                              resource:
+                                description: Generic status for any owned resource.
+                                properties:
+                                  created:
+                                    description: Shows if the owned resource is created.
+                                    type: boolean
+                                  phase:
+                                    description: Phase of the owned resource.
+                                    type: string
+                                  reference:
+                                    description: Reference to the owned resource.
+                                    properties:
+                                      apiVersion:
+                                        description: API version of the referent.
+                                        type: string
+                                      fieldPath:
+                                        description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                                        type: string
+                                      kind:
+                                        description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                        type: string
+                                      namespace:
+                                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                        type: string
+                                      resourceVersion:
+                                        description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                        type: string
+                                      uid:
+                                        description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                                        type: string
+                                    type: object
+                                    x-kubernetes-map-type: atomic
+                                required:
+                                  - created
+                                type: object
+                            type: object
+                          devSpaceVDIStatus:
+                            description: Status of DevSpaceVDI.
+                            properties:
+                              connection:
+                                description: Address of the devspace service that can be reached from outside.
+                                type: string
+                              resource:
+                                description: Generic status for any owned resource.
+                                properties:
+                                  created:
+                                    description: Shows if the owned resource is created.
+                                    type: boolean
+                                  phase:
+                                    description: Phase of the owned resource.
+                                    type: string
+                                  reference:
+                                    description: Reference to the owned resource.
+                                    properties:
+                                      apiVersion:
+                                        description: API version of the referent.
+                                        type: string
+                                      fieldPath:
+                                        description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                                        type: string
+                                      kind:
+                                        description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                        type: string
+                                      namespace:
+                                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                        type: string
+                                      resourceVersion:
+                                        description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                        type: string
+                                      uid:
+                                        description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                                        type: string
+                                    type: object
+                                    x-kubernetes-map-type: atomic
+                                required:
+                                  - created
+                                type: object
+                            type: object
+                          phase:
+                            description: Phase of DevSuite.
+                            type: string
+                        type: object
+                    type: object
+                  type: array
+                devSuiteStatus:
+                  description: DevSpace development suite instance status.
+                  properties:
+                    resource:
+                      description: Generic status for any owned resource.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                    status:
+                      description: Status of the DevSuite instance.
+                      properties:
+                        active:
+                          description: '[*alpha*] Indicates if DevSuite is attached to a DevSpace and actively provisioned it''s resources.'
+                          type: boolean
+                        devSpaceIDEStatus:
+                          description: Status of DevSpaceIDE.
+                          properties:
+                            connection:
+                              description: Address of the devspace service that can be reached from outside.
+                              type: string
+                            resource:
+                              description: Generic status for any owned resource.
+                              properties:
+                                created:
+                                  description: Shows if the owned resource is created.
+                                  type: boolean
+                                phase:
+                                  description: Phase of the owned resource.
+                                  type: string
+                                reference:
+                                  description: Reference to the owned resource.
+                                  properties:
+                                    apiVersion:
+                                      description: API version of the referent.
+                                      type: string
+                                    fieldPath:
+                                      description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                                      type: string
+                                    kind:
+                                      description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                      type: string
+                                    namespace:
+                                      description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                      type: string
+                                    resourceVersion:
+                                      description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                      type: string
+                                    uid:
+                                      description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                                      type: string
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                              required:
+                                - created
+                              type: object
+                          type: object
+                        devSpaceVDIStatus:
+                          description: Status of DevSpaceVDI.
+                          properties:
+                            connection:
+                              description: Address of the devspace service that can be reached from outside.
+                              type: string
+                            resource:
+                              description: Generic status for any owned resource.
+                              properties:
+                                created:
+                                  description: Shows if the owned resource is created.
+                                  type: boolean
+                                phase:
+                                  description: Phase of the owned resource.
+                                  type: string
+                                reference:
+                                  description: Reference to the owned resource.
+                                  properties:
+                                    apiVersion:
+                                      description: API version of the referent.
+                                      type: string
+                                    fieldPath:
+                                      description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                                      type: string
+                                    kind:
+                                      description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                      type: string
+                                    namespace:
+                                      description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                      type: string
+                                    resourceVersion:
+                                      description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                      type: string
+                                    uid:
+                                      description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                                      type: string
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                              required:
+                                - created
+                              type: object
+                          type: object
+                        phase:
+                          description: Phase of DevSuite.
+                          type: string
+                      type: object
+                  type: object
+                image:
+                  description: Main image of DevSpace. It is derived either from the specifications or determined directly over labels.
+                  type: string
+                loaderJobStatus:
+                  description: Status of loader job that configures environment.
+                  properties:
+                    created:
+                      description: Shows if the owned resource is created.
+                      type: boolean
+                    phase:
+                      description: Phase of the owned resource.
+                      type: string
+                    reference:
+                      description: Reference to the owned resource.
+                      properties:
+                        apiVersion:
+                          description: API version of the referent.
+                          type: string
+                        fieldPath:
+                          description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                          type: string
+                        kind:
+                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                          type: string
+                        namespace:
+                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                          type: string
+                        resourceVersion:
+                          description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                          type: string
+                        uid:
+                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                          type: string
+                      type: object
+                      x-kubernetes-map-type: atomic
+                  required:
+                    - created
+                  type: object
+                nodeName:
+                  description: Node that DevSpace uses. It is selected via tenancy labels.
+                  type: string
+                phase:
+                  description: Phase of DevSpace. It sums the general status of DevSpace.
+                  type: string
+                volumeStatuses:
+                  description: DevSpace persists some of the directories of underlying OS inside persistent volumes. This field exposes persistent volume claims that dynamically provision PVs.
+                  properties:
+                    etcDir:
+                      description: Holds PVC status of the `/etc` directory of underlying OS.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                    optDir:
+                      description: Holds PVC status of the `/opt` directory of underlying OS.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                    usrDir:
+                      description: Holds PVC status of the `/usr` directory of underlying OS.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                    varDir:
+                      description: Holds PVC status of the `/var` directory of underlying OS.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                    workspaceDir:
+                      description: Holds PVC status of the workspaces directory of underlying OS.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                  type: object
+                workspaceManagerStatus:
+                  description: Workspace manager instance status if exists.
+                  properties:
+                    resource:
+                      description: Generic status for any owned resource.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                    status:
+                      description: Status of the WorkspaceManager instance.
+                      properties:
+                        cleanupJobStatus:
+                          description: Status of cleanup jobs that runs while reconfiguring workspaces.
+                          properties:
+                            created:
+                              description: Shows if the owned resource is created.
+                              type: boolean
+                            phase:
+                              description: Phase of the owned resource.
+                              type: string
+                            reference:
+                              description: Reference to the owned resource.
+                              properties:
+                                apiVersion:
+                                  description: API version of the referent.
+                                  type: string
+                                fieldPath:
+                                  description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                                  type: string
+                                kind:
+                                  description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                  type: string
+                                name:
+                                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                  type: string
+                                namespace:
+                                  description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                  type: string
+                                resourceVersion:
+                                  description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                  type: string
+                                uid:
+                                  description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                                  type: string
+                              type: object
+                              x-kubernetes-map-type: atomic
+                          required:
+                            - created
+                          type: object
+                        clonerJobStatus:
+                          description: Status of cloner job.
+                          properties:
+                            created:
+                              description: Shows if the owned resource is created.
+                              type: boolean
+                            phase:
+                              description: Phase of the owned resource.
+                              type: string
+                            reference:
+                              description: Reference to the owned resource.
+                              properties:
+                                apiVersion:
+                                  description: API version of the referent.
+                                  type: string
+                                fieldPath:
+                                  description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                                  type: string
+                                kind:
+                                  description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                  type: string
+                                name:
+                                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                  type: string
+                                namespace:
+                                  description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                  type: string
+                                resourceVersion:
+                                  description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                  type: string
+                                uid:
+                                  description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                                  type: string
+                              type: object
+                              x-kubernetes-map-type: atomic
+                          required:
+                            - created
+                          type: object
+                        phase:
+                          description: Phase of WorkspaceManager.
+                          type: string
+                        version:
+                          description: Incremental version of workspace configuration map. Used to determine changes in configuration.
+                          type: integer
+                      type: object
+                  type: object
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: devspace-system/devspace-serving-cert
+    controller-gen.kubebuilder.io/version: v0.9.2
+  name: devspacevdis.dev.roboscale.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: devspace-webhook-service
+          namespace: devspace-system
+          path: /convert
+      conversionReviewVersions:
+        - v1
+  group: dev.roboscale.io
+  names:
+    kind: DevSpaceVDI
+    listKind: DevSpaceVDIList
+    plural: devspacevdis
+    singular: devspacevdi
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          description: DevSpaceVDI creates and manages Cloud VDI resources and workloads.
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: Specification of the desired behavior of the DevSpaceVDI.
+              properties:
+                ingress:
+                  description: '[*alpha*] DevSpaceIDE will create an Ingress resource if `true`.'
+                  type: boolean
+                nat1to1:
+                  description: NAT1TO1 option for Cloud VDI.
+                  type: string
+                privileged:
+                  description: If `true`, containers of DevSpaceIDE will be privileged containers. It can be used in physical instances where it's necessary to access I/O devices on the host machine. Not recommended to activate this field on cloud instances.
+                  type: boolean
+                resolution:
+                  default: 2048x1152
+                  description: VDI screen resolution options. Default is `2048x1152`.
+                  enum:
+                    - 2048x1152
+                    - 1920x1080
+                    - 1600x1200
+                  type: string
+                resources:
+                  description: Resource limitations of Cloud IDE.
+                  properties:
+                    cpu:
+                      description: CPU resource limit.
+                      pattern: ^([0-9])+(m)$
+                      type: string
+                    gpuCore:
+                      description: GPU core number that will be allocated.
+                      type: integer
+                    memory:
+                      description: Memory resource limit.
+                      pattern: ^([0-9])+(Mi|Gi)$
+                      type: string
+                  type: object
+                serviceType:
+                  default: NodePort
+                  description: Service type of Cloud IDE. `ClusterIP` and `NodePort` is supported.
+                  enum:
+                    - ClusterIP
+                    - NodePort
+                  type: string
+                webrtcPortRange:
+                  description: UDP port range to used in WebRTC connections.
+                  pattern: ^([0-9])+-([0-9])+$
+                  type: string
+              type: object
+            status:
+              description: Most recently observed status of the DevSpaceVDI.
+              properties:
+                ingressStatus:
+                  description: Status of Cloud VDI Ingress.
+                  properties:
+                    created:
+                      description: Shows if the owned resource is created.
+                      type: boolean
+                    phase:
+                      description: Phase of the owned resource.
+                      type: string
+                    reference:
+                      description: Reference to the owned resource.
+                      properties:
+                        apiVersion:
+                          description: API version of the referent.
+                          type: string
+                        fieldPath:
+                          description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                          type: string
+                        kind:
+                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                          type: string
+                        namespace:
+                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                          type: string
+                        resourceVersion:
+                          description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                          type: string
+                        uid:
+                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                          type: string
+                      type: object
+                      x-kubernetes-map-type: atomic
+                  required:
+                    - created
+                  type: object
+                phase:
+                  description: Phase of DevSpaceVDI.
+                  type: string
+                podStatus:
+                  description: Status of Cloud VDI pod.
+                  properties:
+                    ip:
+                      description: IP of the pod.
+                      type: string
+                    resource:
+                      description: Generic status for any owned resource.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                  type: object
+                pvcStatus:
+                  description: Status of Cloud VDI persistent volume claim. This PVC dynamically provisions a volume that is a shared between DevSpaceVDI workloads and other workloads that requests display.
+                  properties:
+                    created:
+                      description: Shows if the owned resource is created.
+                      type: boolean
+                    phase:
+                      description: Phase of the owned resource.
+                      type: string
+                    reference:
+                      description: Reference to the owned resource.
+                      properties:
+                        apiVersion:
+                          description: API version of the referent.
+                          type: string
+                        fieldPath:
+                          description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                          type: string
+                        kind:
+                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                          type: string
+                        namespace:
+                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                          type: string
+                        resourceVersion:
+                          description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                          type: string
+                        uid:
+                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                          type: string
+                      type: object
+                      x-kubernetes-map-type: atomic
+                  required:
+                    - created
+                  type: object
+                serviceTCPStatus:
+                  description: Status of Cloud VDI TCP service.
+                  properties:
+                    resource:
+                      description: Generic status for any owned resource.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                    url:
+                      description: Connection URL.
+                      type: string
+                  type: object
+                serviceUDPStatus:
+                  description: Status of Cloud VDI UDP service.
+                  properties:
+                    created:
+                      description: Shows if the owned resource is created.
+                      type: boolean
+                    phase:
+                      description: Phase of the owned resource.
+                      type: string
+                    reference:
+                      description: Reference to the owned resource.
+                      properties:
+                        apiVersion:
+                          description: API version of the referent.
+                          type: string
+                        fieldPath:
+                          description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                          type: string
+                        kind:
+                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                          type: string
+                        namespace:
+                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                          type: string
+                        resourceVersion:
+                          description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                          type: string
+                        uid:
+                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                          type: string
+                      type: object
+                      x-kubernetes-map-type: atomic
+                  required:
+                    - created
+                  type: object
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.2
+  creationTimestamp: null
+  name: devsuites.dev.roboscale.io
+spec:
+  group: dev.roboscale.io
+  names:
+    kind: DevSuite
+    listKind: DevSuiteList
+    plural: devsuites
+    singular: devsuite
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          description: DevSuite is a custom resource that creates dynamically configured development environments for devspaces.
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: Specification of the desired behavior of the DevSuite.
+              properties:
+                devSpaceIDETemplate:
+                  description: Configurational parameters of DevSpaceIDE. Applied if `.spec.ideEnabled` is set to `true`.
+                  properties:
+                    display:
+                      description: Cloud IDE connects an X11 socket if it's set to `true` and a target DevSpaceVDI resource is set in labels with key `robolaunch.io/target-vdi`. Applications that requires GUI can be executed such as rViz.
+                      type: boolean
+                    ingress:
+                      description: '[*alpha*] DevSpaceIDE will create an Ingress resource if `true`.'
+                      type: boolean
+                    privileged:
+                      description: If `true`, containers of DevSpaceIDE will be privileged containers. It can be used in physical instances where it's necessary to access I/O devices on the host machine. Not recommended to activate this field on cloud instances.
+                      type: boolean
+                    resources:
+                      description: Resource limitations of Cloud IDE.
+                      properties:
+                        cpu:
+                          description: CPU resource limit.
+                          pattern: ^([0-9])+(m)$
+                          type: string
+                        gpuCore:
+                          description: GPU core number that will be allocated.
+                          type: integer
+                        memory:
+                          description: Memory resource limit.
+                          pattern: ^([0-9])+(Mi|Gi)$
+                          type: string
+                      type: object
+                    serviceType:
+                      default: NodePort
+                      description: Service type of Cloud IDE. `ClusterIP` and `NodePort` is supported.
+                      enum:
+                        - ClusterIP
+                        - NodePort
+                      type: string
+                  type: object
+                devSpaceVDITemplate:
+                  description: Configurational parameters of DevSpaceVDI. Applied if `.spec.vdiEnabled` is set to `true`.
+                  properties:
+                    ingress:
+                      description: '[*alpha*] DevSpaceIDE will create an Ingress resource if `true`.'
+                      type: boolean
+                    nat1to1:
+                      description: NAT1TO1 option for Cloud VDI.
+                      type: string
+                    privileged:
+                      description: If `true`, containers of DevSpaceIDE will be privileged containers. It can be used in physical instances where it's necessary to access I/O devices on the host machine. Not recommended to activate this field on cloud instances.
+                      type: boolean
+                    resolution:
+                      default: 2048x1152
+                      description: VDI screen resolution options. Default is `2048x1152`.
+                      enum:
+                        - 2048x1152
+                        - 1920x1080
+                        - 1600x1200
+                      type: string
+                    resources:
+                      description: Resource limitations of Cloud IDE.
+                      properties:
+                        cpu:
+                          description: CPU resource limit.
+                          pattern: ^([0-9])+(m)$
+                          type: string
+                        gpuCore:
+                          description: GPU core number that will be allocated.
+                          type: integer
+                        memory:
+                          description: Memory resource limit.
+                          pattern: ^([0-9])+(Mi|Gi)$
+                          type: string
+                      type: object
+                    serviceType:
+                      default: NodePort
+                      description: Service type of Cloud IDE. `ClusterIP` and `NodePort` is supported.
+                      enum:
+                        - ClusterIP
+                        - NodePort
+                      type: string
+                    webrtcPortRange:
+                      description: UDP port range to used in WebRTC connections.
+                      pattern: ^([0-9])+-([0-9])+$
+                      type: string
+                  type: object
+                ideEnabled:
+                  description: If `true`, a Cloud IDE will be provisioned inside development suite.
+                  type: boolean
+                vdiEnabled:
+                  description: If `true`, a Cloud VDI will be provisioned inside development suite.
+                  type: boolean
+              type: object
+            status:
+              description: Most recently observed status of the DevSuite.
+              properties:
+                active:
+                  description: '[*alpha*] Indicates if DevSuite is attached to a DevSpace and actively provisioned it''s resources.'
+                  type: boolean
+                devSpaceIDEStatus:
+                  description: Status of DevSpaceIDE.
+                  properties:
+                    connection:
+                      description: Address of the devspace service that can be reached from outside.
+                      type: string
+                    resource:
+                      description: Generic status for any owned resource.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                  type: object
+                devSpaceVDIStatus:
+                  description: Status of DevSpaceVDI.
+                  properties:
+                    connection:
+                      description: Address of the devspace service that can be reached from outside.
+                      type: string
+                    resource:
+                      description: Generic status for any owned resource.
+                      properties:
+                        created:
+                          description: Shows if the owned resource is created.
+                          type: boolean
+                        phase:
+                          description: Phase of the owned resource.
+                          type: string
+                        reference:
+                          description: Reference to the owned resource.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      required:
+                        - created
+                      type: object
+                  type: object
+                phase:
+                  description: Phase of DevSuite.
+                  type: string
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: devspace-system/devspace-serving-cert
+    controller-gen.kubebuilder.io/version: v0.9.2
+  name: workspacemanagers.dev.roboscale.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: devspace-webhook-service
+          namespace: devspace-system
+          path: /convert
+      conversionReviewVersions:
+        - v1
+  group: dev.roboscale.io
+  names:
+    kind: WorkspaceManager
+    listKind: WorkspaceManagerList
+    plural: workspacemanagers
+    singular: workspacemanager
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          description: WorkspaceManager configures the ROS 2 workspaces and repositories by executing Kubernetes jobs.
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: Specification of the desired behavior of the WorkspaceManager.
+              properties:
+                updateNeeded:
+                  description: WorkspaceManager is triggered if this field is set to `true`. Then the workspaces are being configured again while backing up the old configurations. This field is often used by operator.
+                  type: boolean
+                workspaces:
+                  description: Workspace definitions of devspace. Multiple ROS 2 workspaces can be configured over this field.
+                  items:
+                    description: Workspace description. Each devspace should contain at least one workspace. A workspace should contain at least one repository in it.
+                    properties:
+                      name:
+                        description: Name of workspace. If a workspace's name is `my_ws`, it's absolute path is `/home/workspaces/my_ws`.
+                        type: string
+                      repositories:
+                        additionalProperties:
+                          description: Repository description.
+                          properties:
+                            branch:
+                              description: Branch of the repository to clone.
+                              type: string
+                            hash:
+                              description: '[*Autofilled*] Hash of last commit'
+                              type: string
+                            owner:
+                              description: '[*Autofilled*] User or organization, maintainer of repository'
+                              type: string
+                            path:
+                              description: '[*Autofilled*] Absolute path of repository'
+                              type: string
+                            repo:
+                              description: '[*Autofilled*] Repository name'
+                              type: string
+                            url:
+                              description: Base URL of the repository.
+                              type: string
+                          required:
+                            - branch
+                            - url
+                          type: object
+                        description: Repositories to clone inside workspace's `src` directory.
+                        type: object
+                    required:
+                      - name
+                      - repositories
+                    type: object
+                  minItems: 1
+                  type: array
+                workspacesPath:
+                  description: Global path of workspaces. It's fixed to `/root/workspaces` path.
+                  type: string
+              type: object
+            status:
+              description: Most recently observed status of the WorkspaceManager.
+              properties:
+                cleanupJobStatus:
+                  description: Status of cleanup jobs that runs while reconfiguring workspaces.
+                  properties:
+                    created:
+                      description: Shows if the owned resource is created.
+                      type: boolean
+                    phase:
+                      description: Phase of the owned resource.
+                      type: string
+                    reference:
+                      description: Reference to the owned resource.
+                      properties:
+                        apiVersion:
+                          description: API version of the referent.
+                          type: string
+                        fieldPath:
+                          description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                          type: string
+                        kind:
+                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                          type: string
+                        namespace:
+                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                          type: string
+                        resourceVersion:
+                          description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                          type: string
+                        uid:
+                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                          type: string
+                      type: object
+                      x-kubernetes-map-type: atomic
+                  required:
+                    - created
+                  type: object
+                clonerJobStatus:
+                  description: Status of cloner job.
+                  properties:
+                    created:
+                      description: Shows if the owned resource is created.
+                      type: boolean
+                    phase:
+                      description: Phase of the owned resource.
+                      type: string
+                    reference:
+                      description: Reference to the owned resource.
+                      properties:
+                        apiVersion:
+                          description: API version of the referent.
+                          type: string
+                        fieldPath:
+                          description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                          type: string
+                        kind:
+                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                          type: string
+                        namespace:
+                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                          type: string
+                        resourceVersion:
+                          description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                          type: string
+                        uid:
+                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                          type: string
+                      type: object
+                      x-kubernetes-map-type: atomic
+                  required:
+                    - created
+                  type: object
+                phase:
+                  description: Phase of WorkspaceManager.
+                  type: string
+                version:
+                  description: Incremental version of workspace configuration map. Used to determine changes in configuration.
+                  type: integer
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kuberentes.io/instance: controller-manager
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: serviceaccount
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-controller-manager
+  namespace: devspace-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: leader-election-role
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: role
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-leader-election-role
+  namespace: devspace-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: devspace-manager-role
+rules:
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumeclaims
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devspaceides
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devspaceides/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devspaceides/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devspaces
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devspaces/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devspaces/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devspacevdis
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devspacevdis/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devspacevdis/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devsuites
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devsuites/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - devsuites/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - workspacemanagers
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - workspacemanagers/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - dev.roboscale.io
+    resources:
+      - workspacemanagers/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: metrics-reader
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-metrics-reader
+rules:
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: proxy-role
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-proxy-role
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: leader-election-rolebinding
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: rolebinding
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-leader-election-rolebinding
+  namespace: devspace-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: devspace-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: devspace-controller-manager
+    namespace: devspace-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: manager-rolebinding
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrolebinding
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: devspace-manager-role
+subjects:
+  - kind: ServiceAccount
+    name: devspace-controller-manager
+    namespace: devspace-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: proxy-rolebinding
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrolebinding
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: devspace-proxy-role
+subjects:
+  - kind: ServiceAccount
+    name: devspace-controller-manager
+    namespace: devspace-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: controller-manager-metrics-service
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: service
+    app.kubernetes.io/part-of: devspace-operator
+    control-plane: controller-manager
+  name: devspace-controller-manager-metrics-service
+  namespace: devspace-system
+spec:
+  ports:
+    - name: https
+      port: 8443
+      protocol: TCP
+      targetPort: https
+  selector:
+    control-plane: controller-manager
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: webhook-service
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: service
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-webhook-service
+  namespace: devspace-system
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 9443
+  selector:
+    control-plane: controller-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: manager
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: controller-manager
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: deployment
+    app.kubernetes.io/part-of: devspace-operator
+    control-plane: controller-manager
+  name: devspace-controller-manager
+  namespace: devspace-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        control-plane: controller-manager
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+                      - arm64
+                      - ppc64le
+                      - s390x
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
+      containers:
+        - args:
+            - --secure-listen-address=0.0.0.0:8443
+            - --upstream=http://127.0.0.1:8080/
+            - --logtostderr=true
+            - --v=0
+          image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0
+          name: kube-rbac-proxy
+          ports:
+            - containerPort: 8443
+              name: https
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 5m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+        - args:
+            - --health-probe-bind-address=:8081
+            - --metrics-bind-address=127.0.0.1:8080
+            - --leader-elect
+          command:
+            - /manager
+          image: robolaunchio/devspace-controller-manager:v0.1.0-alpha.1
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          name: manager
+          ports:
+            - containerPort: 9443
+              name: webhook-server
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - mountPath: /tmp/k8s-webhook-server/serving-certs
+              name: cert
+              readOnly: true
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: devspace-controller-manager
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: webhook-server-cert
+      nodeSelector:
+        robolaunch.io/organization: robolaunch
+        robolaunch.io/team: development
+        robolaunch.io/region: europe-east
+        robolaunch.io/cloud-instance: cluster
+        robolaunch.io/cloud-instance-alias: cluster-alias
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/component: certificate
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: serving-cert
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: certificate
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-serving-cert
+  namespace: devspace-system
+spec:
+  dnsNames:
+    - devspace-webhook-service.devspace-system.svc
+    - devspace-webhook-service.devspace-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: devspace-selfsigned-issuer
+  secretName: webhook-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kuberentes.io/name: issuer
+    app.kubernetes.io/component: certificate
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: selfsigned-issuer
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-selfsigned-issuer
+  namespace: devspace-system
+spec:
+  selfSigned: {}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: devspace-system/devspace-serving-cert
+  labels:
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: mutating-webhook-configuration
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: mutatingwebhookconfiguration
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-mutating-webhook-configuration
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: devspace-webhook-service
+        namespace: devspace-system
+        path: /mutate-dev-roboscale-io-v1alpha1-devspace
+    failurePolicy: Fail
+    name: mdevspace.kb.io
+    rules:
+      - apiGroups:
+          - dev.roboscale.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - devspaces
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: devspace-webhook-service
+        namespace: devspace-system
+        path: /mutate-dev-roboscale-io-v1alpha1-workspacemanager
+    failurePolicy: Fail
+    name: mworkspacemanager.kb.io
+    rules:
+      - apiGroups:
+          - dev.roboscale.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - workspacemanagers
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: devspace-webhook-service
+        namespace: devspace-system
+        path: /mutate-dev-roboscale-io-v1alpha1-devspaceide
+    failurePolicy: Fail
+    name: mdevspaceide.kb.io
+    rules:
+      - apiGroups:
+          - dev.roboscale.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - devspaceides
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: devspace-webhook-service
+        namespace: devspace-system
+        path: /mutate-dev-roboscale-io-v1alpha1-devspacevdi
+    failurePolicy: Fail
+    name: mdevspacevdi.kb.io
+    rules:
+      - apiGroups:
+          - dev.roboscale.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - devspacevdis
+    sideEffects: None
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: devspace-system/devspace-serving-cert
+  labels:
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/created-by: devspace-operator
+    app.kubernetes.io/instance: validating-webhook-configuration
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: validatingwebhookconfiguration
+    app.kubernetes.io/part-of: devspace-operator
+  name: devspace-validating-webhook-configuration
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: devspace-webhook-service
+        namespace: devspace-system
+        path: /validate-dev-roboscale-io-v1alpha1-devspace
+    failurePolicy: Fail
+    name: vdevspace.kb.io
+    rules:
+      - apiGroups:
+          - dev.roboscale.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - devspaces
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: devspace-webhook-service
+        namespace: devspace-system
+        path: /validate-dev-roboscale-io-v1alpha1-workspacemanager
+    failurePolicy: Fail
+    name: vworkspacemanager.kb.io
+    rules:
+      - apiGroups:
+          - dev.roboscale.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - workspacemanagers
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: devspace-webhook-service
+        namespace: devspace-system
+        path: /validate-dev-roboscale-io-v1alpha1-devspaceide
+    failurePolicy: Fail
+    name: vdevspaceide.kb.io
+    rules:
+      - apiGroups:
+          - dev.roboscale.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - devspaceides
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: devspace-webhook-service
+        namespace: devspace-system
+        path: /validate-dev-roboscale-io-v1alpha1-devspacevdi
+    failurePolicy: Fail
+    name: vdevspacevdi.kb.io
+    rules:
+      - apiGroups:
+          - dev.roboscale.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - devspacevdis
+    sideEffects: None

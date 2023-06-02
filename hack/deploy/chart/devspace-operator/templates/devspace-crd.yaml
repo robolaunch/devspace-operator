@@ -1,12 +1,24 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: v0.9.2
-  creationTimestamp: null
   name: devspaces.dev.roboscale.io
+  annotations:
+    cert-manager.io/inject-ca-from: '{{ .Release.Namespace }}/{{ include "devspace-operator.fullname"
+      . }}-serving-cert'
+    controller-gen.kubebuilder.io/version: v0.9.2
+  labels:
+  {{- include "devspace-operator.labels" . | nindent 4 }}
 spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: '{{ include "devspace-operator.fullname" . }}-webhook-service'
+          namespace: '{{ .Release.Namespace }}'
+          path: /convert
+      conversionReviewVersions:
+      - v1
   group: dev.roboscale.io
   names:
     kind: DevSpace
@@ -42,8 +54,8 @@ spec:
       openAPIV3Schema:
         description: DevSpace is the custom resource that contains ROS 2 components
           (Workloads, Cloud VDI, Cloud IDE, ROS Bridge, Configurational Resources),
-          robolaunch DevSpace instances can be decomposed and distributed to both
-          cloud instances and physical instances using federation.
+          robolaunch DevSpace instances can be decomposed and distributed to both cloud
+          instances and physical instances using federation.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -68,20 +80,20 @@ spec:
                       if `.spec.ideEnabled` is set to `true`.
                     properties:
                       display:
-                        description: Cloud IDE connects an X11 socket if it's set
-                          to `true` and a target DevSpaceVDI resource is set in labels
+                        description: Cloud IDE connects an X11 socket if it's set to
+                          `true` and a target DevSpaceVDI resource is set in labels
                           with key `robolaunch.io/target-vdi`. Applications that requires
                           GUI can be executed such as rViz.
                         type: boolean
                       ingress:
-                        description: '[*alpha*] DevSpaceIDE will create an Ingress
-                          resource if `true`.'
+                        description: '[*alpha*] DevSpaceIDE will create an Ingress resource
+                          if `true`.'
                         type: boolean
                       privileged:
-                        description: If `true`, containers of DevSpaceIDE will be
-                          privileged containers. It can be used in physical instances
-                          where it's necessary to access I/O devices on the host machine.
-                          Not recommended to activate this field on cloud instances.
+                        description: If `true`, containers of DevSpaceIDE will be privileged
+                          containers. It can be used in physical instances where it's
+                          necessary to access I/O devices on the host machine. Not recommended
+                          to activate this field on cloud instances.
                         type: boolean
                       resources:
                         description: Resource limitations of Cloud IDE.
@@ -112,17 +124,17 @@ spec:
                       if `.spec.vdiEnabled` is set to `true`.
                     properties:
                       ingress:
-                        description: '[*alpha*] DevSpaceIDE will create an Ingress
-                          resource if `true`.'
+                        description: '[*alpha*] DevSpaceIDE will create an Ingress resource
+                          if `true`.'
                         type: boolean
                       nat1to1:
                         description: NAT1TO1 option for Cloud VDI.
                         type: string
                       privileged:
-                        description: If `true`, containers of DevSpaceIDE will be
-                          privileged containers. It can be used in physical instances
-                          where it's necessary to access I/O devices on the host machine.
-                          Not recommended to activate this field on cloud instances.
+                        description: If `true`, containers of DevSpaceIDE will be privileged
+                          containers. It can be used in physical instances where it's
+                          necessary to access I/O devices on the host machine. Not recommended
+                          to activate this field on cloud instances.
                         type: boolean
                       resolution:
                         default: 2048x1152
@@ -161,20 +173,20 @@ spec:
                         type: string
                     type: object
                   ideEnabled:
-                    description: If `true`, a Cloud IDE will be provisioned inside
-                      development suite.
+                    description: If `true`, a Cloud IDE will be provisioned inside development
+                      suite.
                     type: boolean
                   vdiEnabled:
-                    description: If `true`, a Cloud VDI will be provisioned inside
-                      development suite.
+                    description: If `true`, a Cloud VDI will be provisioned inside development
+                      suite.
                     type: boolean
                 type: object
               development:
                 description: '[*alpha*] Switch to development mode if `true`.'
                 type: boolean
               environment:
-                description: Environment properties. Supported options are listed
-                  in [robolaunch Platform Versioning Map](https://github.com/robolaunch/robolaunch/blob/main/platform.yaml).
+                description: Environment properties. Supported options are listed in
+                  [robolaunch Platform Versioning Map](https://github.com/robolaunch/robolaunch/blob/main/platform.yaml).
                 properties:
                   application:
                     description: Application properties.
@@ -224,15 +236,14 @@ spec:
                 - host
                 type: object
               storage:
-                description: Total storage amount to persist via DevSpace. Unit of
-                  measurement is MB. (eg. `10240` corresponds 10 GB) This amount is
-                  being shared between different components.
+                description: Total storage amount to persist via DevSpace. Unit of measurement
+                  is MB. (eg. `10240` corresponds 10 GB) This amount is being shared
+                  between different components.
                 properties:
                   amount:
                     default: 10000
                     description: Specifies how much storage will be allocated in total.
-                      Use MB as a unit of measurement. (eg. `10240` is equal to 10
-                      GB)
+                      Use MB as a unit of measurement. (eg. `10240` is equal to 10 GB)
                     type: integer
                   storageClassConfig:
                     description: Storage class selection for devspace's volumes.
@@ -265,20 +276,20 @@ spec:
                   updateNeeded:
                     description: WorkspaceManager is triggered if this field is set
                       to `true`. Then the workspaces are being configured again while
-                      backing up the old configurations. This field is often used
-                      by operator.
+                      backing up the old configurations. This field is often used by
+                      operator.
                     type: boolean
                   workspaces:
-                    description: Workspace definitions of devspace. Multiple ROS 2
-                      workspaces can be configured over this field.
+                    description: Workspace definitions of devspace. Multiple ROS 2 workspaces
+                      can be configured over this field.
                     items:
                       description: Workspace description. Each devspace should contain
                         at least one workspace. A workspace should contain at least
                         one repository in it.
                       properties:
                         name:
-                          description: Name of workspace. If a workspace's name is
-                            `my_ws`, it's absolute path is `/home/workspaces/my_ws`.
+                          description: Name of workspace. If a workspace's name is `my_ws`,
+                            it's absolute path is `/home/workspaces/my_ws`.
                           type: string
                         repositories:
                           additionalProperties:
@@ -291,8 +302,8 @@ spec:
                                 description: '[*Autofilled*] Hash of last commit'
                                 type: string
                               owner:
-                                description: '[*Autofilled*] User or organization,
-                                  maintainer of repository'
+                                description: '[*Autofilled*] User or organization, maintainer
+                                  of repository'
                                 type: string
                               path:
                                 description: '[*Autofilled*] Absolute path of repository'
@@ -341,15 +352,14 @@ spec:
                           description: 'If referring to a piece of an object instead
                             of an entire object, this string should contain a valid
                             JSON/Go field access statement, such as desiredState.manifest.containers[2].
-                            For example, if the object reference is to a container
-                            within a pod, this would take on a value like: "spec.containers{name}"
-                            (where "name" refers to the name of the container that
-                            triggered the event) or if no container name is specified
-                            "spec.containers[2]" (container with index 2 in this pod).
-                            This syntax is chosen only to have some well-defined way
-                            of referencing a part of an object. TODO: this design
-                            is not final and this field is subject to change in the
-                            future.'
+                            For example, if the object reference is to a container within
+                            a pod, this would take on a value like: "spec.containers{name}"
+                            (where "name" refers to the name of the container that triggered
+                            the event) or if no container name is specified "spec.containers[2]"
+                            (container with index 2 in this pod). This syntax is chosen
+                            only to have some well-defined way of referencing a part
+                            of an object. TODO: this design is not final and this field
+                            is subject to change in the future.'
                           type: string
                         kind:
                           description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -399,21 +409,21 @@ spec:
                                       description: API version of the referent.
                                       type: string
                                     fieldPath:
-                                      description: 'If referring to a piece of an
-                                        object instead of an entire object, this string
-                                        should contain a valid JSON/Go field access
-                                        statement, such as desiredState.manifest.containers[2].
-                                        For example, if the object reference is to
-                                        a container within a pod, this would take
-                                        on a value like: "spec.containers{name}" (where
-                                        "name" refers to the name of the container
-                                        that triggered the event) or if no container
-                                        name is specified "spec.containers[2]" (container
-                                        with index 2 in this pod). This syntax is
-                                        chosen only to have some well-defined way
-                                        of referencing a part of an object. TODO:
-                                        this design is not final and this field is
-                                        subject to change in the future.'
+                                      description: 'If referring to a piece of an object
+                                        instead of an entire object, this string should
+                                        contain a valid JSON/Go field access statement,
+                                        such as desiredState.manifest.containers[2].
+                                        For example, if the object reference is to a
+                                        container within a pod, this would take on a
+                                        value like: "spec.containers{name}" (where "name"
+                                        refers to the name of the container that triggered
+                                        the event) or if no container name is specified
+                                        "spec.containers[2]" (container with index 2
+                                        in this pod). This syntax is chosen only to
+                                        have some well-defined way of referencing a
+                                        part of an object. TODO: this design is not
+                                        final and this field is subject to change in
+                                        the future.'
                                       type: string
                                     kind:
                                       description: 'Kind of the referent. More info:
@@ -429,8 +439,7 @@ spec:
                                       type: string
                                     resourceVersion:
                                       description: 'Specific resourceVersion to which
-                                        this reference is made, if any. More info:
-                                        https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                        this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
                                       type: string
                                     uid:
                                       description: 'UID of the referent. More info:
@@ -465,21 +474,21 @@ spec:
                                       description: API version of the referent.
                                       type: string
                                     fieldPath:
-                                      description: 'If referring to a piece of an
-                                        object instead of an entire object, this string
-                                        should contain a valid JSON/Go field access
-                                        statement, such as desiredState.manifest.containers[2].
-                                        For example, if the object reference is to
-                                        a container within a pod, this would take
-                                        on a value like: "spec.containers{name}" (where
-                                        "name" refers to the name of the container
-                                        that triggered the event) or if no container
-                                        name is specified "spec.containers[2]" (container
-                                        with index 2 in this pod). This syntax is
-                                        chosen only to have some well-defined way
-                                        of referencing a part of an object. TODO:
-                                        this design is not final and this field is
-                                        subject to change in the future.'
+                                      description: 'If referring to a piece of an object
+                                        instead of an entire object, this string should
+                                        contain a valid JSON/Go field access statement,
+                                        such as desiredState.manifest.containers[2].
+                                        For example, if the object reference is to a
+                                        container within a pod, this would take on a
+                                        value like: "spec.containers{name}" (where "name"
+                                        refers to the name of the container that triggered
+                                        the event) or if no container name is specified
+                                        "spec.containers[2]" (container with index 2
+                                        in this pod). This syntax is chosen only to
+                                        have some well-defined way of referencing a
+                                        part of an object. TODO: this design is not
+                                        final and this field is subject to change in
+                                        the future.'
                                       type: string
                                     kind:
                                       description: 'Kind of the referent. More info:
@@ -495,8 +504,7 @@ spec:
                                       type: string
                                     resourceVersion:
                                       description: 'Specific resourceVersion to which
-                                        this reference is made, if any. More info:
-                                        https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                        this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
                                       type: string
                                     uid:
                                       description: 'UID of the referent. More info:
@@ -540,11 +548,11 @@ spec:
                               within a pod, this would take on a value like: "spec.containers{name}"
                               (where "name" refers to the name of the container that
                               triggered the event) or if no container name is specified
-                              "spec.containers[2]" (container with index 2 in this
-                              pod). This syntax is chosen only to have some well-defined
-                              way of referencing a part of an object. TODO: this design
-                              is not final and this field is subject to change in
-                              the future.'
+                              "spec.containers[2]" (container with index 2 in this pod).
+                              This syntax is chosen only to have some well-defined way
+                              of referencing a part of an object. TODO: this design
+                              is not final and this field is subject to change in the
+                              future.'
                             type: string
                           kind:
                             description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -571,15 +579,15 @@ spec:
                     description: Status of the DevSuite instance.
                     properties:
                       active:
-                        description: '[*alpha*] Indicates if DevSuite is attached
-                          to a DevSpace and actively provisioned it''s resources.'
+                        description: '[*alpha*] Indicates if DevSuite is attached to
+                          a DevSpace and actively provisioned it''s resources.'
                         type: boolean
                       devSpaceIDEStatus:
                         description: Status of DevSpaceIDE.
                         properties:
                           connection:
-                            description: Address of the devspace service that can
-                              be reached from outside.
+                            description: Address of the devspace service that can be
+                              reached from outside.
                             type: string
                           resource:
                             description: Generic status for any owned resource.
@@ -600,38 +608,34 @@ spec:
                                     description: 'If referring to a piece of an object
                                       instead of an entire object, this string should
                                       contain a valid JSON/Go field access statement,
-                                      such as desiredState.manifest.containers[2].
-                                      For example, if the object reference is to a
-                                      container within a pod, this would take on a
-                                      value like: "spec.containers{name}" (where "name"
-                                      refers to the name of the container that triggered
-                                      the event) or if no container name is specified
-                                      "spec.containers[2]" (container with index 2
-                                      in this pod). This syntax is chosen only to
-                                      have some well-defined way of referencing a
-                                      part of an object. TODO: this design is not
-                                      final and this field is subject to change in
-                                      the future.'
+                                      such as desiredState.manifest.containers[2]. For
+                                      example, if the object reference is to a container
+                                      within a pod, this would take on a value like:
+                                      "spec.containers{name}" (where "name" refers to
+                                      the name of the container that triggered the event)
+                                      or if no container name is specified "spec.containers[2]"
+                                      (container with index 2 in this pod). This syntax
+                                      is chosen only to have some well-defined way of
+                                      referencing a part of an object. TODO: this design
+                                      is not final and this field is subject to change
+                                      in the future.'
                                     type: string
                                   kind:
-                                    description: 'Kind of the referent. More info:
-                                      https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                    description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
                                     type: string
                                   name:
-                                    description: 'Name of the referent. More info:
-                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
                                     type: string
                                   namespace:
-                                    description: 'Namespace of the referent. More
-                                      info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                    description: 'Namespace of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
                                     type: string
                                   resourceVersion:
                                     description: 'Specific resourceVersion to which
                                       this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
                                     type: string
                                   uid:
-                                    description: 'UID of the referent. More info:
-                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                                    description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
                                     type: string
                                 type: object
                                 x-kubernetes-map-type: atomic
@@ -643,8 +647,8 @@ spec:
                         description: Status of DevSpaceVDI.
                         properties:
                           connection:
-                            description: Address of the devspace service that can
-                              be reached from outside.
+                            description: Address of the devspace service that can be
+                              reached from outside.
                             type: string
                           resource:
                             description: Generic status for any owned resource.
@@ -665,38 +669,34 @@ spec:
                                     description: 'If referring to a piece of an object
                                       instead of an entire object, this string should
                                       contain a valid JSON/Go field access statement,
-                                      such as desiredState.manifest.containers[2].
-                                      For example, if the object reference is to a
-                                      container within a pod, this would take on a
-                                      value like: "spec.containers{name}" (where "name"
-                                      refers to the name of the container that triggered
-                                      the event) or if no container name is specified
-                                      "spec.containers[2]" (container with index 2
-                                      in this pod). This syntax is chosen only to
-                                      have some well-defined way of referencing a
-                                      part of an object. TODO: this design is not
-                                      final and this field is subject to change in
-                                      the future.'
+                                      such as desiredState.manifest.containers[2]. For
+                                      example, if the object reference is to a container
+                                      within a pod, this would take on a value like:
+                                      "spec.containers{name}" (where "name" refers to
+                                      the name of the container that triggered the event)
+                                      or if no container name is specified "spec.containers[2]"
+                                      (container with index 2 in this pod). This syntax
+                                      is chosen only to have some well-defined way of
+                                      referencing a part of an object. TODO: this design
+                                      is not final and this field is subject to change
+                                      in the future.'
                                     type: string
                                   kind:
-                                    description: 'Kind of the referent. More info:
-                                      https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                    description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
                                     type: string
                                   name:
-                                    description: 'Name of the referent. More info:
-                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
                                     type: string
                                   namespace:
-                                    description: 'Namespace of the referent. More
-                                      info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                    description: 'Namespace of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
                                     type: string
                                   resourceVersion:
                                     description: 'Specific resourceVersion to which
                                       this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
                                     type: string
                                   uid:
-                                    description: 'UID of the referent. More info:
-                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                                    description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
                                     type: string
                                 type: object
                                 x-kubernetes-map-type: atomic
@@ -710,8 +710,8 @@ spec:
                     type: object
                 type: object
               image:
-                description: Main image of DevSpace. It is derived either from the
-                  specifications or determined directly over labels.
+                description: Main image of DevSpace. It is derived either from the specifications
+                  or determined directly over labels.
                 type: string
               loaderJobStatus:
                 description: Status of loader job that configures environment.
@@ -729,17 +729,17 @@ spec:
                         description: API version of the referent.
                         type: string
                       fieldPath:
-                        description: 'If referring to a piece of an object instead
-                          of an entire object, this string should contain a valid
-                          JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                        description: 'If referring to a piece of an object instead of
+                          an entire object, this string should contain a valid JSON/Go
+                          field access statement, such as desiredState.manifest.containers[2].
                           For example, if the object reference is to a container within
                           a pod, this would take on a value like: "spec.containers{name}"
                           (where "name" refers to the name of the container that triggered
                           the event) or if no container name is specified "spec.containers[2]"
                           (container with index 2 in this pod). This syntax is chosen
-                          only to have some well-defined way of referencing a part
-                          of an object. TODO: this design is not final and this field
-                          is subject to change in the future.'
+                          only to have some well-defined way of referencing a part of
+                          an object. TODO: this design is not final and this field is
+                          subject to change in the future.'
                         type: string
                       kind:
                         description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -797,11 +797,11 @@ spec:
                               within a pod, this would take on a value like: "spec.containers{name}"
                               (where "name" refers to the name of the container that
                               triggered the event) or if no container name is specified
-                              "spec.containers[2]" (container with index 2 in this
-                              pod). This syntax is chosen only to have some well-defined
-                              way of referencing a part of an object. TODO: this design
-                              is not final and this field is subject to change in
-                              the future.'
+                              "spec.containers[2]" (container with index 2 in this pod).
+                              This syntax is chosen only to have some well-defined way
+                              of referencing a part of an object. TODO: this design
+                              is not final and this field is subject to change in the
+                              future.'
                             type: string
                           kind:
                             description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -848,11 +848,11 @@ spec:
                               within a pod, this would take on a value like: "spec.containers{name}"
                               (where "name" refers to the name of the container that
                               triggered the event) or if no container name is specified
-                              "spec.containers[2]" (container with index 2 in this
-                              pod). This syntax is chosen only to have some well-defined
-                              way of referencing a part of an object. TODO: this design
-                              is not final and this field is subject to change in
-                              the future.'
+                              "spec.containers[2]" (container with index 2 in this pod).
+                              This syntax is chosen only to have some well-defined way
+                              of referencing a part of an object. TODO: this design
+                              is not final and this field is subject to change in the
+                              future.'
                             type: string
                           kind:
                             description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -899,11 +899,11 @@ spec:
                               within a pod, this would take on a value like: "spec.containers{name}"
                               (where "name" refers to the name of the container that
                               triggered the event) or if no container name is specified
-                              "spec.containers[2]" (container with index 2 in this
-                              pod). This syntax is chosen only to have some well-defined
-                              way of referencing a part of an object. TODO: this design
-                              is not final and this field is subject to change in
-                              the future.'
+                              "spec.containers[2]" (container with index 2 in this pod).
+                              This syntax is chosen only to have some well-defined way
+                              of referencing a part of an object. TODO: this design
+                              is not final and this field is subject to change in the
+                              future.'
                             type: string
                           kind:
                             description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -950,11 +950,11 @@ spec:
                               within a pod, this would take on a value like: "spec.containers{name}"
                               (where "name" refers to the name of the container that
                               triggered the event) or if no container name is specified
-                              "spec.containers[2]" (container with index 2 in this
-                              pod). This syntax is chosen only to have some well-defined
-                              way of referencing a part of an object. TODO: this design
-                              is not final and this field is subject to change in
-                              the future.'
+                              "spec.containers[2]" (container with index 2 in this pod).
+                              This syntax is chosen only to have some well-defined way
+                              of referencing a part of an object. TODO: this design
+                              is not final and this field is subject to change in the
+                              future.'
                             type: string
                           kind:
                             description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -1001,11 +1001,11 @@ spec:
                               within a pod, this would take on a value like: "spec.containers{name}"
                               (where "name" refers to the name of the container that
                               triggered the event) or if no container name is specified
-                              "spec.containers[2]" (container with index 2 in this
-                              pod). This syntax is chosen only to have some well-defined
-                              way of referencing a part of an object. TODO: this design
-                              is not final and this field is subject to change in
-                              the future.'
+                              "spec.containers[2]" (container with index 2 in this pod).
+                              This syntax is chosen only to have some well-defined way
+                              of referencing a part of an object. TODO: this design
+                              is not final and this field is subject to change in the
+                              future.'
                             type: string
                           kind:
                             description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -1055,11 +1055,11 @@ spec:
                               within a pod, this would take on a value like: "spec.containers{name}"
                               (where "name" refers to the name of the container that
                               triggered the event) or if no container name is specified
-                              "spec.containers[2]" (container with index 2 in this
-                              pod). This syntax is chosen only to have some well-defined
-                              way of referencing a part of an object. TODO: this design
-                              is not final and this field is subject to change in
-                              the future.'
+                              "spec.containers[2]" (container with index 2 in this pod).
+                              This syntax is chosen only to have some well-defined way
+                              of referencing a part of an object. TODO: this design
+                              is not final and this field is subject to change in the
+                              future.'
                             type: string
                           kind:
                             description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -1102,19 +1102,18 @@ spec:
                                 description: API version of the referent.
                                 type: string
                               fieldPath:
-                                description: 'If referring to a piece of an object
-                                  instead of an entire object, this string should
-                                  contain a valid JSON/Go field access statement,
-                                  such as desiredState.manifest.containers[2]. For
-                                  example, if the object reference is to a container
+                                description: 'If referring to a piece of an object instead
+                                  of an entire object, this string should contain a
+                                  valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                                  For example, if the object reference is to a container
                                   within a pod, this would take on a value like: "spec.containers{name}"
                                   (where "name" refers to the name of the container
                                   that triggered the event) or if no container name
                                   is specified "spec.containers[2]" (container with
-                                  index 2 in this pod). This syntax is chosen only
-                                  to have some well-defined way of referencing a part
-                                  of an object. TODO: this design is not final and
-                                  this field is subject to change in the future.'
+                                  index 2 in this pod). This syntax is chosen only to
+                                  have some well-defined way of referencing a part of
+                                  an object. TODO: this design is not final and this
+                                  field is subject to change in the future.'
                                 type: string
                               kind:
                                 description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -1154,19 +1153,18 @@ spec:
                                 description: API version of the referent.
                                 type: string
                               fieldPath:
-                                description: 'If referring to a piece of an object
-                                  instead of an entire object, this string should
-                                  contain a valid JSON/Go field access statement,
-                                  such as desiredState.manifest.containers[2]. For
-                                  example, if the object reference is to a container
+                                description: 'If referring to a piece of an object instead
+                                  of an entire object, this string should contain a
+                                  valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                                  For example, if the object reference is to a container
                                   within a pod, this would take on a value like: "spec.containers{name}"
                                   (where "name" refers to the name of the container
                                   that triggered the event) or if no container name
                                   is specified "spec.containers[2]" (container with
-                                  index 2 in this pod). This syntax is chosen only
-                                  to have some well-defined way of referencing a part
-                                  of an object. TODO: this design is not final and
-                                  this field is subject to change in the future.'
+                                  index 2 in this pod). This syntax is chosen only to
+                                  have some well-defined way of referencing a part of
+                                  an object. TODO: this design is not final and this
+                                  field is subject to change in the future.'
                                 type: string
                               kind:
                                 description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -1205,3 +1203,9 @@ spec:
     storage: true
     subresources:
       status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

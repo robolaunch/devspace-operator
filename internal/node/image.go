@@ -1,9 +1,11 @@
 package node
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	"github.com/robolaunch/devspace-operator/internal"
@@ -39,9 +41,25 @@ type DevSpaceOperator struct {
 }
 
 type Images struct {
-	Organization string   `yaml:"organization"`
-	Repository   string   `yaml:"repository"`
-	Tags         []string `yaml:"tags"`
+	Organization string               `yaml:"organization"`
+	Repository   string               `yaml:"repository"`
+	Domains      map[string][]Element `yaml:"domains"`
+}
+
+type Element struct {
+	Application   Application   `yaml:"application"`
+	DevSpaceImage DevSpaceImage `yaml:"devspace"`
+}
+
+type Application struct {
+	Name    string `yaml:"name"`
+	Version string `yaml:"version"`
+}
+
+type DevSpaceImage struct {
+	UbuntuDistro string `yaml:"ubuntuDistro"`
+	Desktop      string `yaml:"desktop"`
+	Version      string `yaml:"version"`
 }
 
 // Not used in devspace manifest, needed for internal use.
@@ -91,19 +109,70 @@ func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 		organization := imageProps.Organization
 		repository := imageProps.Repository
 
-		tagBuilder.WriteString(string(devspace.Spec.UbuntuDistro))
+		chosenElement := Element{}
+		if devspace.Spec.Environment.Domain == "plain" {
+			for _, element := range imageProps.Domains["plain"] {
+				if element.DevSpaceImage.UbuntuDistro != devspace.Spec.Environment.DevSpaceImage.UbuntuDistro {
+					continue
+				}
 
-		hasGPU := HasGPU(node)
+				if element.DevSpaceImage.Desktop != devspace.Spec.Environment.DevSpaceImage.Desktop {
+					continue
+				}
 
-		if hasGPU {
-			tagBuilder.WriteString("-xfce") // TODO: make desktop selectable
+				if element.DevSpaceImage.Version != devspace.Spec.Environment.DevSpaceImage.Version {
+					continue
+				}
 
+				chosenElement = element
+				break
+			}
+
+			if reflect.DeepEqual(chosenElement, Element{}) {
+				return "", errors.New("environment is not supported")
+			}
 		} else {
-			tagBuilder.WriteString("-xfce") // TODO: make desktop selectable
+			if domain, ok := imageProps.Domains[devspace.Spec.Environment.Domain]; ok {
+				for _, element := range domain {
+					if element.Application.Name != devspace.Spec.Environment.Application.Name {
+						continue
+					}
+
+					if element.Application.Version != devspace.Spec.Environment.Application.Version {
+						continue
+					}
+
+					if element.DevSpaceImage.UbuntuDistro != devspace.Spec.Environment.DevSpaceImage.UbuntuDistro {
+						continue
+					}
+
+					if element.DevSpaceImage.Desktop != devspace.Spec.Environment.DevSpaceImage.Desktop {
+						continue
+					}
+
+					if element.DevSpaceImage.Version != devspace.Spec.Environment.DevSpaceImage.Version {
+						continue
+					}
+
+					chosenElement = element
+					repository += "-" + devspace.Spec.Environment.Domain
+					tagBuilder.WriteString(chosenElement.Application.Name + "-")
+					tagBuilder.WriteString(chosenElement.Application.Version + "-")
+					break
+				}
+
+				if reflect.DeepEqual(chosenElement, Element{}) {
+					return "", errors.New("environment is not supported")
+				}
+
+			} else {
+				return "", errors.New("domain is not supported")
+			}
 		}
 
-		// get latest tag
-		tagBuilder.WriteString("-" + imageProps.Tags[0])
+		tagBuilder.WriteString(chosenElement.DevSpaceImage.UbuntuDistro + "-")
+		tagBuilder.WriteString(chosenElement.DevSpaceImage.Desktop + "-")
+		tagBuilder.WriteString(chosenElement.DevSpaceImage.Version)
 
 		imageBuilder.WriteString(filepath.Join(organization, repository) + ":")
 		imageBuilder.WriteString(tagBuilder.String())

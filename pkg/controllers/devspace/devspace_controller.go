@@ -55,19 +55,14 @@ func (r *DevSpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, err
 	}
 
-	// err = r.reconcileCheckDeletion(ctx, instance)
-	// if err != nil {
-
-	// 	if errors.IsNotFound(err) {
-	// 		return ctrl.Result{}, nil
-	// 	}
-
-	// 	return ctrl.Result{}, err
-	// }
-
 	err = r.reconcileCheckImage(ctx, instance)
 	if err != nil {
-		return ctrl.Result{}, err
+		instance.Status.Phase = devv1alpha1.DevSpacePhaseEnvironmentNotFound
+		err = r.reconcileUpdateInstanceStatus(ctx, instance)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		return ctrl.Result{}, nil
 	}
 
 	err = r.reconcileCheckStatus(ctx, instance)

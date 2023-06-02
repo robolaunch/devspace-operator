@@ -12,7 +12,12 @@ func init() {
 //+genclient
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
-//+kubebuilder:printcolumn:name="Distributions",type=string,JSONPath=`.spec.distributions`
+//+kubebuilder:printcolumn:name="Domain",type=string,JSONPath=`.spec.environment.domain`
+//+kubebuilder:printcolumn:name="App",type=string,JSONPath=`.spec.environment.application.name`
+//+kubebuilder:printcolumn:name="Version",type=string,JSONPath=`.spec.environment.application.version`
+//+kubebuilder:printcolumn:name="Ubuntu",type=string,JSONPath=`.spec.environment.devspace.ubuntuDistro`
+//+kubebuilder:printcolumn:name="Desktop",type=string,JSONPath=`.spec.environment.devspace.desktop`
+//+kubebuilder:printcolumn:name="DevSpace",type=string,JSONPath=`.spec.environment.devspace.version`
 //+kubebuilder:printcolumn:name="Phase",type=string,JSONPath=`.status.phase`
 
 // DevSpace is the custom resource that contains ROS 2 components (Workloads, Cloud VDI, Cloud IDE, ROS Bridge, Configurational Resources), robolaunch DevSpace instances can be decomposed and distributed to both cloud instances and physical instances using federation.
@@ -39,16 +44,38 @@ type DevSpaceList struct {
 // DevSpace types
 // ********************************
 
-// Ubuntu distribution selection. Currently supported distributions are Focal and Jammy.
-// +kubebuilder:validation:Enum=focal;jammy
-type UbuntuDistro string
+type Application struct {
+	// Application name.
+	// +kubebuilder:validation:Required
+	Name string `json:"name"`
+	// Version of the application.
+	// +kubebuilder:validation:Required
+	Version string `json:"version"`
+}
 
-const (
-	// Ubuntu 20.04 Focal Fossa
-	UbuntuDistroFocal UbuntuDistro = "focal"
-	// Ubuntu 22.04 Jammy Jellyfish
-	UbuntuDistroJammy UbuntuDistro = "jammy"
-)
+type DevSpaceImage struct {
+	// Ubuntu distribution of the environment.
+	// +kubebuilder:validation:Required
+	UbuntuDistro string `json:"ubuntuDistro"`
+	// Ubuntu desktop.
+	// +kubebuilder:validation:Required
+	Desktop string `json:"desktop"`
+	// DevSpace image version.
+	// +kubebuilder:validation:Required
+	Version string `json:"version"`
+}
+
+type Environment struct {
+	// Domain of the environment.
+	// +kubebuilder:validation:Required
+	Domain string `json:"domain"`
+	// Application properties.
+	// +kubebuilder:validation:Required
+	Application Application `json:"application"`
+	// DevSpace image properties.
+	// +kubebuilder:validation:Required
+	DevSpaceImage DevSpaceImage `json:"devspace"`
+}
 
 // Storage class configuration for a volume type.
 type StorageClassConfig struct {
@@ -84,9 +111,9 @@ type RootDNSConfig struct {
 
 // DevSpaceSpec defines the desired state of DevSpace.
 type DevSpaceSpec struct {
-	// Ubuntu distribution to be used. `focal` and `jammy` is supported.
+	// Environment properties. Supported options are listed in [robolaunch Platform Versioning Map](https://github.com/robolaunch/robolaunch/blob/main/platform.yaml).
 	// +kubebuilder:validation:Required
-	UbuntuDistro UbuntuDistro `json:"ubuntuDistro"`
+	Environment Environment `json:"environment"`
 	// Total storage amount to persist via DevSpace. Unit of measurement is MB. (eg. `10240` corresponds 10 GB)
 	// This amount is being shared between different components.
 	Storage Storage `json:"storage,omitempty"`

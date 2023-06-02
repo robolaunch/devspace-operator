@@ -3,6 +3,7 @@ package v1alpha1
 type DevSpacePhase string
 
 const (
+	DevSpacePhaseEnvironmentNotFound      DevSpacePhase = "EnvironmentNotFound"
 	DevSpacePhaseCreatingEnvironment      DevSpacePhase = "CreatingEnvironment"
 	DevSpacePhaseConfiguringEnvironment   DevSpacePhase = "ConfiguringEnvironment"
 	DevSpacePhaseCreatingDevelopmentSuite DevSpacePhase = "CreatingDevelopmentSuite"

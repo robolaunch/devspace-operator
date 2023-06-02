@@ -111,7 +111,26 @@ func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 
 		chosenElement := Element{}
 		if devspace.Spec.Environment.Domain == "plain" {
+			for _, element := range imageProps.Domains["plain"] {
+				if element.DevSpaceImage.UbuntuDistro != devspace.Spec.Environment.DevSpaceImage.UbuntuDistro {
+					continue
+				}
 
+				if element.DevSpaceImage.Desktop != devspace.Spec.Environment.DevSpaceImage.Desktop {
+					continue
+				}
+
+				if element.DevSpaceImage.Version != devspace.Spec.Environment.DevSpaceImage.Version {
+					continue
+				}
+
+				chosenElement = element
+				break
+			}
+
+			if reflect.DeepEqual(chosenElement, Element{}) {
+				return "", errors.New("environment is not supported")
+			}
 		} else {
 			if domain, ok := imageProps.Domains[devspace.Spec.Environment.Domain]; ok {
 				for _, element := range domain {

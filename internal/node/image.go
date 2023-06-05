@@ -157,7 +157,7 @@ func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 					chosenElement = element
 					repository += "-" + devspace.Spec.Environment.Domain
 					tagBuilder.WriteString(chosenElement.Application.Name + "-")
-					tagBuilder.WriteString(chosenElement.Application.Version + "-")
+					tagBuilder.WriteString(formatTag(chosenElement.Application.Version) + "-")
 					break
 				}
 
@@ -181,6 +181,14 @@ func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 
 	return imageBuilder.String(), nil
 
+}
+
+func formatTag(tag string) string {
+	// no "+" is allowed
+	// no "~" is allowed
+	tag = strings.ReplaceAll(tag, "+", "-")
+	tag = strings.ReplaceAll(tag, "~", "-")
+	return tag
 }
 
 func getImageProps(platformVersion string) (Images, error) {

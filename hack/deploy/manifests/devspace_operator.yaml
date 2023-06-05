@@ -2360,7 +2360,7 @@ spec:
             - --leader-elect
           command:
             - /manager
-          image: robolaunchio/devspace-controller-manager:v0.1.0-alpha.1
+          image: robolaunchio/devspace-controller-manager:v0.1.0-alpha.3
           livenessProbe:
             httpGet:
               path: /healthz

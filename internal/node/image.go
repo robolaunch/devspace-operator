@@ -19,25 +19,9 @@ type Platform struct {
 }
 
 type Version struct {
-	Date     string   `yaml:"date"`
-	Version  string   `yaml:"version"`
-	DevCloud DevCloud `yaml:"devCloud"`
-}
-
-type DevCloud struct {
-	Kubernetes Kubernetes `yaml:"kubernetes"`
-}
-
-type Kubernetes struct {
-	Operators Operators `yaml:"operators"`
-}
-
-type Operators struct {
-	DevSpaceOperator DevSpaceOperator `yaml:"devspace"`
-}
-
-type DevSpaceOperator struct {
-	Images Images `yaml:"images"`
+	Date    string `yaml:"date"`
+	Version string `yaml:"version"`
+	Images  Images `yaml:"images"`
 }
 
 type Images struct {
@@ -217,7 +201,7 @@ func getImageProps(platformVersion string) (Images, error) {
 	var imageProps Images
 	for _, v := range platform.Versions {
 		if v.Version == platformVersion {
-			imageProps = v.DevCloud.Kubernetes.Operators.DevSpaceOperator.Images
+			imageProps = v.Images
 		}
 	}
 

@@ -2,6 +2,9 @@
 ## [Unreleased]
 
 
+<a name="v0.1.0-alpha.3"></a>
+## [v0.1.0-alpha.3] - 2023-06-05
+
 <a name="v0.1.0-alpha.1"></a>
 ## v0.1.0-alpha.1 - 2023-06-02
 ### Feat
@@ -67,4 +70,5 @@
 - Merge pull request [#24](https://github.com/robolaunch/devspace-operator/issues/24) from robolaunch/23-allow-multiple-launches
 
 
-[Unreleased]: https://github.com/robolaunch/devspace-operator/compare/v0.1.0-alpha.1...HEAD
+[Unreleased]: https://github.com/robolaunch/devspace-operator/compare/v0.1.0-alpha.3...HEAD
+[v0.1.0-alpha.3]: https://github.com/robolaunch/devspace-operator/compare/v0.1.0-alpha.1...v0.1.0-alpha.3

@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"strings"
 
+	cosmodrome "github.com/robolaunch/cosmodrome/pkg/api"
 	"github.com/robolaunch/devspace-operator/internal"
 	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	"gopkg.in/yaml.v2"
@@ -141,7 +142,7 @@ func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 					chosenElement = element
 					repository += "-" + devspace.Spec.Environment.Domain
 					tagBuilder.WriteString(chosenElement.Application.Name + "-")
-					tagBuilder.WriteString(formatTag(chosenElement.Application.Version) + "-")
+					tagBuilder.WriteString(cosmodrome.FormatTag(chosenElement.Application.Version) + "-")
 					break
 				}
 
@@ -165,14 +166,6 @@ func GetImage(node corev1.Node, devspace devv1alpha1.DevSpace) (string, error) {
 
 	return imageBuilder.String(), nil
 
-}
-
-func formatTag(tag string) string {
-	// no "+" is allowed
-	// no "~" is allowed
-	tag = strings.ReplaceAll(tag, "+", "-")
-	tag = strings.ReplaceAll(tag, "~", "-")
-	return tag
 }
 
 func getImageProps(platformVersion string) (Images, error) {

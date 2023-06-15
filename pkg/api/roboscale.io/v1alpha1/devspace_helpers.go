@@ -53,10 +53,17 @@ func (devspace *DevSpace) GetLoaderJobMetadata() *types.NamespacedName {
 	}
 }
 
-func (devspace *DevSpace) GetDevSuiteMetadata() *types.NamespacedName {
+func (devspace *DevSpace) GetDevSpaceVDIMetadata() *types.NamespacedName {
 	return &types.NamespacedName{
-		Name:      devspace.Name + internal.DEVSPACE_DEV_SUITE_POSTFIX,
 		Namespace: devspace.Namespace,
+		Name:      devspace.Name + internal.DEVSPACE_VDI_POSTFIX,
+	}
+}
+
+func (devspace *DevSpace) GetDevSpaceIDEMetadata() *types.NamespacedName {
+	return &types.NamespacedName{
+		Namespace: devspace.Namespace,
+		Name:      devspace.Name + internal.DEVSPACE_IDE_POSTFIX,
 	}
 }
 

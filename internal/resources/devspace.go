@@ -2,6 +2,7 @@ package resources
 
 import (
 	"path/filepath"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -187,4 +188,36 @@ func GetWorkspaceManager(devspace *devv1alpha1.DevSpace, wsmNamespacedName *type
 
 	return &workspaceManager
 
+}
+
+func GetDevSpaceVDI(devSpace *devv1alpha1.DevSpace, devSpaceVDINamespacedName *types.NamespacedName) *devv1alpha1.DevSpaceVDI {
+
+	devSpaceVDI := devv1alpha1.DevSpaceVDI{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      devSpaceVDINamespacedName.Name,
+			Namespace: devSpaceVDINamespacedName.Namespace,
+			Labels:    devSpace.Labels,
+		},
+		Spec: devSpace.Spec.DevSpaceVDITemplate,
+	}
+
+	return &devSpaceVDI
+}
+
+func GetDevSpaceIDE(devSpace *devv1alpha1.DevSpace, devSpaceIDENamespacedName *types.NamespacedName) *devv1alpha1.DevSpaceIDE {
+
+	devSpaceIDE := devv1alpha1.DevSpaceIDE{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      devSpaceIDENamespacedName.Name,
+			Namespace: devSpaceIDENamespacedName.Namespace,
+			Labels:    devSpace.Labels,
+		},
+		Spec: devSpace.Spec.DevSpaceIDETemplate,
+	}
+
+	if !reflect.DeepEqual(devSpace.Spec.DevSpaceVDITemplate, devv1alpha1.DevSpaceVDISpec{}) {
+		devSpaceIDE.Labels[internal.TARGET_VDI_LABEL_KEY] = devSpace.GetDevSpaceVDIMetadata().Name
+	}
+
+	return &devSpaceIDE
 }

@@ -2,6 +2,7 @@ package v1alpha1
 
 import (
 	"errors"
+	"reflect"
 
 	"github.com/robolaunch/devspace-operator/internal"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -114,9 +115,7 @@ func (r *DevSpace) checkTenancyLabels() error {
 
 func (r *DevSpace) checkDevSuite() error {
 
-	dst := r.Spec.DevSuiteTemplate
-
-	if dst.IDEEnabled && dst.DevSpaceIDETemplate.Display && !dst.VDIEnabled {
+	if !reflect.DeepEqual(r.Spec.DevSpaceIDETemplate, DevSpaceIDESpec{}) && r.Spec.DevSpaceIDETemplate.Display && reflect.DeepEqual(r.Spec.DevSpaceVDITemplate, DevSpaceVDISpec{}) {
 		return errors.New("cannot open an ide with a display when vdi disabled")
 	}
 

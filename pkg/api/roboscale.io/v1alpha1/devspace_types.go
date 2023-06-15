@@ -117,8 +117,10 @@ type DevSpaceSpec struct {
 	// Total storage amount to persist via DevSpace. Unit of measurement is MB. (eg. `10240` corresponds 10 GB)
 	// This amount is being shared between different components.
 	Storage Storage `json:"storage,omitempty"`
-	// DevSpace development suite template
-	DevSuiteTemplate DevSuiteSpec `json:"devSuiteTemplate,omitempty"`
+	// Configurational parameters of DevSpaceVDI. Applied if `.spec.vdiEnabled` is set to `true`.
+	DevSpaceVDITemplate DevSpaceVDISpec `json:"devSpaceVDITemplate,omitempty"`
+	// Configurational parameters of DevSpaceIDE. Applied if `.spec.ideEnabled` is set to `true`.
+	DevSpaceIDETemplate DevSpaceIDESpec `json:"devSpaceIDETemplate,omitempty"`
 	// Workspace manager template to configure ROS 2 workspaces.
 	WorkspaceManagerTemplate WorkspaceManagerSpec `json:"workspaceManagerTemplate,omitempty"`
 	// [*alpha*] Switch to development mode if `true`.

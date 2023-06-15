@@ -2,6 +2,7 @@ package devspace
 
 import (
 	"context"
+	"reflect"
 
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -102,7 +103,7 @@ func (r *DevSpaceReconciler) reconcileCheckStatus(ctx context.Context, instance 
 			switch instance.Status.LoaderJobStatus.Phase {
 			case string(devv1alpha1.JobSucceeded):
 
-				switch instance.Spec.DevSuiteTemplate.IDEEnabled || instance.Spec.DevSuiteTemplate.VDIEnabled {
+				switch !reflect.DeepEqual(instance.Spec.DevSpaceIDETemplate, devv1alpha1.DevSpaceIDESpec{}) || !reflect.DeepEqual(instance.Spec.DevSpaceVDITemplate, devv1alpha1.DevSpaceVDISpec{}) {
 				case true:
 
 					switch instance.Status.DevSuiteStatus.Resource.Created {
@@ -129,12 +130,7 @@ func (r *DevSpaceReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 					case false:
 
-						instance.Status.Phase = devv1alpha1.DevSpacePhaseCreatingDevelopmentSuite
-						err := r.createDevSuite(ctx, instance, instance.GetDevSuiteMetadata())
-						if err != nil {
-							return err
-						}
-						instance.Status.DevSuiteStatus.Resource.Created = true
+						// create devspace VDI or devspace IDE
 
 					}
 
@@ -225,10 +221,7 @@ func (r *DevSpaceReconciler) reconcileCheckResources(ctx context.Context, instan
 		return err
 	}
 
-	err = r.reconcileCheckDevSuite(ctx, instance)
-	if err != nil {
-		return err
-	}
+	// check devspace VDI and devspace IDE
 
 	err = r.reconcileCheckWorkspaceManager(ctx, instance)
 	if err != nil {

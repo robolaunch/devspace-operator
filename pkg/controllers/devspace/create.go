@@ -56,26 +56,6 @@ func (r *DevSpaceReconciler) createJob(ctx context.Context, instance *devv1alpha
 	return nil
 }
 
-func (r *DevSpaceReconciler) createDevSuite(ctx context.Context, instance *devv1alpha1.DevSpace, rdsNamespacedName *types.NamespacedName) error {
-
-	devSuite := resources.GetDevSuite(instance, rdsNamespacedName)
-
-	err := ctrl.SetControllerReference(instance, devSuite, r.Scheme)
-	if err != nil {
-		return err
-	}
-
-	err = r.Create(ctx, devSuite)
-	if err != nil && errors.IsAlreadyExists(err) {
-		return nil
-	} else if err != nil {
-		return err
-	}
-
-	logger.Info("STATUS: DevSpace dev suite " + devSuite.Name + " is created.")
-	return nil
-}
-
 func (r *DevSpaceReconciler) createWorkspaceManager(ctx context.Context, instance *devv1alpha1.DevSpace, wsmNamespacedName *types.NamespacedName) error {
 
 	workspaceManager := resources.GetWorkspaceManager(instance, wsmNamespacedName)

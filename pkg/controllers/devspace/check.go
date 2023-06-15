@@ -96,44 +96,6 @@ func (r *DevSpaceReconciler) reconcileCheckLoaderJob(ctx context.Context, instan
 	return nil
 }
 
-func (r *DevSpaceReconciler) reconcileCheckDevSuite(ctx context.Context, instance *devv1alpha1.DevSpace) error {
-
-	devSuiteQuery := &devv1alpha1.DevSuite{}
-	err := r.Get(ctx, *instance.GetDevSuiteMetadata(), devSuiteQuery)
-	if err != nil && errors.IsNotFound(err) {
-		instance.Status.DevSuiteStatus = devv1alpha1.DevSuiteInstanceStatus{}
-	} else if err != nil {
-		return err
-	} else {
-
-		if instance.Spec.DevSuiteTemplate.IDEEnabled || instance.Spec.DevSuiteTemplate.VDIEnabled {
-
-			if !reflect.DeepEqual(instance.Spec.DevSuiteTemplate, devSuiteQuery.Spec) {
-				devSuiteQuery.Spec = instance.Spec.DevSuiteTemplate
-				err = r.Update(ctx, devSuiteQuery)
-				if err != nil {
-					return err
-				}
-			}
-
-			instance.Status.DevSuiteStatus.Resource.Created = true
-			reference.SetReference(&instance.Status.DevSuiteStatus.Resource.Reference, devSuiteQuery.TypeMeta, devSuiteQuery.ObjectMeta)
-			instance.Status.DevSuiteStatus.Status = devSuiteQuery.Status
-
-		} else {
-
-			err := r.Delete(ctx, devSuiteQuery)
-			if err != nil {
-				return err
-			}
-
-		}
-
-	}
-
-	return nil
-}
-
 func (r *DevSpaceReconciler) reconcileCheckWorkspaceManager(ctx context.Context, instance *devv1alpha1.DevSpace) error {
 
 	workspaceManagerQuery := &devv1alpha1.WorkspaceManager{}

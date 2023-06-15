@@ -139,7 +139,7 @@ func GetLoaderJob(devspace *devv1alpha1.DevSpace, jobNamespacedName *types.Names
 			ImagePullPolicy: corev1.PullAlways,
 			Env: []corev1.EnvVar{
 				internal.Env("NVIDIA_DRIVER_VERSION", "agnostic"),
-				internal.Env("RESOLUTION", devspace.Spec.DevSuiteTemplate.DevSpaceVDITemplate.Resolution),
+				internal.Env("RESOLUTION", devspace.Spec.DevSpaceVDITemplate.Resolution),
 			},
 			VolumeMounts: []corev1.VolumeMount{
 				configure.GetVolumeMount("", configure.GetVolumeVar(devspace)),
@@ -169,25 +169,6 @@ func GetLoaderJob(devspace *devv1alpha1.DevSpace, jobNamespacedName *types.Names
 	}
 
 	return &job
-}
-
-func GetDevSuite(devspace *devv1alpha1.DevSpace, rdsNamespacedName *types.NamespacedName) *devv1alpha1.DevSuite {
-
-	labels := devspace.Labels
-	labels[internal.TARGET_DEVSPACE_LABEL_KEY] = devspace.Name
-	labels[internal.DEVSPACE_DEV_SUITE_OWNED] = "true"
-
-	devSuite := devv1alpha1.DevSuite{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      rdsNamespacedName.Name,
-			Namespace: rdsNamespacedName.Namespace,
-			Labels:    devspace.Labels,
-		},
-		Spec: devspace.Spec.DevSuiteTemplate,
-	}
-
-	return &devSuite
-
 }
 
 func GetWorkspaceManager(devspace *devv1alpha1.DevSpace, wsmNamespacedName *types.NamespacedName) *devv1alpha1.WorkspaceManager {

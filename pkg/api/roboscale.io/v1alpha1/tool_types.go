@@ -101,6 +101,10 @@ type DevSpaceVDIList struct {
 	Items           []DevSpaceVDI `json:"items"`
 }
 
+//+genclient
+//+kubebuilder:object:root=true
+//+kubebuilder:subresource:status
+
 // DevSpaceJupyter creates Jupyter Notebook instances in DevSpace.
 type DevSpaceJupyter struct {
 	metav1.TypeMeta   `json:",inline"`

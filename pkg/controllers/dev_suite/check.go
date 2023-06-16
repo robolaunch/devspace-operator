@@ -90,3 +90,44 @@ func (r *DevSuiteReconciler) reconcileCheckDevSpaceIDE(ctx context.Context, inst
 
 	return nil
 }
+
+func (r *DevSuiteReconciler) reconcileCheckDevSpaceJupyter(ctx context.Context, instance *devv1alpha1.DevSuite) error {
+
+	devSpaceJupyterQuery := &devv1alpha1.DevSpaceJupyter{}
+	err := r.Get(ctx, *instance.GetDevSpaceJupyterMetadata(), devSpaceJupyterQuery)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			instance.Status.DevSpaceJupyterStatus = devv1alpha1.OwnedDevSpaceServiceStatus{}
+		} else {
+			return err
+		}
+	} else {
+
+		if instance.Spec.IDEEnabled {
+
+			if !reflect.DeepEqual(instance.Spec.DevSpaceJupyterTemplate, devSpaceJupyterQuery.Spec) {
+				devSpaceJupyterQuery.Spec = instance.Spec.DevSpaceJupyterTemplate
+				err = r.Update(ctx, devSpaceJupyterQuery)
+				if err != nil {
+					return err
+				}
+			}
+
+			instance.Status.DevSpaceJupyterStatus.Resource.Created = true
+			reference.SetReference(&instance.Status.DevSpaceJupyterStatus.Resource.Reference, devSpaceJupyterQuery.TypeMeta, devSpaceJupyterQuery.ObjectMeta)
+			instance.Status.DevSpaceJupyterStatus.Resource.Phase = string(devSpaceJupyterQuery.Status.Phase)
+			instance.Status.DevSpaceJupyterStatus.Connection = devSpaceJupyterQuery.Status.ServiceStatus.URL
+
+		} else {
+
+			err := r.Delete(ctx, devSpaceJupyterQuery)
+			if err != nil {
+				return err
+			}
+
+		}
+
+	}
+
+	return nil
+}

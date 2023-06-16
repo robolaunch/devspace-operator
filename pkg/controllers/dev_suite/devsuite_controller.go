@@ -192,6 +192,11 @@ func (r *DevSuiteReconciler) reconcileCheckResources(ctx context.Context, instan
 		return err
 	}
 
+	err = r.reconcileCheckDevSpaceJupyter(ctx, instance)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -201,6 +206,7 @@ func (r *DevSuiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&devv1alpha1.DevSuite{}).
 		Owns(&devv1alpha1.DevSpaceVDI{}).
 		Owns(&devv1alpha1.DevSpaceIDE{}).
+		Owns(&devv1alpha1.DevSpaceJupyter{}).
 		Watches(
 			&source.Kind{Type: &devv1alpha1.DevSpace{}},
 			handler.EnqueueRequestsFromMapFunc(r.watchDevSpaces),

@@ -29,7 +29,7 @@ func GetDevSpaceJupyterPod(devSpaceJupyter *devv1alpha1.DevSpaceJupyter, podName
 	// discovery server
 
 	var cmdBuilder strings.Builder
-	cmdBuilder.WriteString("jupyter notebook --ip 0.0.0.0 --port " + strconv.Itoa(devspaceJupyterContainerPort) + " --notebook-dir " + devspace.Spec.WorkspaceManagerTemplate.WorkspacesPath)
+	cmdBuilder.WriteString("jupyter notebook --ip 0.0.0.0 --port " + strconv.Itoa(devspaceJupyterContainerPort) + " --notebook-dir " + devspace.Spec.WorkspaceManagerTemplate.WorkspacesPath + " --NotebookApp.token='' --NotebookApp.password=''")
 
 	labels := getDevSpaceJupyterSelector(*devSpaceJupyter)
 	for k, v := range devSpaceJupyter.Labels {

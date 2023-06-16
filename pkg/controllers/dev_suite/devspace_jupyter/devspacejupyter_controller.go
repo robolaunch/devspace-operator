@@ -19,6 +19,7 @@ package devspace_jupyter
 import (
 	"context"
 
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -84,6 +85,53 @@ func (r *DevSpaceJupyterReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 }
 
 func (r *DevSpaceJupyterReconciler) reconcileCheckStatus(ctx context.Context, instance *devv1alpha1.DevSpaceJupyter) error {
+	switch instance.Status.ServiceStatus.Resource.Created {
+	case true:
+
+		switch instance.Status.PodStatus.Resource.Created {
+		case true:
+
+			switch instance.Status.IngressStatus.Created || !instance.Spec.Ingress {
+			case true:
+
+				switch instance.Status.PodStatus.Resource.Phase {
+				case string(corev1.PodRunning):
+
+					instance.Status.Phase = devv1alpha1.DevSpaceJupyterPhaseRunning
+
+				}
+
+			case false:
+
+				instance.Status.Phase = devv1alpha1.DevSpaceJupyterPhaseCreatingIngress
+				err := r.reconcileCreateIngress(ctx, instance)
+				if err != nil {
+					return err
+				}
+				instance.Status.IngressStatus.Created = true
+
+			}
+
+		case false:
+
+			instance.Status.Phase = devv1alpha1.DevSpaceJupyterPhaseCreatingPod
+			err := r.reconcileCreatePod(ctx, instance)
+			if err != nil {
+				return err
+			}
+			instance.Status.PodStatus.Resource.Created = true
+		}
+
+	case false:
+
+		instance.Status.Phase = devv1alpha1.DevSpaceJupyterPhaseCreatingService
+		err := r.reconcileCreateService(ctx, instance)
+		if err != nil {
+			return err
+		}
+		instance.Status.ServiceStatus.Resource.Created = true
+
+	}
 	return nil
 }
 

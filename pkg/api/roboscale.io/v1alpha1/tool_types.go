@@ -133,6 +133,10 @@ type DevSuiteSpec struct {
 	IDEEnabled bool `json:"ideEnabled,omitempty"`
 	// Configurational parameters of DevSpaceIDE. Applied if `.spec.ideEnabled` is set to `true`.
 	DevSpaceIDETemplate DevSpaceIDESpec `json:"devSpaceIDETemplate,omitempty"`
+	// If `true`, a Jupyter Notebook will be provisioned inside development suite.
+	JupyterEnabled bool `json:"jupyterEnabled,omitempty"`
+	// Configurational parameters of DevSpaceJupyter. Applied if `.spec.jupyterEnabled` is set to `true`.
+	DevSpaceJupyterTemplate DevSpaceJupyterSpec `json:"devSpaceJupyterTemplate,omitempty"`
 }
 
 // DevSuiteStatus defines the observed state of DevSuite.
@@ -143,6 +147,8 @@ type DevSuiteStatus struct {
 	DevSpaceVDIStatus OwnedDevSpaceServiceStatus `json:"devSpaceVDIStatus,omitempty"`
 	// Status of DevSpaceIDE.
 	DevSpaceIDEStatus OwnedDevSpaceServiceStatus `json:"devSpaceIDEStatus,omitempty"`
+	// Status of DevSpaceJupyter.
+	DevSpaceJupyterStatus OwnedDevSpaceServiceStatus `json:"devSpaceJupyterStatus,omitempty"`
 	// [*alpha*] Indicates if DevSuite is attached to a DevSpace and actively provisioned it's resources.
 	Active bool `json:"active,omitempty"`
 }

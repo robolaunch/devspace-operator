@@ -20,6 +20,7 @@ import (
 	"context"
 
 	corev1 "k8s.io/api/core/v1"
+	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -136,6 +137,22 @@ func (r *DevSpaceJupyterReconciler) reconcileCheckStatus(ctx context.Context, in
 }
 
 func (r *DevSpaceJupyterReconciler) reconcileCheckResources(ctx context.Context, instance *devv1alpha1.DevSpaceJupyter) error {
+
+	err := r.reconcileCheckService(ctx, instance)
+	if err != nil {
+		return err
+	}
+
+	err = r.reconcileCheckPod(ctx, instance)
+	if err != nil {
+		return err
+	}
+
+	err = r.reconcileCheckIngress(ctx, instance)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -143,5 +160,8 @@ func (r *DevSpaceJupyterReconciler) reconcileCheckResources(ctx context.Context,
 func (r *DevSpaceJupyterReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&devv1alpha1.DevSpaceJupyter{}).
+		Owns(&corev1.Pod{}).
+		Owns(&corev1.Service{}).
+		Owns(&networkingv1.Ingress{}).
 		Complete(r)
 }

@@ -101,6 +101,24 @@ type DevSpaceVDIList struct {
 	Items           []DevSpaceVDI `json:"items"`
 }
 
+// DevSpaceJupyter creates Jupyter Notebook instances in DevSpace.
+type DevSpaceJupyter struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   DevSpaceJupyterSpec   `json:"spec,omitempty"`
+	Status DevSpaceJupyterStatus `json:"status,omitempty"`
+}
+
+//+kubebuilder:object:root=true
+
+// DevSpaceJupyterList contains a list of DevSpaceJupyter.
+type DevSpaceJupyterList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []DevSpaceJupyter `json:"items"`
+}
+
 // ********************************
 // DevSuite types
 // ********************************
@@ -225,4 +243,16 @@ type DevSpaceVDIStatus struct {
 	// between DevSpaceVDI workloads and other workloads that requests
 	// display.
 	PVCStatus OwnedResourceStatus `json:"pvcStatus,omitempty"`
+}
+
+// ********************************
+// DevSpaceJupyter types
+// ********************************
+
+// DevSpaceJupyterSpec defines the desired state of DevSpaceJupyter
+type DevSpaceJupyterSpec struct {
+}
+
+// DevSpaceJupyterStatus defines the observed state of DevSpaceJupyter
+type DevSpaceJupyterStatus struct {
 }

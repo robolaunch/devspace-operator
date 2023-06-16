@@ -25,6 +25,7 @@ func init() {
 	SchemeBuilder.Register(&DevSuite{}, &DevSuiteList{})
 	SchemeBuilder.Register(&DevSpaceIDE{}, &DevSpaceIDEList{})
 	SchemeBuilder.Register(&DevSpaceVDI{}, &DevSpaceVDIList{})
+	SchemeBuilder.Register(&DevSpaceJupyter{}, &DevSpaceJupyterList{})
 }
 
 //+genclient

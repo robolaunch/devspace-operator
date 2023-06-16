@@ -50,3 +50,24 @@ func (r *DevSuiteReconciler) reconcileCreateDevSpaceIDE(ctx context.Context, ins
 
 	return nil
 }
+
+func (r *DevSuiteReconciler) reconcileCreateDevSpaceJupyter(ctx context.Context, instance *devv1alpha1.DevSuite) error {
+
+	devSpaceJupyter := resources.GetDevSpaceJupyter(instance, instance.GetDevSpaceJupyterMetadata())
+
+	err := ctrl.SetControllerReference(instance, devSpaceJupyter, r.Scheme)
+	if err != nil {
+		return err
+	}
+
+	err = r.Create(ctx, devSpaceJupyter)
+	if err != nil && errors.IsAlreadyExists(err) {
+		return nil
+	} else if err != nil {
+		return err
+	}
+
+	logger.Info("STATUS: DevSpace Jupyter is created.")
+
+	return nil
+}

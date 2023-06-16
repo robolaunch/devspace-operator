@@ -81,8 +81,9 @@ const (
 
 // DevSuite owned resources' postfixes
 const (
-	DEVSPACE_VDI_POSTFIX = "-vdi"
-	DEVSPACE_IDE_POSTFIX = "-ide"
+	DEVSPACE_VDI_POSTFIX     = "-vdi"
+	DEVSPACE_IDE_POSTFIX     = "-ide"
+	DEVSPACE_JUPYTER_POSTFIX = "-jupyter"
 )
 
 // Paths

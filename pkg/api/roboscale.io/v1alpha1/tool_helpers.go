@@ -23,6 +23,13 @@ func (devSuite *DevSuite) GetDevSpaceIDEMetadata() *types.NamespacedName {
 	}
 }
 
+func (devSuite *DevSuite) GetDevSpaceJupyterMetadata() *types.NamespacedName {
+	return &types.NamespacedName{
+		Namespace: devSuite.Namespace,
+		Name:      devSuite.Name + internal.DEVSPACE_JUPYTER_POSTFIX,
+	}
+}
+
 // ********************************
 // DevSpaceIDE helpers
 // ********************************

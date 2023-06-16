@@ -72,6 +72,13 @@ const (
 	INGRESS_IDE_POSTFIX = ""
 )
 
+// DevSpaceIDE owned resources' postfixes
+const (
+	SVC_JUPYTER_POSTFIX     = ""
+	POD_JUPYTER_POSTFIX     = ""
+	INGRESS_JUPYTER_POSTFIX = ""
+)
+
 // DevSuite owned resources' postfixes
 const (
 	DEVSPACE_VDI_POSTFIX = "-vdi"

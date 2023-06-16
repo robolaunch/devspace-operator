@@ -62,7 +62,7 @@ func GetDevSpaceJupyterPod(devSpaceJupyter *devv1alpha1.DevSpaceJupyter, podName
 					},
 					Ports: []corev1.ContainerPort{
 						{
-							Name:          "jupyter-notebook",
+							Name:          "jupyter",
 							ContainerPort: int32(devspaceJupyterContainerPort),
 						},
 					},
@@ -108,7 +108,7 @@ func GetDevSpaceJupyterService(devSpaceJupyter *devv1alpha1.DevSpaceJupyter, svc
 					IntVal: int32(devspaceJupyterContainerPort),
 				},
 				Protocol: corev1.ProtocolTCP,
-				Name:     "jupyter-notebook",
+				Name:     "jupyter",
 			},
 		},
 	}

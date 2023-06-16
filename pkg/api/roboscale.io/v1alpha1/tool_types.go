@@ -251,8 +251,32 @@ type DevSpaceVDIStatus struct {
 
 // DevSpaceJupyterSpec defines the desired state of DevSpaceJupyter
 type DevSpaceJupyterSpec struct {
+	// Resource limitations of Cloud IDE.
+	Resources Resources `json:"resources,omitempty"`
+	// Service type of Cloud IDE. `ClusterIP` and `NodePort` is supported.
+	// +kubebuilder:validation:Enum=ClusterIP;NodePort
+	// +kubebuilder:default="NodePort"
+	ServiceType corev1.ServiceType `json:"serviceType,omitempty"`
+	// If `true`, containers of DevSpaceJupyter will be privileged containers.
+	// It can be used in physical instances where it's necessary to access
+	// I/O devices on the host machine.
+	// Not recommended to activate this field on cloud instances.
+	Privileged bool `json:"privileged,omitempty"`
+	// Cloud IDE connects an X11 socket if it's set to `true` and a target DevSpaceVDI resource is set in labels with key `robolaunch.io/target-vdi`.
+	// Applications that requires GUI can be executed.
+	Display bool `json:"display,omitempty"`
+	// [*alpha*] DevSpaceJupyter will create an Ingress resource if `true`.
+	Ingress bool `json:"ingress,omitempty"`
 }
 
 // DevSpaceJupyterStatus defines the observed state of DevSpaceJupyter
 type DevSpaceJupyterStatus struct {
+	// Phase of DevSpaceJupyter.
+	Phase DevSpaceJupyterPhase `json:"phase,omitempty"`
+	// Status of Jupyter Notebook pod.
+	PodStatus OwnedPodStatus `json:"podStatus,omitempty"`
+	// Status of Jupyter Notebook service.
+	ServiceStatus OwnedServiceStatus `json:"serviceStatus,omitempty"`
+	// Status of Jupyter Notebook Ingress.
+	IngressStatus OwnedResourceStatus `json:"ingressStatus,omitempty"`
 }

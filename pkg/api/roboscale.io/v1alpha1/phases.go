@@ -57,3 +57,12 @@ const (
 	DevSpaceVDIPhaseCreatingIngress    DevSpaceVDIPhase = "CreatingIngress"
 	DevSpaceVDIPhaseRunning            DevSpaceVDIPhase = "Running"
 )
+
+type DevSpaceJupyterPhase string
+
+const (
+	DevSpaceJupyterPhaseCreatingService DevSpaceJupyterPhase = "CreatingService"
+	DevSpaceJupyterPhaseCreatingPod     DevSpaceJupyterPhase = "CreatingPod"
+	DevSpaceJupyterPhaseCreatingIngress DevSpaceJupyterPhase = "CreatingIngress"
+	DevSpaceJupyterPhaseRunning         DevSpaceJupyterPhase = "Running"
+)

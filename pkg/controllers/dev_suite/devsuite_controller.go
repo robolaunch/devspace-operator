@@ -109,34 +109,22 @@ func (r *DevSuiteReconciler) reconcileCheckStatus(ctx context.Context, instance 
 				switch instance.Status.DevSpaceVDIStatus.Resource.Phase {
 				case string(devv1alpha1.DevSpaceVDIPhaseRunning):
 
-					switch instance.Spec.IDEEnabled {
-					case true:
-
-						switch instance.Status.DevSpaceIDEStatus.Resource.Created {
-						case true:
-
-							switch instance.Status.DevSpaceIDEStatus.Resource.Phase {
-							case string(devv1alpha1.DevSpaceIDEPhaseRunning):
-
-								instance.Status.Phase = devv1alpha1.DevSuitePhaseRunning
-
-							}
-
-						case false:
-
-							instance.Status.Phase = devv1alpha1.DevSuitePhaseCreatingDevSpaceIDE
-							err := r.reconcileCreateDevSpaceIDE(ctx, instance)
-							if err != nil {
-								return err
-							}
-							instance.Status.DevSpaceIDEStatus.Resource.Created = true
-
+					if instance.Spec.IDEEnabled && !instance.Status.DevSpaceIDEStatus.Resource.Created {
+						instance.Status.Phase = devv1alpha1.DevSuitePhaseCreatingDevSpaceIDE
+						err := r.reconcileCreateDevSpaceIDE(ctx, instance)
+						if err != nil {
+							return err
 						}
+						instance.Status.DevSpaceIDEStatus.Resource.Created = true
+					}
 
-					case false:
-
-						instance.Status.Phase = devv1alpha1.DevSuitePhaseRunning
-
+					if instance.Spec.JupyterEnabled && !instance.Status.DevSpaceJupyterStatus.Resource.Created {
+						instance.Status.Phase = devv1alpha1.DevSuitePhaseCreatingDevSpaceJupyter
+						err := r.reconcileCreateDevSpaceJupyter(ctx, instance)
+						if err != nil {
+							return err
+						}
+						instance.Status.DevSpaceJupyterStatus.Resource.Created = true
 					}
 
 				}
@@ -154,34 +142,13 @@ func (r *DevSuiteReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 		case false:
 
-			switch instance.Spec.IDEEnabled {
-			case true:
-
-				switch instance.Status.DevSpaceIDEStatus.Resource.Created {
-				case true:
-
-					switch instance.Status.DevSpaceIDEStatus.Resource.Phase {
-					case string(devv1alpha1.DevSpaceIDEPhaseRunning):
-
-						instance.Status.Phase = devv1alpha1.DevSuitePhaseRunning
-
-					}
-
-				case false:
-
-					instance.Status.Phase = devv1alpha1.DevSuitePhaseCreatingDevSpaceIDE
-					err := r.reconcileCreateDevSpaceIDE(ctx, instance)
-					if err != nil {
-						return err
-					}
-					instance.Status.DevSpaceIDEStatus.Resource.Created = true
-
+			if instance.Spec.IDEEnabled && !instance.Status.DevSpaceIDEStatus.Resource.Created {
+				instance.Status.Phase = devv1alpha1.DevSuitePhaseCreatingDevSpaceIDE
+				err := r.reconcileCreateDevSpaceIDE(ctx, instance)
+				if err != nil {
+					return err
 				}
-
-			case false:
-
-				instance.Status.Phase = devv1alpha1.DevSuitePhaseRunning
-
+				instance.Status.DevSpaceIDEStatus.Resource.Created = true
 			}
 
 		}
@@ -204,6 +171,12 @@ func (r *DevSuiteReconciler) reconcileCheckStatus(ctx context.Context, instance 
 
 	}
 
+	if (instance.Spec.VDIEnabled == (instance.Status.DevSpaceVDIStatus.Resource.Phase == string(devv1alpha1.DevSpaceVDIPhaseRunning))) &&
+		(instance.Spec.IDEEnabled == (instance.Status.DevSpaceIDEStatus.Resource.Phase == string(devv1alpha1.DevSpaceIDEPhaseRunning))) &&
+		(instance.Spec.JupyterEnabled == (instance.Status.DevSpaceJupyterStatus.Resource.Phase == string(devv1alpha1.DevSpaceJupyterPhaseRunning))) {
+		instance.Status.Phase = devv1alpha1.DevSuitePhaseRunning
+	}
+
 	return nil
 }
 
@@ -219,6 +192,11 @@ func (r *DevSuiteReconciler) reconcileCheckResources(ctx context.Context, instan
 		return err
 	}
 
+	err = r.reconcileCheckDevSpaceJupyter(ctx, instance)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -228,6 +206,7 @@ func (r *DevSuiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&devv1alpha1.DevSuite{}).
 		Owns(&devv1alpha1.DevSpaceVDI{}).
 		Owns(&devv1alpha1.DevSpaceIDE{}).
+		Owns(&devv1alpha1.DevSpaceJupyter{}).
 		Watches(
 			&source.Kind{Type: &devv1alpha1.DevSpace{}},
 			handler.EnqueueRequestsFromMapFunc(r.watchDevSpaces),

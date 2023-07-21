@@ -94,6 +94,32 @@ rules:
 - apiGroups:
   - dev.roboscale.io
   resources:
+  - devspacejupyters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - dev.roboscale.io
+  resources:
+  - devspacejupyters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - dev.roboscale.io
+  resources:
+  - devspacejupyters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - dev.roboscale.io
+  resources:
   - devspaces
   verbs:
   - create

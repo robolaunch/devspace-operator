@@ -30,12 +30,13 @@ const (
 type DevSuitePhase string
 
 const (
-	DevSuitePhaseDevSpaceNotFound    DevSuitePhase = "DevSpaceNotFound"
-	DevSuitePhaseCreatingDevSpaceVDI DevSuitePhase = "CreatingDevSpaceVDI"
-	DevSuitePhaseCreatingDevSpaceIDE DevSuitePhase = "CreatingDevSpaceIDE"
-	DevSuitePhaseRunning             DevSuitePhase = "Running"
-	DevSuitePhaseDeactivating        DevSuitePhase = "Deactivating"
-	DevSuitePhaseInactive            DevSuitePhase = "Inactive"
+	DevSuitePhaseDevSpaceNotFound        DevSuitePhase = "DevSpaceNotFound"
+	DevSuitePhaseCreatingDevSpaceVDI     DevSuitePhase = "CreatingDevSpaceVDI"
+	DevSuitePhaseCreatingDevSpaceIDE     DevSuitePhase = "CreatingDevSpaceIDE"
+	DevSuitePhaseCreatingDevSpaceJupyter DevSuitePhase = "CreatingDevSpaceJupyter"
+	DevSuitePhaseRunning                 DevSuitePhase = "Running"
+	DevSuitePhaseDeactivating            DevSuitePhase = "Deactivating"
+	DevSuitePhaseInactive                DevSuitePhase = "Inactive"
 )
 
 type DevSpaceIDEPhase string
@@ -56,4 +57,13 @@ const (
 	DevSpaceVDIPhaseCreatingPod        DevSpaceVDIPhase = "CreatingPod"
 	DevSpaceVDIPhaseCreatingIngress    DevSpaceVDIPhase = "CreatingIngress"
 	DevSpaceVDIPhaseRunning            DevSpaceVDIPhase = "Running"
+)
+
+type DevSpaceJupyterPhase string
+
+const (
+	DevSpaceJupyterPhaseCreatingService DevSpaceJupyterPhase = "CreatingService"
+	DevSpaceJupyterPhaseCreatingPod     DevSpaceJupyterPhase = "CreatingPod"
+	DevSpaceJupyterPhaseCreatingIngress DevSpaceJupyterPhase = "CreatingIngress"
+	DevSpaceJupyterPhaseRunning         DevSpaceJupyterPhase = "Running"
 )

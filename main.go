@@ -35,6 +35,7 @@ import (
 	devv1alpha1 "github.com/robolaunch/devspace-operator/pkg/api/roboscale.io/v1alpha1"
 	devSuite "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite"
 	devSpaceIDE "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite/devspace_ide"
+	devSpaceJupyter "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite/devspace_jupyter"
 	devSpaceVDI "github.com/robolaunch/devspace-operator/pkg/controllers/dev_suite/devspace_vdi"
 	devspace "github.com/robolaunch/devspace-operator/pkg/controllers/devspace"
 	workspaceManager "github.com/robolaunch/devspace-operator/pkg/controllers/workspace_manager"
@@ -164,6 +165,13 @@ func main() {
 	}
 	if err = (&devv1alpha1.WorkspaceManager{}).SetupWebhookWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create webhook", "webhook", "WorkspaceManager")
+		os.Exit(1)
+	}
+	if err = (&devSpaceJupyter.DevSpaceJupyterReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "DevSpaceJupyter")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

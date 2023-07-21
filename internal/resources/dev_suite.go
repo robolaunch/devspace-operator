@@ -38,3 +38,21 @@ func GetDevSpaceIDE(devSuite *devv1alpha1.DevSuite, devSpaceIDENamespacedName *t
 
 	return &devSpaceIDE
 }
+
+func GetDevSpaceJupyter(devSuite *devv1alpha1.DevSuite, devSpaceJupyterNamespacedName *types.NamespacedName) *devv1alpha1.DevSpaceJupyter {
+
+	devSpaceJupyter := devv1alpha1.DevSpaceJupyter{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      devSpaceJupyterNamespacedName.Name,
+			Namespace: devSpaceJupyterNamespacedName.Namespace,
+			Labels:    devSuite.Labels,
+		},
+		Spec: devSuite.Spec.DevSpaceJupyterTemplate,
+	}
+
+	if devSuite.Spec.VDIEnabled {
+		devSpaceJupyter.Labels[internal.TARGET_VDI_LABEL_KEY] = devSuite.GetDevSpaceVDIMetadata().Name
+	}
+
+	return &devSpaceJupyter
+}

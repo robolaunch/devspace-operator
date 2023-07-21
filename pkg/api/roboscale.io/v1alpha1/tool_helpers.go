@@ -23,6 +23,13 @@ func (devSuite *DevSuite) GetDevSpaceIDEMetadata() *types.NamespacedName {
 	}
 }
 
+func (devSuite *DevSuite) GetDevSpaceJupyterMetadata() *types.NamespacedName {
+	return &types.NamespacedName{
+		Namespace: devSuite.Namespace,
+		Name:      devSuite.Name + internal.DEVSPACE_JUPYTER_POSTFIX,
+	}
+}
+
 // ********************************
 // DevSpaceIDE helpers
 // ********************************
@@ -84,5 +91,30 @@ func (devspacevdi *DevSpaceVDI) GetDevSpaceVDIIngressMetadata() *types.Namespace
 	return &types.NamespacedName{
 		Namespace: devspacevdi.Namespace,
 		Name:      devspacevdi.Name + internal.INGRESS_VDI_POSTFIX,
+	}
+}
+
+// ********************************
+// DevSpaceJupyter helpers
+// ********************************
+
+func (devspacejupyter *DevSpaceJupyter) GetDevSpaceJupyterPodMetadata() *types.NamespacedName {
+	return &types.NamespacedName{
+		Namespace: devspacejupyter.Namespace,
+		Name:      devspacejupyter.Name + internal.POD_JUPYTER_POSTFIX,
+	}
+}
+
+func (devspacejupyter *DevSpaceJupyter) GetDevSpaceJupyterServiceMetadata() *types.NamespacedName {
+	return &types.NamespacedName{
+		Namespace: devspacejupyter.Namespace,
+		Name:      devspacejupyter.Name + internal.SVC_JUPYTER_POSTFIX,
+	}
+}
+
+func (devspacejupyter *DevSpaceJupyter) GetDevSpaceJupyterIngressMetadata() *types.NamespacedName {
+	return &types.NamespacedName{
+		Namespace: devspacejupyter.Namespace,
+		Name:      devspacejupyter.Name + internal.INGRESS_JUPYTER_POSTFIX,
 	}
 }

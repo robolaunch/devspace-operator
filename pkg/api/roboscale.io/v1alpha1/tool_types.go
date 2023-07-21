@@ -25,6 +25,7 @@ func init() {
 	SchemeBuilder.Register(&DevSuite{}, &DevSuiteList{})
 	SchemeBuilder.Register(&DevSpaceIDE{}, &DevSpaceIDEList{})
 	SchemeBuilder.Register(&DevSpaceVDI{}, &DevSpaceVDIList{})
+	SchemeBuilder.Register(&DevSpaceJupyter{}, &DevSpaceJupyterList{})
 }
 
 //+genclient
@@ -100,6 +101,28 @@ type DevSpaceVDIList struct {
 	Items           []DevSpaceVDI `json:"items"`
 }
 
+//+genclient
+//+kubebuilder:object:root=true
+//+kubebuilder:subresource:status
+
+// DevSpaceJupyter creates Jupyter Notebook instances in DevSpace.
+type DevSpaceJupyter struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   DevSpaceJupyterSpec   `json:"spec,omitempty"`
+	Status DevSpaceJupyterStatus `json:"status,omitempty"`
+}
+
+//+kubebuilder:object:root=true
+
+// DevSpaceJupyterList contains a list of DevSpaceJupyter.
+type DevSpaceJupyterList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []DevSpaceJupyter `json:"items"`
+}
+
 // ********************************
 // DevSuite types
 // ********************************
@@ -114,6 +137,10 @@ type DevSuiteSpec struct {
 	IDEEnabled bool `json:"ideEnabled,omitempty"`
 	// Configurational parameters of DevSpaceIDE. Applied if `.spec.ideEnabled` is set to `true`.
 	DevSpaceIDETemplate DevSpaceIDESpec `json:"devSpaceIDETemplate,omitempty"`
+	// If `true`, a Jupyter Notebook will be provisioned inside development suite.
+	JupyterEnabled bool `json:"jupyterEnabled,omitempty"`
+	// Configurational parameters of DevSpaceJupyter. Applied if `.spec.jupyterEnabled` is set to `true`.
+	DevSpaceJupyterTemplate DevSpaceJupyterSpec `json:"devSpaceJupyterTemplate,omitempty"`
 }
 
 // DevSuiteStatus defines the observed state of DevSuite.
@@ -124,6 +151,8 @@ type DevSuiteStatus struct {
 	DevSpaceVDIStatus OwnedDevSpaceServiceStatus `json:"devSpaceVDIStatus,omitempty"`
 	// Status of DevSpaceIDE.
 	DevSpaceIDEStatus OwnedDevSpaceServiceStatus `json:"devSpaceIDEStatus,omitempty"`
+	// Status of DevSpaceJupyter.
+	DevSpaceJupyterStatus OwnedDevSpaceServiceStatus `json:"devSpaceJupyterStatus,omitempty"`
 	// [*alpha*] Indicates if DevSuite is attached to a DevSpace and actively provisioned it's resources.
 	Active bool `json:"active,omitempty"`
 }
@@ -224,4 +253,40 @@ type DevSpaceVDIStatus struct {
 	// between DevSpaceVDI workloads and other workloads that requests
 	// display.
 	PVCStatus OwnedResourceStatus `json:"pvcStatus,omitempty"`
+}
+
+// ********************************
+// DevSpaceJupyter types
+// ********************************
+
+// DevSpaceJupyterSpec defines the desired state of DevSpaceJupyter
+type DevSpaceJupyterSpec struct {
+	// Resource limitations of Cloud IDE.
+	Resources Resources `json:"resources,omitempty"`
+	// Service type of Cloud IDE. `ClusterIP` and `NodePort` is supported.
+	// +kubebuilder:validation:Enum=ClusterIP;NodePort
+	// +kubebuilder:default="NodePort"
+	ServiceType corev1.ServiceType `json:"serviceType,omitempty"`
+	// If `true`, containers of DevSpaceJupyter will be privileged containers.
+	// It can be used in physical instances where it's necessary to access
+	// I/O devices on the host machine.
+	// Not recommended to activate this field on cloud instances.
+	Privileged bool `json:"privileged,omitempty"`
+	// Cloud IDE connects an X11 socket if it's set to `true` and a target DevSpaceVDI resource is set in labels with key `robolaunch.io/target-vdi`.
+	// Applications that requires GUI can be executed.
+	Display bool `json:"display,omitempty"`
+	// [*alpha*] DevSpaceJupyter will create an Ingress resource if `true`.
+	Ingress bool `json:"ingress,omitempty"`
+}
+
+// DevSpaceJupyterStatus defines the observed state of DevSpaceJupyter
+type DevSpaceJupyterStatus struct {
+	// Phase of DevSpaceJupyter.
+	Phase DevSpaceJupyterPhase `json:"phase,omitempty"`
+	// Status of Jupyter Notebook pod.
+	PodStatus OwnedPodStatus `json:"podStatus,omitempty"`
+	// Status of Jupyter Notebook service.
+	ServiceStatus OwnedServiceStatus `json:"serviceStatus,omitempty"`
+	// Status of Jupyter Notebook Ingress.
+	IngressStatus OwnedResourceStatus `json:"ingressStatus,omitempty"`
 }
